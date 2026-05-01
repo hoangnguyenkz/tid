@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIME LINE PROJECT TID</title>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
             --bg-color: #000000;
@@ -12,7 +12,6 @@
             --text-main: #ffffff;
             --text-accent: #f1c40f;
             --row-even: #111111;
-            --row-odd: #000000;
             --status-green: #2ecc71;
             --status-red: #e74c3c;
             --blue-neon: #00d4ff;
@@ -42,11 +41,11 @@
 
         .main-title { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
         #clock { font-family: monospace; font-size: 1.4rem; color: var(--blue-neon); font-weight: bold; }
-        #sync-status { font-size: 0.7rem; color: var(--blue-neon); }
+        #sync-status { font-size: 0.7rem; color: var(--blue-neon); font-weight: bold; }
 
         .dashboard-container {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-columns: 1.25fr 0.75fr;
             flex-grow: 1;
             gap: 2px;
             background-color: #333;
@@ -65,7 +64,7 @@
             position: relative;
         }
 
-        .board-title { color: var(--text-accent); font-size: 0.9rem; font-weight: bold; }
+        .board-title { color: var(--text-accent); font-size: 0.85rem; font-weight: bold; }
         .page-info { position: absolute; right: 10px; color: #666; font-size: 0.7rem; }
 
         .table-header {
@@ -82,8 +81,9 @@
         
         .right-split .data-row { height: calc(100% / 6); }
 
-        .tiendo-cols { grid-template-columns: 40px 1.2fr 1fr 1fr 50px 90px 90px 100px; }
-        .baolanh-cols { grid-template-columns: 40px 1.2fr 1fr 1fr 100px 100px; }
+        /* Cấu hình cột linh hoạt */
+        .tiendo-cols { grid-template-columns: 35px 1.2fr 1fr 1fr 45px 85px 85px 95px; }
+        .baolanh-cols { grid-template-columns: 35px 1.2fr 1fr 0.9fr 100px 90px; }
 
         .col-project { color: var(--text-accent); font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .status-badge {
@@ -91,8 +91,8 @@
             border: 1px solid currentColor;
         }
 
-        .summary-box { padding: 15px; line-height: 1.8; color: #ccc; }
-        .summary-item { display: flex; justify-content: space-between; border-bottom: 1px solid #222; }
+        .summary-box { padding: 10px; line-height: 1.6; color: #ccc; font-size: 0.85rem; }
+        .summary-item { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 2px 0; }
     </style>
 </head>
 <body>
@@ -104,9 +104,10 @@
     </div>
 
     <div class="dashboard-container">
+        <!-- BẢNG TIẾN ĐỘ -->
         <div class="column">
             <div class="board-header">
-                <div class="board-title">THEO DÕI TIẾN ĐỘ</div>
+                <div class="board-title">THEO DÕI TIẾN ĐỘ THI CÔNG</div>
                 <div class="page-info" id="p-tiendo">1/1</div>
             </div>
             <div class="table-header tiendo-cols">
@@ -116,9 +117,10 @@
         </div>
 
         <div class="column right-split">
+            <!-- BẢNG BẢO LÃNH -->
             <div class="column">
                 <div class="board-header">
-                    <div class="board-title">THEO DÕI BẢO LÃNH</div>
+                    <div class="board-title">THEO DÕI BẢO LÃNH / CÔNG NỢ</div>
                     <div class="page-info" id="p-baolanh">1/1</div>
                 </div>
                 <div class="table-header baolanh-cols">
@@ -126,32 +128,40 @@
                 </div>
                 <div id="list-baolanh" class="data-list"></div>
             </div>
+
+            <!-- THỐNG KÊ NHÂN SỰ -->
             <div class="column">
-                <div class="board-header"><div class="board-title">NHÂN SỰ PHỤ TRÁCH</div></div>
+                <div class="board-header">
+                    <div class="board-title">NHÂN SỰ PHỤ TRÁCH</div>
+                </div>
                 <div id="summary-staff" class="summary-box"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Link Google Sheets của bạn
-        const GS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRihkN3STIzLwe2-eSHQMVRLX2cOLKorzGFR5_fm5Si1D94wmrfpt9NrD-YxsVC1iOOWgxTS8Ni0SmC/pub?output=ods";
+        // SỬ DỤNG LINK CSV ĐỂ ĐẠT ĐỘ ỔN ĐỊNH CAO NHẤT
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRihkN3STIzLwe2-eSHQMVRLX2cOLKorzGFR5_fm5Si1D94wmrfpt9NrD-YxsVC1iOOWgxTS8Ni0SmC/pub?output=csv";
 
         let db = { tiendo: [], baolanh: [] };
         let page = { tiendo: 0, baolanh: 0 };
 
         async function loadData() {
             try {
-                const res = await fetch(GS_URL);
-                const ab = await res.arrayBuffer();
-                const wb = XLSX.read(new Uint8Array(ab), {type: 'array', cellDates: true});
-                const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1, defval: ""});
+                // Thêm timestamp để tránh cache trình duyệt
+                const response = await fetch(`${CSV_URL}&cache=${new Date().getTime()}`);
+                const csvData = await response.text();
                 
-                parse(data);
-                document.getElementById('sync-status').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString();
+                Papa.parse(csvData, {
+                    complete: function(results) {
+                        parse(results.data);
+                        document.getElementById('sync-status').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString('vi-VN');
+                    },
+                    error: function() { throw new Error(); }
+                });
             } catch (e) {
                 document.getElementById('sync-status').innerText = "LỖI KẾT NỐI - ĐANG THỬ LẠI...";
-                setTimeout(loadData, 5000);
+                setTimeout(loadData, 10000);
             }
         }
 
@@ -159,16 +169,23 @@
             db.tiendo = []; db.baolanh = [];
             let staff = {};
 
+            // Bỏ qua 2 dòng tiêu đề
             rows.slice(2).forEach(r => {
+                // Dữ liệu Tiến Độ (Cột A-H: Index 0-7)
                 if(r[1]) {
                     db.tiendo.push({stt:r[0], name:r[1], cust:r[2], item:r[3], p:r[4], dl:r[5], staff:r[6], st:r[7]});
-                    if(r[6]) r[6].split(',').forEach(s => { let n = s.trim(); if(n) staff[n] = (staff[n]||0)+1; });
+                    if(r[6]) r[6].split(',').forEach(s => { 
+                        let n = s.trim(); if(n) staff[n] = (staff[n]||0)+1; 
+                    });
                 }
-                if(r[9]) db.baolanh.push({stt:r[8], name:r[9], cust:r[10], item:r[11], val:r[13], st:r[14]});
+                // Dữ liệu Bảo Lãnh (Cột I-O: Index 8-14)
+                if(r[9]) {
+                    db.baolanh.push({stt:r[8], name:r[9], cust:r[10], item:r[11], val:r[13], st:r[14]});
+                }
             });
 
             let sHtml = "";
-            Object.entries(staff).sort((a,b)=>b[1]-a[1]).forEach(([n, c]) => {
+            Object.entries(staff).sort((a,b)=>b[1]-a[1]).slice(0, 15).forEach(([n, c]) => {
                 sHtml += `<div class="summary-item"><span>${n}</span><span style="color:var(--blue-neon)">${c} Dự án</span></div>`;
             });
             document.getElementById('summary-staff').innerHTML = sHtml;
@@ -176,31 +193,33 @@
         }
 
         function render() {
-            const draw = (id, data, p, size, cols, template) => {
+            const draw = (id, data, p, size, template) => {
                 const slice = data.slice(p * size, (p + 1) * size);
                 document.getElementById(id).innerHTML = slice.map(template).join('');
             };
 
-            draw('list-tiendo', db.tiendo, page.tiendo, 12, '', r => `
+            // Bảng Tiến Độ
+            draw('list-tiendo', db.tiendo, page.tiendo, 12, r => `
                 <div class="data-row tiendo-cols">
                     <div style="color:#666">${r.stt}</div>
                     <div class="col-project">${r.name}</div>
-                    <div>${r.cust}</div>
+                    <div style="font-size:0.75rem">${r.cust}</div>
                     <div style="font-size:0.7rem">${r.item}</div>
-                    <div style="color:var(--text-accent); text-align:center">${Math.round(r.p*100)||0}%</div>
-                    <div style="color:var(--blue-neon)">${r.dl instanceof Date ? r.dl.toLocaleDateString('vi-VN') : r.dl}</div>
-                    <div style="color:#2ecc71">${r.staff}</div>
+                    <div style="color:var(--text-accent); text-align:center">${r.p}</div>
+                    <div style="color:var(--blue-neon)">${r.dl}</div>
+                    <div style="color:#2ecc71; font-weight:bold">${r.staff}</div>
                     <div><span class="status-badge" style="color:${getColor(r.st)}">${r.st}</span></div>
                 </div>
             `);
 
-            draw('list-baolanh', db.baolanh, page.baolanh, 6, '', r => `
+            // Bảng Bảo Lãnh
+            draw('list-baolanh', db.baolanh, page.baolanh, 6, r => `
                 <div class="data-row baolanh-cols">
                     <div style="color:#666">${r.stt}</div>
                     <div class="col-project">${r.name}</div>
-                    <div>${r.cust}</div>
-                    <div>${r.item}</div>
-                    <div style="text-align:right; color:var(--status-red)">${r.val.toLocaleString()}</div>
+                    <div style="font-size:0.75rem">${r.cust}</div>
+                    <div style="font-size:0.7rem">${r.item}</div>
+                    <div style="text-align:right; color:var(--status-red); font-weight:bold">${r.val}</div>
                     <div><span class="status-badge" style="color:${getColor(r.st)}">${r.st}</span></div>
                 </div>
             `);
@@ -212,11 +231,12 @@
         function getColor(st) {
             if(!st) return "#fff";
             const s = st.toString().toUpperCase();
-            if(s.includes("XONG") || s.includes("HOÀN")) return "var(--status-green)";
-            if(s.includes("CHẬM") || s.includes("GẤP")) return "var(--status-red)";
+            if(s.includes("XONG") || s.includes("QUYẾT")) return "var(--status-green)";
+            if(s.includes("CHẬM") || s.includes("QUÁ")) return "var(--status-red)";
             return "var(--text-accent)";
         }
 
+        // Tự động chuyển trang
         setInterval(() => {
             page.tiendo = (page.tiendo + 1) % (Math.ceil(db.tiendo.length/12)||1);
             page.baolanh = (page.baolanh + 1) % (Math.ceil(db.baolanh.length/6)||1);
@@ -224,8 +244,9 @@
         }, 8000);
 
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('vi-VN'); }, 1000);
+        
         loadData();
-        setInterval(loadData, 300000);
+        setInterval(loadData, 300000); // Tải lại dữ liệu sau mỗi 5 phút
     </script>
 </body>
 </html>
