@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIME LINE PROJECT TID - LIVE</title>
+    <!-- Thư viện đọc file Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
@@ -31,6 +32,7 @@
             text-transform: uppercase;
         }
 
+        /* Thanh điều khiển trên cùng */
         .controls {
             height: 60px;
             padding: 0 20px;
@@ -47,6 +49,7 @@
         #clock-time { display: block; font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: bold; color: #00d4ff; }
         #clock-date { display: block; font-size: 0.8rem; color: #888; font-weight: bold; }
 
+        /* Bố cục Dashboard */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
@@ -75,6 +78,7 @@
         .total-count { color: #ffffff; margin-left: 5px; font-size: 0.8rem; opacity: 0.8; }
         .board-page-indicator { position: absolute; right: 10px; color: #666; font-size: 0.7rem; }
 
+        /* Style cho bảng dữ liệu */
         .row-common { display: grid; align-items: center; border-bottom: 1px solid #222; }
         .data-header { background-color: #222; color: #00d4ff; font-weight: bold; font-size: 0.7rem; height: 30px; }
         
@@ -95,11 +99,13 @@
         .data-list .data-row:nth-child(odd) { background-color: var(--row-odd); }
         .data-list .data-row:nth-child(even) { background-color: var(--row-even); }
 
+        /* Chia cột cho từng bảng */
         .tiendo-row { grid-template-columns: 35px 1.1fr 0.9fr 0.9fr 50px 90px 90px 95px; }
         .baolanh-row { grid-template-columns: 35px 1.2fr 1fr 1fr 90px 90px; }
         .nhansu-row { grid-template-columns: 35px 1fr 45px; }
         .khachhang-row { grid-template-columns: 35px 1fr 45px; }
 
+        /* Style chữ và trạng thái */
         .col-project { color: var(--text-accent); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .col-customer { color: #ffffff; font-weight: 700; font-size: 0.75rem; }
         .col-staff { color: #00d4ff; font-weight: bold; }
@@ -116,13 +122,13 @@
         .status-danger { color: var(--status-red); animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0.3; } }
         
-        .loading-text { font-size: 0.75rem; color: #00d4ff; }
+        .loading-text { font-size: 0.75rem; color: #00d4ff; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="controls">
-        <div id="sync-status" class="loading-text">ĐANG KHỞI TẠO...</div>
+        <div id="sync-status" class="loading-text">KHỞI TẠO...</div>
         <div class="main-title">TIME LINE PROJECT TID</div>
         <div id="clock-container">
             <span id="clock-time">00:00:00</span>
@@ -131,9 +137,10 @@
     </div>
 
     <div class="dashboard-grid">
+        <!-- Cột Trái: Tiến Độ Dự Án -->
         <div class="board-column">
             <div class="board-title-area">
-                <div class="board-title">THEO DÕI DỰ ÁN <span id="totalTiendo"></span></div>
+                <div class="board-title">THEO DÕI TIẾN ĐỘ <span id="totalTiendo"></span></div>
                 <div class="board-page-indicator" id="pageTiendo">1/1</div>
             </div>
             <div class="row-common data-header tiendo-row">
@@ -142,7 +149,9 @@
             <div class="board-content"><div class="data-list" id="tiendoList"></div></div>
         </div>
 
+        <!-- Cột Phải: Bảo Lãnh và Thống Kê -->
         <div class="split-column-vertical">
+            <!-- Bảng Bảo Lãnh -->
             <div class="board-column small-board">
                 <div class="board-title-area">
                     <div class="board-title">THEO DÕI BẢO LÃNH <span id="totalBaolanh"></span></div>
@@ -154,18 +163,19 @@
                 <div class="board-content"><div class="data-list" id="baolanhList"></div></div>
             </div>
 
+            <!-- Khu vực chia 2: Nhân Sự và Khách Hàng -->
             <div class="split-column-horizontal">
                 <div class="board-column">
-                    <div class="board-title-area"><div class="board-title">THỐNG KÊ NHÂN SỰ</div></div>
+                    <div class="board-title-area"><div class="board-title">NHÂN SỰ DỰ ÁN</div></div>
                     <div class="row-common data-header nhansu-row">
-                        <div>STT</div><div>NHÂN SỰ</div><div style="text-align:center">SL</div>
+                        <div>STT</div><div>HỌ TÊN</div><div style="text-align:center">DA</div>
                     </div>
                     <div class="board-content"><div class="data-list" id="nhansuList"></div></div>
                 </div>
                 <div class="board-column">
-                    <div class="board-title-area"><div class="board-title">THỐNG KÊ KHÁCH HÀNG</div></div>
+                    <div class="board-title-area"><div class="board-title">KHÁCH HÀNG</div></div>
                     <div class="row-common data-header khachhang-row">
-                        <div>STT</div><div>KHÁCH HÀNG</div><div style="text-align:center">SL</div>
+                        <div>STT</div><div>CÔNG TY</div><div style="text-align:center">DA</div>
                     </div>
                     <div class="board-content"><div class="data-list" id="khachhangList"></div></div>
                 </div>
@@ -174,20 +184,27 @@
     </div>
 
     <script>
-        // LINK ĐÃ CHUYỂN ĐỔI TỪ IFRAME CỦA BẠN
-        const ONEDRIVE_DOWNLOAD_URL = "https://onedrive.live.com/download?resid=B1DC83BD9D47FD20!135&authkey=AHy5P0OnSuVSKayXq-r_p79A";
-        const PROXY_URL = "https://corsproxy.io/?"; 
-
+        // CẤU HÌNH DỮ LIỆU
+        const ONEDRIVE_URL = "https://onedrive.live.com/download?resid=B1DC83BD9D47FD20!135&authkey=AHy5P0OnSuVSKayXq-r_p79A";
+        const PROXIES = [
+            "https://api.allorigins.win/raw?url=",
+            "https://corsproxy.io/?",
+            "https://thingproxy.freeboard.io/fetch/"
+        ];
+        
+        let proxyIndex = 0;
         let allData = { tiendo: [], baolanh: [], summaryStaff: [], summaryCust: [] };
         let currentPages = { tiendo: 0, baolanh: 0 };
-        const rowsLarge = 12; 
-        const rowsSmall = 6; 
+        const rowsLarge = 12; // Số dòng bảng lớn
+        const rowsSmall = 6;  // Số dòng bảng nhỏ
 
         async function loadData() {
             try {
-                document.getElementById('sync-status').innerText = "ĐANG ĐỒNG BỘ DỮ LIỆU...";
-                const response = await fetch(PROXY_URL + encodeURIComponent(ONEDRIVE_DOWNLOAD_URL));
-                if (!response.ok) throw new Error("CORS/Network Error");
+                document.getElementById('sync-status').innerText = "ĐANG TẢI DỮ LIỆU...";
+                const fetchUrl = PROXIES[proxyIndex] + encodeURIComponent(ONEDRIVE_URL);
+                
+                const response = await fetch(fetchUrl);
+                if (!response.ok) throw new Error("Proxy failed");
 
                 const arrayBuffer = await response.arrayBuffer();
                 const data = new Uint8Array(arrayBuffer);
@@ -197,9 +214,12 @@
                 
                 processData(rawData);
                 document.getElementById('sync-status').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString('vi-VN');
+                proxyIndex = 0; // Reset về proxy ưu tiên nếu thành công
             } catch (err) {
-                console.error(err);
+                console.warn("Lỗi proxy " + proxyIndex + ", đang thử proxy khác...");
+                proxyIndex = (proxyIndex + 1) % PROXIES.length;
                 document.getElementById('sync-status').innerText = "LỖI KẾT NỐI - ĐANG THỬ LẠI...";
+                setTimeout(loadData, 5000); // Thử lại sau 5s
             }
         }
 
@@ -207,22 +227,27 @@
             allData.tiendo = []; allData.baolanh = [];
             const staffCounts = {}; const custCounts = {};
 
+            // Duyệt dữ liệu từ dòng 3 của Excel
             for(let i = 2; i < rawData.length; i++) {
                 let r = rawData[i];
+                // Xử lý bảng Tiến Độ
                 if (r[1] || r[2]) {
                     allData.tiendo.push({
                         stt: r[0], name: r[1], cust: r[2], item: r[3], 
                         p: formatP(r[4]), d: formatDate(r[5]), staff: r[6], s: r[7]
                     });
+                    // Đếm nhân sự
                     if (r[6]) {
                         r[6].toString().split(',').forEach(n => {
                             let name = n.trim(); if(name) staffCounts[name] = (staffCounts[name] || 0) + 1;
                         });
                     }
+                    // Đếm khách hàng
                     if (r[2]) {
                         let cust = r[2].toString().trim(); if(cust) custCounts[cust] = (custCounts[cust] || 0) + 1;
                     }
                 }
+                // Xử lý bảng Bảo Lãnh
                 if (r[9] || r[10]) {
                     allData.baolanh.push({
                         stt: r[8], name: r[9], cust: r[10], item: r[11], debt: formatM(r[13]), s: r[14]
@@ -230,6 +255,7 @@
                 }
             }
 
+            // Sắp xếp thống kê
             allData.summaryStaff = Object.keys(staffCounts).map((n, i) => ({ stt: i + 1, name: n, count: staffCounts[n] })).sort((a,b) => b.count - a.count);
             allData.summaryCust = Object.keys(custCounts).map((c, i) => ({ stt: i + 1, name: c, count: custCounts[c] })).sort((a,b) => b.count - a.count);
 
@@ -237,17 +263,21 @@
             document.getElementById('totalBaolanh').innerText = `- ${allData.baolanh.length}`;
             
             renderStaticTables();
-            startCycles();
+            startAutoScroll();
         }
 
-        function startCycles() {
+        function startAutoScroll() {
             renderTiendo(); renderBaolanh();
             if (window.t1) clearInterval(window.t1);
             if (window.t2) clearInterval(window.t2);
+            
+            // Cuộn trang bảng Tiến Độ (8 giây thay trang)
             window.t1 = setInterval(() => {
                 const max = Math.ceil(allData.tiendo.length / rowsLarge);
                 if (max > 1) { currentPages.tiendo = (currentPages.tiendo + 1) % max; renderTiendo(); }
             }, 8000);
+            
+            // Cuộn trang bảng Bảo Lãnh (5 giây thay trang)
             window.t2 = setInterval(() => {
                 const maxB = Math.ceil(allData.baolanh.length / rowsSmall);
                 if (maxB > 1) { currentPages.baolanh = (currentPages.baolanh + 1) % maxB; renderBaolanh(); }
@@ -326,7 +356,7 @@
         setInterval(updateClock, 1000);
         updateClock();
         loadData();
-        setInterval(loadData, 300000);
+        setInterval(loadData, 300000); // Tải lại dữ liệu sau mỗi 5 phút
     </script>
 </body>
 </html>
