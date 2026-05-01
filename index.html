@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIME LINE PROJECT TID</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --header-bg: #1a1a1a;
+            --text-main: #ffffff;
+            --text-accent: #f1c40f;
+            --row-even: #111111;
+            --row-odd: #000000;
+            --status-green: #2ecc71;
+            --status-orange: #e67e22;
+            --status-yellow: #f1c40f;
+            --status-red: #e74c3c;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0; padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .controls {
+            height: 60px;
+            padding: 0 20px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #444;
+            flex-shrink: 0;
+        }
+
+        .main-title { color: #ffffff; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; }
+        #clock-container { text-align: right; line-height: 1.1; }
+        #clock-time { display: block; font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: bold; color: #00d4ff; }
+        #clock-date { display: block; font-size: 0.8rem; color: #888; font-weight: bold; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            flex-grow: 1;
+            gap: 2px;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .board-column { display: flex; flex-direction: column; background: var(--bg-color); height: 100%; overflow: hidden; }
+        .split-column-vertical { display: grid; grid-template-rows: 1fr 1fr; gap: 2px; height: 100%; background-color: #333; }
+        .split-column-horizontal { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; height: 100%; background-color: #333; }
+
+        .board-title-area {
+            background-color: var(--header-bg);
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .board-title { color: var(--text-accent); font-size: 0.95rem; font-weight: bold; text-align: center; }
+        .total-count { color: #ffffff; margin-left: 5px; font-size: 0.9rem; opacity: 0.8; }
+        .board-page-indicator { position: absolute; right: 10px; color: #666; font-size: 0.7rem; }
+
+        .row-common { display: grid; align-items: center; border-bottom: 1px solid #222; }
+        .data-header { background-color: #222; color: #00d4ff; font-weight: bold; font-size: 0.7rem; height: 30px; flex-shrink: 0; }
+        
+        .board-content { flex-grow: 1; overflow: hidden; position: relative; }
+        .scrollable-content { overflow-y: auto !important; }
+        .scrollable-content::-webkit-scrollbar { width: 4px; }
+        .scrollable-content::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+
+        .data-list { display: flex; flex-direction: column; height: 100%; }
+        .data-list.no-fixed-height { height: auto; }
+
+        .data-row {
+            height: calc(100% / 12);
+            display: grid;
+            align-items: center;
+            padding: 0 8px;
+            box-sizing: border-box;
+            font-size: 0.8rem;
+        }
+        
+        .small-board .data-row { height: calc(100% / 6); }
+        .mini-row-height { height: 38px !important; font-size: 0.8rem; }
+
+        .data-list .data-row:nth-child(odd) { background-color: var(--row-odd); }
+        .data-list .data-row:nth-child(even) { background-color: var(--row-even); }
+
+        .tiendo-row { grid-template-columns: 35px 1.1fr 0.9fr 0.9fr 50px 90px 90px 95px; }
+        .baolanh-row { grid-template-columns: 35px 1.2fr 1fr 1fr 90px 90px; }
+        .nhansu-row { grid-template-columns: 35px 1fr 45px; }
+        .khachhang-row { grid-template-columns: 35px 1fr 45px; }
+
+        .col-project { color: var(--text-accent); font-weight: 800; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .col-customer { color: #ffffff; font-weight: 700; font-size: 0.75rem; }
+        .col-staff { color: #00d4ff; font-weight: 800; }
+        .col-count { color: #f1c40f; font-family: 'Courier New', monospace; font-weight: 900; text-align: center; font-size: 1.1rem; }
+        .col-debt { font-family: 'Courier New', monospace; text-align: right; color: var(--status-red); font-weight: 900; font-size: 0.85rem; }
+        
+        .status-cell {
+            padding: 2px 2px; border-radius: 4px; font-size: 0.65rem; text-align: center; font-weight: 900;
+            border: 1px solid currentColor; display: inline-block; width: 95%;
+        }
+
+        .status-thietke { color: var(--status-green); }
+        .status-tamngung { color: var(--status-orange); }
+        .status-ok { color: var(--status-green); }
+        .status-danger { color: var(--status-red); animation: blinker 1s linear infinite; }
+        
+        @keyframes blinker { 50% { opacity: 0.2; } }
+        .loading-text { font-size: 0.8rem; color: #00d4ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <div id="sync-status" class="loading-text">ĐANG TẢI...</div>
+        <div class="main-title">TIME LINE PROJECT TID</div>
+        <div id="clock-container">
+            <span id="clock-time">--:--:--</span>
+            <span id="clock-date">--/--/----</span>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="board-column">
+            <div class="board-title-area">
+                <div class="board-title">THEO DÕI DỰ ÁN <span id="totalTiendo" class="total-count"></span></div>
+                <div class="board-page-indicator" id="pageTiendo">TRANG: 0/0</div>
+            </div>
+            <div class="row-common data-header tiendo-row">
+                <div>STT</div><div>DỰ ÁN</div><div>KHÁCH HÀNG</div><div>HẠNG MỤC</div><div style="text-align:center">%</div><div>DEADLINE</div><div>NHÂN SỰ</div><div>TRẠNG THÁI</div>
+            </div>
+            <div class="board-content"><div class="data-list" id="tiendoList"></div></div>
+        </div>
+
+        <div class="split-column-vertical">
+            <div class="board-column small-board">
+                <div class="board-title-area">
+                    <div class="board-title">THEO DÕI BẢO LÃNH <span id="totalBaolanh" class="total-count"></span></div>
+                    <div class="board-page-indicator" id="pageBaolanh">1/1</div>
+                </div>
+                <div class="row-common data-header baolanh-row">
+                    <div>STT</div><div>DỰ ÁN</div><div>KHÁCH HÀNG</div><div>HẠNG MỤC</div><div style="text-align:right">GIÁ TRỊ</div><div>TRẠNG THÁI</div>
+                </div>
+                <div class="board-content"><div class="data-list" id="baolanhList"></div></div>
+            </div>
+
+            <div class="split-column-horizontal">
+                <div class="board-column">
+                    <div class="board-title-area"><div class="board-title">THỐNG KÊ NHÂN SỰ</div></div>
+                    <div class="row-common data-header nhansu-row">
+                        <div style="text-align:center">STT</div><div>NHÂN SỰ</div><div style="text-align:center">SL HM</div>
+                    </div>
+                    <div class="board-content scrollable-content">
+                        <div class="data-list no-fixed-height" id="nhansuList"></div>
+                    </div>
+                </div>
+
+                <div class="board-column">
+                    <div class="board-title-area"><div class="board-title">THỐNG KÊ KHÁCH HÀNG</div></div>
+                    <div class="row-common data-header khachhang-row">
+                        <div style="text-align:center">STT</div><div>KHÁCH HÀNG</div><div style="text-align:center">SL HM</div>
+                    </div>
+                    <div class="board-content scrollable-content">
+                        <div class="data-list no-fixed-height" id="khachhangList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Link OneDrive của bạn đã được tối ưu hóa
+        const ONEDRIVE_URL = "https://onedrive.live.com/:x:/g/personal/b1dc83bd9d47fd20/IQB8uT8DpTuVSKayXq-r_p79AatjboPfIiMOLsOqiHymsVs";
+        const AUTO_REFRESH_MINUTES = 5; 
+
+        let allData = { tiendo: [], baolanh: [], summaryStaff: [], summaryCust: [] };
+        let currentPages = { tiendo: 0, baolanh: 0 };
+        const rowsLarge = 12; 
+        const rowsSmall = 6; 
+
+        // Hàm chuyển đổi link OneDrive sang link tải trực tiếp (Bypass CORS)
+        function convertOneDriveLink(url) {
+            let base = url.split('?')[0];
+            let encoded = btoa(base).replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
+            return `https://api.onedrive.com/v1.1/shares/u!${encoded}/root/content`;
+        }
+
+        async function loadData() {
+            try {
+                document.getElementById('sync-status').innerText = "ĐANG ĐỒNG BỘ...";
+                const directLink = convertOneDriveLink(ONEDRIVE_URL);
+                
+                // Sử dụng thêm proxy nếu vẫn bị CORS hoặc fetch trực tiếp
+                const response = await fetch(directLink);
+                if (!response.ok) throw new Error("CORS or Network Error");
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const data = new Uint8Array(arrayBuffer);
+                const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+                
+                processData(rawData);
+                document.getElementById('sync-status').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('sync-status').innerText = "LỖI KẾT NỐI (CORS)!";
+                // Gợi ý cách sửa nếu lỗi vẫn xảy ra
+                console.warn("Mẹo: Nếu vẫn lỗi, hãy mở trình duyệt bằng mode '--disable-web-security' hoặc cài extension 'Allow CORS'");
+            }
+        }
+
+        function processData(rawData) {
+            allData.tiendo = []; allData.baolanh = [];
+            const staffCounts = {}; const custCounts = {};
+
+            // Bắt đầu đọc từ dòng thứ 3 (index 2)
+            for(let i = 2; i < rawData.length; i++) {
+                let r = rawData[i];
+                // Cột Dự án hoặc Khách hàng không trống
+                if (r[1] !== "" || r[2] !== "") {
+                    allData.tiendo.push({
+                        stt: r[0] || "", name: r[1] || "", cust: r[2] || "", item: r[3] || "", 
+                        p: formatP(r[4]), d: formatDate(r[5]), staff: r[6] || "", s: r[7] || ""
+                    });
+                    
+                    if (r[6]) {
+                        r[6].toString().split(',').forEach(n => {
+                            let name = n.trim();
+                            if(name) staffCounts[name] = (staffCounts[name] || 0) + 1;
+                        });
+                    }
+                    if (r[2]) {
+                        let cust = r[2].toString().trim();
+                        if(cust) custCounts[cust] = (custCounts[cust] || 0) + 1;
+                    }
+                }
+                // Dữ liệu bảo lãnh (Cột I đến O)
+                if (r[9] !== "" || r[10] !== "") {
+                    allData.baolanh.push({
+                        stt: r[8] || "", name: r[9] || "", cust: r[10] || "", 
+                        item: r[11] || "", debt: formatM(r[13]), s: r[14] || ""
+                    });
+                }
+            }
+
+            allData.summaryStaff = Object.keys(staffCounts).map((n, i) => ({ stt: i + 1, name: n, count: staffCounts[n] }))
+                                    .sort((a,b) => b.count - a.count);
+            allData.summaryCust = Object.keys(custCounts).map((c, i) => ({ stt: i + 1, name: c, count: custCounts[c] }))
+                                    .sort((a,b) => b.count - a.count);
+
+            document.getElementById('totalTiendo').innerText = `- ${allData.tiendo.length} HM`;
+            document.getElementById('totalBaolanh').innerText = `- ${allData.baolanh.length} HM`;
+            
+            renderStaticTables();
+            startCycles();
+        }
+
+        function startCycles() {
+            renderTiendo(); renderBaolanh();
+            if (window.t1) clearInterval(window.t1);
+            if (window.t2) clearInterval(window.t2);
+            window.t1 = setInterval(() => {
+                const max = Math.ceil(allData.tiendo.length / rowsLarge);
+                if (max > 1) { currentPages.tiendo = (currentPages.tiendo + 1) % max; renderTiendo(); }
+            }, 7000);
+            window.t2 = setInterval(() => {
+                const maxB = Math.ceil(allData.baolanh.length / rowsSmall);
+                if (maxB > 1) { currentPages.baolanh = (currentPages.baolanh + 1) % maxB; renderBaolanh(); }
+            }, 5000);
+        }
+
+        function renderTiendo() {
+            const start = currentPages.tiendo * rowsLarge;
+            const slice = allData.tiendo.slice(start, start + rowsLarge);
+            const max = Math.max(Math.ceil(allData.tiendo.length / rowsLarge), 1);
+            document.getElementById('pageTiendo').innerText = `TRANG: ${currentPages.tiendo + 1}/${max}`;
+            document.getElementById('tiendoList').innerHTML = slice.map(r => `
+                <div class="data-row tiendo-row">
+                    <div style="color:#666;">${r.stt}</div>
+                    <div class="col-project">${r.name}</div>
+                    <div class="col-customer">${r.cust}</div>
+                    <div class="col-item">${r.item}</div>
+                    <div class="col-percent" style="text-align:center">${r.p}</div>
+                    <div style="font-weight:bold; color:#00d4ff">${r.d}</div>
+                    <div class="col-staff">${r.staff}</div>
+                    <div>${r.s ? `<span class="status-cell ${getStatusClass(r.s)}">${r.s}</span>` : ""}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderBaolanh() {
+            const startB = currentPages.baolanh * rowsSmall;
+            const sliceB = allData.baolanh.slice(startB, startB + rowsSmall);
+            const maxB = Math.max(Math.ceil(allData.baolanh.length / rowsSmall), 1);
+            document.getElementById('pageBaolanh').innerText = `TRANG: ${currentPages.baolanh + 1}/${maxB}`;
+            document.getElementById('baolanhList').innerHTML = sliceB.map(r => `
+                <div class="data-row baolanh-row">
+                    <div style="color:#666;">${r.stt}</div>
+                    <div class="col-project">${r.name}</div>
+                    <div class="col-customer">${r.cust}</div>
+                    <div class="col-item">${r.item}</div>
+                    <div class="col-debt">${r.debt}</div>
+                    <div>${r.s ? `<span class="status-cell ${getStatusClass(r.s)}">${r.s}</span>` : ""}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderStaticTables() {
+            document.getElementById('nhansuList').innerHTML = allData.summaryStaff.map(r => `
+                <div class="data-row nhansu-row mini-row-height">
+                    <div style="text-align:center; color:#666;">${r.stt}</div>
+                    <div class="col-staff">${r.name}</div>
+                    <div class="col-count">${r.count}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('khachhangList').innerHTML = allData.summaryCust.map(r => `
+                <div class="data-row khachhang-row mini-row-height">
+                    <div style="text-align:center; color:#666;">${r.stt}</div>
+                    <div class="col-customer" style="color:#00d4ff">${r.name}</div>
+                    <div class="col-count" style="color:#2ecc71">${r.count}</div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusClass(s) {
+            const t = s.toString().toUpperCase();
+            if (t.includes('THIẾT KẾ')) return 'status-thietke';
+            if (t.includes('TẠM NGƯNG')) return 'status-tamngung';
+            if (t.includes('XONG') || t.includes('QUYẾT')) return 'status-ok';
+            if (t.includes('CHẬM') || t.includes('QUÁ')) return 'status-danger';
+            return '';
+        }
+
+        function formatM(m) { return (m === "" || isNaN(m)) ? m : parseFloat(m).toLocaleString('vi-VN'); }
+        function formatP(p) { return (p === "" || p === undefined) ? "" : (typeof p === 'number' ? Math.round(p * 100) + '%' : p); }
+        function formatDate(d) { 
+            if (d instanceof Date) return d.toLocaleDateString('vi-VN');
+            return d || "";
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock-time').innerText = now.toLocaleTimeString('vi-VN', {hour12: false});
+            document.getElementById('clock-date').innerText = now.toLocaleDateString('vi-VN');
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+        loadData();
+        setInterval(loadData, AUTO_REFRESH_MINUTES * 60000);
+    </script>
+</body>
+</html>
