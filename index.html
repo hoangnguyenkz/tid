@@ -177,23 +177,29 @@
         }
 
         async function loadExcel() {
-            try {
-                document.getElementById('sync-info').innerText = "ĐANG ĐỒNG BỘ...";
-                const response = await fetch(PROXY + encodeURIComponent(DIRECT_LINK));
-                if (!response.ok) throw new Error();
-                
-                const buffer = await response.arrayBuffer();
-                const workbook = XLSX.read(new Uint8Array(buffer), { type: 'array', cellDates: true });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const rawData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
-                
-                parseData(rawData);
-                document.getElementById('sync-info').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString();
-            } catch (err) {
-                document.getElementById('sync-info').innerText = "LỖI KẾT NỐI - ĐANG THỬ LẠI...";
-                setTimeout(loadExcel, 5000);
-            }
-        }
+    try {
+        document.getElementById('sync-info').innerText = "ĐANG ĐỒNG BỘ...";
+        
+        // Sử dụng proxy corsproxy.io thay thế để ổn định hơn
+        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(DIRECT_LINK);
+        
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error("Network response was not ok");
+        
+        const buffer = await response.arrayBuffer();
+        const workbook = XLSX.read(new Uint8Array(buffer), { type: 'array', cellDates: true });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rawData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+        
+        parseData(rawData);
+        document.getElementById('sync-info').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString();
+    } catch (err) {
+        console.error("Lỗi:", err);
+        document.getElementById('sync-info').innerText = "LỖI KẾT NỐI - ĐANG THỬ LẠI...";
+        // Thử lại sau 10 giây nếu lỗi
+        setTimeout(loadExcel, 10000);
+    }
+}
 
         function parseData(data) {
             store.tiendo = []; store.baolanh = [];
