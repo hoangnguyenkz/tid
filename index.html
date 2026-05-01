@@ -8,19 +8,18 @@
     <style>
         :root {
             --bg-color: #000000;
-            --header-bg: #1a1a1a;
+            --header-bg: #111;
             --text-main: #ffffff;
             --text-accent: #f1c40f;
-            --row-even: #111111;
-            --status-green: #2ecc71;
-            --status-red: #e74c3c;
             --blue-neon: #00d4ff;
+            --row-border: #222;
+            --status-bg: #1a1a1a;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0; padding: 0;
             height: 100vh;
             display: flex;
@@ -29,86 +28,99 @@
             text-transform: uppercase;
         }
 
+        /* Top Bar */
         .top-bar {
-            height: 50px;
+            height: 60px;
             padding: 0 20px;
-            background: #111;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid #444;
+            border-bottom: 1px solid #333;
         }
+        .sync-info { font-size: 0.65rem; color: var(--blue-neon); }
+        .main-title { font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; }
+        .clock-box { text-align: right; line-height: 1.2; }
+        #clock { font-size: 1.4rem; color: var(--blue-neon); font-weight: bold; }
+        #date { font-size: 0.8rem; color: #888; }
 
-        .main-title { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
-        #clock { font-family: monospace; font-size: 1.4rem; color: var(--blue-neon); font-weight: bold; }
-        #sync-status { font-size: 0.7rem; color: var(--blue-neon); font-weight: bold; }
-
+        /* Layout */
         .dashboard-container {
             display: grid;
-            grid-template-columns: 1.25fr 0.75fr;
+            grid-template-columns: 1.2fr 0.8fr;
             flex-grow: 1;
-            gap: 2px;
+            gap: 1px;
             background-color: #333;
+            border-top: 1px solid #333;
         }
 
         .column { display: flex; flex-direction: column; background: var(--bg-color); overflow: hidden; }
-        .right-split { display: grid; grid-template-rows: 1fr 1fr; gap: 2px; background-color: #333; }
+        .right-split { display: grid; grid-template-rows: 1.5fr 1fr; gap: 1px; background-color: #333; }
+        .bottom-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background-color: #333; height: 100%; }
 
+        /* Headers */
         .board-header {
             background-color: var(--header-bg);
-            height: 35px;
+            height: 40px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-bottom: 1px solid #444;
             position: relative;
+            border-bottom: 1px solid #222;
         }
+        .board-title { font-size: 0.9rem; font-weight: bold; color: var(--text-accent); }
+        .count-info { font-size: 0.8rem; color: #eee; margin-left: 10px; font-weight: normal; }
+        .page-info { position: absolute; right: 10px; color: #555; font-size: 0.7rem; }
 
-        .board-title { color: var(--text-accent); font-size: 0.85rem; font-weight: bold; }
-        .page-info { position: absolute; right: 10px; color: #666; font-size: 0.7rem; }
-
+        /* Tables */
         .table-header {
-            display: grid; background-color: #222; color: var(--blue-neon);
-            font-weight: bold; font-size: 0.7rem; height: 30px; align-items: center; padding: 0 10px;
+            display: grid; background-color: #0a0a0a; color: var(--blue-neon);
+            font-weight: bold; font-size: 0.65rem; height: 35px; align-items: center; padding: 0 10px;
         }
 
         .data-list { flex-grow: 1; display: flex; flex-direction: column; }
         .data-row {
             display: grid; align-items: center; padding: 0 10px;
             font-size: 0.8rem; height: calc(100% / 12);
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid var(--row-border);
         }
-        
-        .right-split .data-row { height: calc(100% / 6); }
+        .right-split .data-row { height: calc(100% / 7); }
+        .bottom-stats .data-row { height: 30px; font-size: 0.75rem; }
 
-        /* Cấu hình cột linh hoạt */
-        .tiendo-cols { grid-template-columns: 35px 1.2fr 1fr 1fr 45px 85px 85px 95px; }
-        .baolanh-cols { grid-template-columns: 35px 1.2fr 1fr 0.9fr 100px 90px; }
+        /* Columns Width */
+        .tiendo-cols { grid-template-columns: 35px 1.2fr 1.2fr 1.2fr 40px 80px 85px 100px; }
+        .baolanh-cols { grid-template-columns: 30px 1.2fr 1.2fr 1.2fr 80px 90px; }
+        .stat-cols { grid-template-columns: 30px 1fr 60px; }
 
-        .col-project { color: var(--text-accent); font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* Cell Styles */
+        .project-name { color: var(--text-accent); font-weight: bold; }
+        .customer-name { color: #fff; font-weight: bold; }
+        .staff-name { color: var(--blue-neon); font-weight: bold; }
+        .percent { color: var(--text-accent); text-align: center; }
         .status-badge {
-            padding: 2px 4px; border-radius: 3px; font-size: 0.65rem; text-align: center; font-weight: bold;
-            border: 1px solid currentColor;
+            border: 1px solid #444; padding: 3px 6px; border-radius: 4px;
+            font-size: 0.65rem; text-align: center; background: var(--status-bg);
+            display: inline-block; width: 80%;
         }
-
-        .summary-box { padding: 10px; line-height: 1.6; color: #ccc; font-size: 0.85rem; }
-        .summary-item { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 2px 0; }
+        .val-text { color: var(--text-accent); text-align: right; padding-right: 10px; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <div id="sync-status">ĐANG TẢI...</div>
+        <div class="sync-info" id="sync-status">ĐANG KHỞI TẠO...</div>
         <div class="main-title">TIME LINE PROJECT TID</div>
-        <div id="clock">00:00:00</div>
+        <div class="clock-box">
+            <div id="clock">00:00:00</div>
+            <div id="date">01/05/2026</div>
+        </div>
     </div>
 
     <div class="dashboard-container">
         <!-- BẢNG TIẾN ĐỘ -->
         <div class="column">
             <div class="board-header">
-                <div class="board-title">THEO DÕI TIẾN ĐỘ THI CÔNG</div>
-                <div class="page-info" id="p-tiendo">1/1</div>
+                <div class="board-title">THEO DÕI DỰ ÁN <span class="count-info" id="count-tiendo">- 0 HẠNG MỤC</span></div>
+                <div class="page-info" id="p-tiendo">TRANG: 1/1</div>
             </div>
             <div class="table-header tiendo-cols">
                 <div>STT</div><div>DỰ ÁN</div><div>KHÁCH HÀNG</div><div>HẠNG MỤC</div><div>%</div><div>DEADLINE</div><div>NHÂN SỰ</div><div>TRẠNG THÁI</div>
@@ -120,8 +132,8 @@
             <!-- BẢNG BẢO LÃNH -->
             <div class="column">
                 <div class="board-header">
-                    <div class="board-title">THEO DÕI BẢO LÃNH / CÔNG NỢ</div>
-                    <div class="page-info" id="p-baolanh">1/1</div>
+                    <div class="board-title">THEO DÕI BẢO LÃNH <span class="count-info" id="count-baolanh">- 0 HẠNG MỤC</span></div>
+                    <div class="page-info" id="p-baolanh">TRANG: 1/1</div>
                 </div>
                 <div class="table-header baolanh-cols">
                     <div>STT</div><div>DỰ ÁN</div><div>KHÁCH HÀNG</div><div>HẠNG MỤC</div><div>GIÁ TRỊ</div><div>TRẠNG THÁI</div>
@@ -129,151 +141,133 @@
                 <div id="list-baolanh" class="data-list"></div>
             </div>
 
-            <!-- THỐNG KÊ NHÂN SỰ -->
-            <div class="column">
-                <div class="board-header">
-                    <div class="board-title">NHÂN SỰ PHỤ TRÁCH</div>
+            <!-- THỐNG KÊ PHÍA DƯỚI -->
+            <div class="bottom-stats">
+                <div class="column">
+                    <div class="board-header"><div class="board-title">THỐNG KÊ NHÂN SỰ</div></div>
+                    <div class="table-header stat-cols"><div>STT</div><div>NHÂN SỰ</div><div style="text-align:right">SL HM</div></div>
+                    <div id="list-staff" class="data-list"></div>
                 </div>
-                <div id="summary-staff" class="summary-box"></div>
+                <div class="column">
+                    <div class="board-header"><div class="board-title">THỐNG KÊ KHÁCH HÀNG</div></div>
+                    <div class="table-header stat-cols"><div>STT</div><div>KHÁCH HÀNG</div><div style="text-align:right">SL HM</div></div>
+                    <div id="list-customer" class="data-list"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // SỬ DỤNG LINK CSV ĐỂ ĐẠT ĐỘ ỔN ĐỊNH CAO NHẤT
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRihkN3STIzLwe2-eSHQMVRLX2cOLKorzGFR5_fm5Si1D94wmrfpt9NrD-YxsVC1iOOWgxTS8Ni0SmC/pub?output=csv";
 
-        let db = { tiendo: [], baolanh: [] };
+        let db = { tiendo: [], baolanh: [], staff: [], customer: [] };
         let page = { tiendo: 0, baolanh: 0 };
 
         async function loadData() {
             try {
-                // Thêm timestamp để tránh cache trình duyệt
-                const response = await fetch(`${CSV_URL}&cache=${new Date().getTime()}`);
-                const csvData = await response.text();
-                
-                Papa.parse(csvData, {
-                    complete: function(results) {
-                        parse(results.data);
-                        document.getElementById('sync-status').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString('vi-VN');
-                    },
-                    error: function() { throw new Error(); }
+                const response = await fetch(`${CSV_URL}&t=${new Date().getTime()}`);
+                const text = await response.text();
+                Papa.parse(text, {
+                    complete: function(res) {
+                        processData(res.data);
+                        document.getElementById('sync-status').innerText = "CẬP NHẬT: " + new Date().toLocaleTimeString();
+                    }
                 });
             } catch (e) {
-                document.getElementById('sync-status').innerText = "LỖI KẾT NỐI - ĐANG THỬ LẠI...";
-                setTimeout(loadData, 10000);
+                document.getElementById('sync-status').innerText = "LỖI KẾT NỐI!";
             }
         }
 
-        function parse(rows) {
-    db.tiendo = []; db.baolanh = [];
-    let staff = {};
+        function processData(rows) {
+            db.tiendo = []; db.baolanh = [];
+            let staffMap = {}, custMap = {};
 
-    // Duyệt dữ liệu từ dòng thứ 3 (Index 2)
-    rows.slice(2).forEach(r => {
-        // --- BẢNG TIẾN ĐỘ (Cột A đến H) ---
-        // r[0]: STT, r[1]: Dự án, r[2]: Khách hàng, r[3]: Hạng mục, 
-        // r[4]: %, r[5]: Deadline, r[6]: Nhân sự, r[7]: Trạng thái
-        if(r[1] && r[1].trim() !== "") {
-            db.tiendo.push({
-                stt: r[0], 
-                name: r[1], 
-                cust: r[2], 
-                item: r[3], 
-                p: r[4], 
-                dl: r[5], 
-                staff: r[6], 
-                st: r[7]
+            rows.slice(2).forEach(r => {
+                // Xử lý Tiến độ
+                if(r[1] || r[3]) {
+                    db.tiendo.push({stt:r[0], name:r[1], cust:r[2], item:r[3], p:r[4], dl:r[5], staff:r[6], st:r[7]});
+                    if(r[6]) r[6].split(',').forEach(s => { let n = s.trim(); if(n) staffMap[n] = (staffMap[n]||0)+1; });
+                    if(r[2]) { let c = r[2].trim(); if(c) custMap[c] = (custMap[c]||0)+1; }
+                }
+                // Xử lý Bảo lãnh
+                if(r[9]) {
+                    db.baolanh.push({stt:r[8], name:r[9], cust:r[10], item:r[11], val:r[13], st:r[14]});
+                }
             });
+
+            db.staff = Object.entries(staffMap).sort((a,b)=>b[1]-a[1]);
+            db.customer = Object.entries(custMap).sort((a,b)=>b[1]-a[1]);
             
-            // Thống kê nhân sự
-            if(r[6]) {
-                r[6].split(',').forEach(s => { 
-                    let n = s.trim(); if(n) staff[n] = (staff[n]||0)+1; 
-                });
-            }
+            document.getElementById('count-tiendo').innerText = `- ${db.tiendo.length} HẠNG MỤC`;
+            document.getElementById('count-baolanh').innerText = `- ${db.baolanh.length} HẠNG MỤC`;
+            
+            renderStats();
+            renderMain();
         }
 
-        // --- BẢNG BẢO LÃNH (Cột I đến O) ---
-        // r[8]: STT, r[9]: Dự án, r[10]: Khách hàng, r[11]: Hạng mục, 
-        // r[12]: Loại BL, r[13]: Giá trị, r[14]: Trạng thái
-        if(r[9] && r[9].trim() !== "") {
-            db.baolanh.push({
-                stt: r[8], 
-                name: r[9], 
-                cust: r[10], 
-                item: r[11], 
-                val: r[13], 
-                st: r[14]
-            });
-        }
-    });
-
-    // Cập nhật bảng nhân sự phụ trách
-    let sHtml = "";
-    Object.entries(staff).sort((a,b)=>b[1]-a[1]).forEach(([n, c]) => {
-        sHtml += `<div class="summary-item"><span>${n}</span><span style="color:var(--blue-neon)">${c} Dự án</span></div>`;
-    });
-    document.getElementById('summary-staff').innerHTML = sHtml;
-    
-    render();
-}
-
-        function render() {
-            const draw = (id, data, p, size, template) => {
-                const slice = data.slice(p * size, (p + 1) * size);
-                document.getElementById(id).innerHTML = slice.map(template).join('');
-            };
-
-            // Bảng Tiến Độ
-            draw('list-tiendo', db.tiendo, page.tiendo, 12, r => `
+        function renderMain() {
+            const listT = document.getElementById('list-tiendo');
+            const sliceT = db.tiendo.slice(page.tiendo * 12, (page.tiendo + 1) * 12);
+            listT.innerHTML = sliceT.map(r => `
                 <div class="data-row tiendo-cols">
-                    <div style="color:#666">${r.stt}</div>
-                    <div class="col-project">${r.name}</div>
-                    <div style="font-size:0.75rem">${r.cust}</div>
-                    <div style="font-size:0.7rem">${r.item}</div>
-                    <div style="color:var(--text-accent); text-align:center">${r.p}</div>
-                    <div style="color:var(--blue-neon)">${r.dl}</div>
-                    <div style="color:#2ecc71; font-weight:bold">${r.staff}</div>
-                    <div><span class="status-badge" style="color:${getColor(r.st)}">${r.st}</span></div>
+                    <div style="color:#555">${r.stt}</div>
+                    <div class="project-name">${r.name}</div>
+                    <div class="customer-name">${r.cust}</div>
+                    <div style="font-size:0.7rem; color:#ccc">${r.item}</div>
+                    <div class="percent">${r.p || '0%'}</div>
+                    <div style="text-align:center">${r.dl}</div>
+                    <div class="staff-name">${r.staff}</div>
+                    <div><span class="status-badge" style="color:${getStatusColor(r.st)}">${r.st}</span></div>
                 </div>
-            `);
+            `).join('');
 
-            // Bảng Bảo Lãnh
-            draw('list-baolanh', db.baolanh, page.baolanh, 6, r => `
+            const listB = document.getElementById('list-baolanh');
+            const sliceB = db.baolanh.slice(page.baolanh * 7, (page.baolanh + 1) * 7);
+            listB.innerHTML = sliceB.map(r => `
                 <div class="data-row baolanh-cols">
-                    <div style="color:#666">${r.stt}</div>
-                    <div class="col-project">${r.name}</div>
-                    <div style="font-size:0.75rem">${r.cust}</div>
+                    <div style="color:var(--text-accent); font-weight:bold">${r.stt}</div>
+                    <div class="customer-name">${r.name}</div>
+                    <div>${r.cust}</div>
                     <div style="font-size:0.7rem">${r.item}</div>
-                    <div style="text-align:right; color:var(--status-red); font-weight:bold">${r.val}</div>
-                    <div><span class="status-badge" style="color:${getColor(r.st)}">${r.st}</span></div>
+                    <div class="val-text">${r.val}</div>
+                    <div><span class="status-badge">${r.st}</span></div>
                 </div>
-            `);
+            `).join('');
 
-            document.getElementById('p-tiendo').innerText = `${page.tiendo + 1}/${Math.ceil(db.tiendo.length/12)||1}`;
-            document.getElementById('p-baolanh').innerText = `${page.baolanh + 1}/${Math.ceil(db.baolanh.length/6)||1}`;
+            document.getElementById('p-tiendo').innerText = `TRANG: ${page.tiendo + 1}/${Math.ceil(db.tiendo.length/12)||1}`;
+            document.getElementById('p-baolanh').innerText = `TRANG: ${page.baolanh + 1}/${Math.ceil(db.baolanh.length/7)||1}`;
         }
 
-        function getColor(st) {
+        function renderStats() {
+            document.getElementById('list-staff').innerHTML = db.staff.map((s, i) => `
+                <div class="data-row stat-cols"><div>${i+1}</div><div class="staff-name">${s[0]}</div><div style="text-align:right; color:var(--status-green)">${s[1]}</div></div>
+            `).join('');
+            document.getElementById('list-customer').innerHTML = db.customer.map((c, i) => `
+                <div class="data-row stat-cols"><div>${i+1}</div><div style="font-weight:bold">${c[0]}</div><div style="text-align:right; color:var(--status-green)">${c[1]}</div></div>
+            `).join('');
+        }
+
+        function getStatusColor(st) {
             if(!st) return "#fff";
-            const s = st.toString().toUpperCase();
-            if(s.includes("XONG") || s.includes("QUYẾT")) return "var(--status-green)";
-            if(s.includes("CHẬM") || s.includes("QUÁ")) return "var(--status-red)";
-            return "var(--text-accent)";
+            if(st.includes("THIẾT KẾ")) return "#2ecc71";
+            if(st.includes("TẠM NGƯNG")) return "#e67e22";
+            return "#f1c40f";
         }
 
-        // Tự động chuyển trang
         setInterval(() => {
             page.tiendo = (page.tiendo + 1) % (Math.ceil(db.tiendo.length/12)||1);
-            page.baolanh = (page.baolanh + 1) % (Math.ceil(db.baolanh.length/6)||1);
-            render();
-        }, 8000);
+            page.baolanh = (page.baolanh + 1) % (Math.ceil(db.baolanh.length/7)||1);
+            renderMain();
+        }, 10000);
 
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('vi-VN'); }, 1000);
-        
+        setInterval(() => {
+            const n = new Date();
+            document.getElementById('clock').innerText = n.toLocaleTimeString('vi-VN', {hour12: false});
+            document.getElementById('date').innerText = n.toLocaleDateString('vi-VN');
+        }, 1000);
+
         loadData();
-        setInterval(loadData, 300000); // Tải lại dữ liệu sau mỗi 5 phút
+        setInterval(loadData, 300000);
     </script>
 </body>
 </html>
