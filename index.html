@@ -166,31 +166,58 @@
         }
 
         function parse(rows) {
-            db.tiendo = []; db.baolanh = [];
-            let staff = {};
+    db.tiendo = []; db.baolanh = [];
+    let staff = {};
 
-            // Bỏ qua 2 dòng tiêu đề
-            rows.slice(2).forEach(r => {
-                // Dữ liệu Tiến Độ (Cột A-H: Index 0-7)
-                if(r[1]) {
-                    db.tiendo.push({stt:r[0], name:r[1], cust:r[2], item:r[3], p:r[4], dl:r[5], staff:r[6], st:r[7]});
-                    if(r[6]) r[6].split(',').forEach(s => { 
-                        let n = s.trim(); if(n) staff[n] = (staff[n]||0)+1; 
-                    });
-                }
-                // Dữ liệu Bảo Lãnh (Cột I-O: Index 8-14)
-                if(r[9]) {
-                    db.baolanh.push({stt:r[8], name:r[9], cust:r[10], item:r[11], val:r[13], st:r[14]});
-                }
+    // Duyệt dữ liệu từ dòng thứ 3 (Index 2)
+    rows.slice(2).forEach(r => {
+        // --- BẢNG TIẾN ĐỘ (Cột A đến H) ---
+        // r[0]: STT, r[1]: Dự án, r[2]: Khách hàng, r[3]: Hạng mục, 
+        // r[4]: %, r[5]: Deadline, r[6]: Nhân sự, r[7]: Trạng thái
+        if(r[1] && r[1].trim() !== "") {
+            db.tiendo.push({
+                stt: r[0], 
+                name: r[1], 
+                cust: r[2], 
+                item: r[3], 
+                p: r[4], 
+                dl: r[5], 
+                staff: r[6], 
+                st: r[7]
             });
-
-            let sHtml = "";
-            Object.entries(staff).sort((a,b)=>b[1]-a[1]).slice(0, 15).forEach(([n, c]) => {
-                sHtml += `<div class="summary-item"><span>${n}</span><span style="color:var(--blue-neon)">${c} Dự án</span></div>`;
-            });
-            document.getElementById('summary-staff').innerHTML = sHtml;
-            render();
+            
+            // Thống kê nhân sự
+            if(r[6]) {
+                r[6].split(',').forEach(s => { 
+                    let n = s.trim(); if(n) staff[n] = (staff[n]||0)+1; 
+                });
+            }
         }
+
+        // --- BẢNG BẢO LÃNH (Cột I đến O) ---
+        // r[8]: STT, r[9]: Dự án, r[10]: Khách hàng, r[11]: Hạng mục, 
+        // r[12]: Loại BL, r[13]: Giá trị, r[14]: Trạng thái
+        if(r[9] && r[9].trim() !== "") {
+            db.baolanh.push({
+                stt: r[8], 
+                name: r[9], 
+                cust: r[10], 
+                item: r[11], 
+                val: r[13], 
+                st: r[14]
+            });
+        }
+    });
+
+    // Cập nhật bảng nhân sự phụ trách
+    let sHtml = "";
+    Object.entries(staff).sort((a,b)=>b[1]-a[1]).forEach(([n, c]) => {
+        sHtml += `<div class="summary-item"><span>${n}</span><span style="color:var(--blue-neon)">${c} Dự án</span></div>`;
+    });
+    document.getElementById('summary-staff').innerHTML = sHtml;
+    
+    render();
+}
 
         function render() {
             const draw = (id, data, p, size, template) => {
