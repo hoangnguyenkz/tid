@@ -9,54 +9,94 @@ body {
     margin: 0;
     background: black;
     color: #00e5ff;
-    font-family: "Courier New", monospace;
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
 /* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 10px 20px;
-    font-size: 22px;
+    padding: 15px 30px;
+    font-size: 28px;
+    font-weight: bold;
+    border-bottom: 2px solid #00e5ff;
 }
 
 /* LAYOUT */
 .container {
     display: flex;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 70px);
 }
 
+/* 2 KHỐI */
 .section {
     width: 50%;
-    padding: 10px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
+.section:first-child {
+    border-right: 2px solid #00e5ff;
+}
+
+/* TITLE */
 h2 {
     text-align: center;
+    font-size: 26px;
+    margin-bottom: 15px;
+    color: #00e5ff;
 }
 
 /* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 20px;
 }
 
 th {
     border-bottom: 2px solid #00e5ff;
-    padding: 8px;
+    padding: 10px;
+    text-align: center;
 }
 
 td {
     border-bottom: 1px solid #222;
-    padding: 8px;
+    padding: 10px;
+    text-align: center;
 }
 
-.project { color: #ffd600; }
+.project {
+    color: #ffd600;
+    font-weight: bold;
+}
 
 /* STATUS */
-.late { color: red; animation: blink 1s infinite; }
-.done { color: #00ff00; }
-.doing { color: orange; }
+.late {
+    color: red;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+
+.done {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.doing {
+    color: orange;
+    font-weight: bold;
+}
+
+.debt-ok {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.debt-bad {
+    color: red;
+    font-weight: bold;
+}
 
 @keyframes blink {
     50% { opacity: 0; }
@@ -67,52 +107,52 @@ td {
 <body>
 
 <div class="header">
-    <div>PROJECT DASHBOARD</div>
+    <div>📊 PROJECT DASHBOARD</div>
     <div id="clock"></div>
 </div>
 
 <div class="container">
 
-<div class="section">
-<h2>TIẾN ĐỘ</h2>
-<table>
-<thead>
-<tr>
-<th>Dự án</th>
-<th>Hạng mục</th>
-<th>%</th>
-<th>Deadline</th>
-<th>Nhân sự</th>
-<th>Trạng thái</th>
-</tr>
-</thead>
-<tbody id="progress"></tbody>
-</table>
-</div>
+    <!-- TIẾN ĐỘ -->
+    <div class="section">
+        <h2>TIẾN ĐỘ DỰ ÁN</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Dự án</th>
+                    <th>Hạng mục</th>
+                    <th>%</th>
+                    <th>Deadline</th>
+                    <th>Nhân sự</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody id="progress"></tbody>
+        </table>
+    </div>
 
-<div class="section">
-<h2>CÔNG NỢ</h2>
-<table>
-<thead>
-<tr>
-<th>Dự án</th>
-<th>HĐ</th>
-<th>Giá trị</th>
-<th>Đã thu</th>
-<th>Còn lại</th>
-<th>Trạng thái</th>
-</tr>
-</thead>
-<tbody id="debt"></tbody>
-</table>
-</div>
+    <!-- CÔNG NỢ -->
+    <div class="section">
+        <h2>CÔNG NỢ DỰ ÁN</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Dự án</th>
+                    <th>HĐ</th>
+                    <th>Giá trị</th>
+                    <th>Đã thu</th>
+                    <th>Còn lại</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody id="debt"></tbody>
+        </table>
+    </div>
 
 </div>
 
 <script>
 const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
-
-/* CHƯA CÓ SHEET CÔNG NỢ → để trống */
 const DEBT_URL = "";
 
 /* CLOCK */
@@ -121,29 +161,16 @@ setInterval(() => {
         new Date().toLocaleString("vi-VN");
 }, 1000);
 
-/* FIX PARSE JSON */
+/* PARSE */
 function parseJSON(text) {
-    try {
-        return JSON.parse(
-            text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
-        );
-    } catch (e) {
-        console.error("Parse lỗi:", e);
-        return null;
-    }
+    return JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
 }
 
 /* FETCH */
 async function fetchSheet(url) {
     const res = await fetch(url);
     const text = await res.text();
-
-    console.log("RAW DATA:", text);
-
     const json = parseJSON(text);
-
-    if (!json || !json.table) return [];
-
     return json.table.rows || [];
 }
 
@@ -151,12 +178,6 @@ async function fetchSheet(url) {
 async function loadProgress() {
     const rows = await fetchSheet(PROGRESS_URL);
     const el = document.getElementById("progress");
-
-    if (!rows.length) {
-        el.innerHTML = "<tr><td colspan='6'>KHÔNG CÓ DỮ LIỆU</td></tr>";
-        return;
-    }
-
     el.innerHTML = "";
 
     rows.forEach(r => {
@@ -187,7 +208,6 @@ async function loadProgress() {
     });
 }
 
-/* FORMAT */
 function formatDate(d) {
     if (!d) return "";
     return new Date(d).toLocaleDateString("vi-VN");
