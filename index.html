@@ -142,7 +142,7 @@ td {
 <script>
 const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
-/* 👉 THAY LINK SHEET BẢO LÃNH */
+/* 👉 thêm link bảo lãnh nếu có */
 const GUARANTEE_URL = "";
 
 const PAGE_TIME = 10000;
@@ -177,30 +177,24 @@ async function fetchSheet(url) {
     return (json.table.rows || []).slice(4);
 }
 
-/* AUTO ROW */
+/* ROW */
 function getRows() {
     const height = document.querySelector(".table-wrap").clientHeight;
     return Math.max(6, Math.floor(height / 42));
 }
 
-/* FORMAT % */
+/* FORMAT */
 function formatPercent(p) {
-    let value = Number(p);
-    if (value <= 1) value *= 100;
-    return Math.round(value) + "%";
+    let v = Number(p);
+    if (v <= 1) v *= 100;
+    return Math.round(v) + "%";
 }
 
-/* FORMAT DATE */
 function formatDate(d) {
     if (!d) return "";
     let date = new Date(d);
     if (isNaN(date)) return d;
-
-    let day = String(date.getDate()).padStart(2, "0");
-    let month = String(date.getMonth() + 1).padStart(2, "0");
-    let year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
+    return `${String(date.getDate()).padStart(2,"0")}/${String(date.getMonth()+1).padStart(2,"0")}/${date.getFullYear()}`;
 }
 
 /* LOAD */
@@ -229,26 +223,36 @@ function renderProgress() {
     pageData.forEach(r => {
         const d = r.c;
 
+        let project = d[1]?.v || "";
+        let item    = d[2]?.v || "";
         let percentRaw = d[9]?.v || 0;
         let deadlineRaw = d[7]?.v;
+        let staff   = d[3]?.v || "";
 
-        let cls = "design";
-        let txt = "ĐANG THIẾT KẾ";
+        let statusHTML = "";
 
-        if (Number(percentRaw) >= 100) {
-            cls = "done"; txt = "HOÀN THÀNH";
-        } else if (deadlineRaw && new Date(deadlineRaw) < new Date()) {
-            cls = "late"; txt = "QUÁ HẠN";
+        // 👉 CHỈ HIỂN THỊ TRẠNG THÁI KHI CÓ HẠNG MỤC
+        if (item) {
+            let cls = "design";
+            let txt = "ĐANG THIẾT KẾ";
+
+            if (Number(percentRaw) >= 100) {
+                cls = "done"; txt = "HOÀN THÀNH";
+            } else if (deadlineRaw && new Date(deadlineRaw) < new Date()) {
+                cls = "late"; txt = "QUÁ HẠN";
+            }
+
+            statusHTML = `<span class="${cls}">${txt}</span>`;
         }
 
         el.innerHTML += `
         <tr>
-            <td class="project">${d[1]?.v || ""}</td>
-            <td>${d[2]?.v || ""}</td>
+            <td class="project">${project}</td>
+            <td>${item}</td>
             <td>${formatPercent(percentRaw)}</td>
             <td>${formatDate(deadlineRaw)}</td>
-            <td>${d[3]?.v || ""}</td>
-            <td class="${cls}">${txt}</td>
+            <td>${staff}</td>
+            <td>${statusHTML}</td>
         </tr>`;
     });
 
@@ -259,33 +263,7 @@ function renderProgress() {
 /* RENDER GUARANTEE */
 function renderGuarantee() {
     const el = document.getElementById("guarantee");
-    const rows = getRows();
-    const pageData = getPage(guaranteeData, guaranteePage);
-
     el.innerHTML = "";
-
-    pageData.forEach(r => {
-        const d = r.c;
-
-        let expire = d[4]?.v;
-        let status = "OK";
-
-        if (expire && new Date(expire) < new Date()) {
-            status = "HẾT HẠN";
-        }
-
-        el.innerHTML += `
-        <tr>
-            <td class="project">${d[1]?.v || ""}</td>
-            <td>${d[2]?.v || ""}</td>
-            <td>${Number(d[3]?.v || 0).toLocaleString("vi-VN")}</td>
-            <td>${formatDate(expire)}</td>
-            <td>${status}</td>
-        </tr>`;
-    });
-
-    document.getElementById("guaranteePage").innerText =
-        `Trang ${guaranteePage + 1}/${Math.ceil(guaranteeData.length / rows) || 1}`;
 }
 
 /* AUTO PAGE */
@@ -294,12 +272,6 @@ setInterval(() => {
     progressPage = (progressPage + 1) % (Math.ceil(progressData.length / rows) || 1);
     renderProgress();
 }, PAGE_TIME);
-
-setInterval(() => {
-    let rows = getRows();
-    guaranteePage = (guaranteePage + 1) % (Math.ceil(guaranteeData.length / rows) || 1);
-    renderGuarantee();
-}, PAGE_TIME + 3000);
 
 /* REFRESH */
 setInterval(loadData, 30000);
