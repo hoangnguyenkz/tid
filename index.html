@@ -1,56 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Project</title>
+<title>PROJECT DASHBOARD</title>
 
 <style>
 body {
-    background: #000;
-    color: #fff;
-    font-family: Arial;
+    margin: 0;
+    background: black;
+    color: #00e5ff;
+    font-family: "Courier New", monospace;
 }
 
-h1 {
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-size: 22px;
+}
+
+/* LAYOUT */
+.container {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+.section {
+    width: 50%;
+    padding: 10px;
+}
+
+h2 {
     text-align: center;
 }
 
+/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
 th {
-    color: #00d9ff;
+    border-bottom: 2px solid #00e5ff;
     padding: 8px;
 }
 
 td {
-    padding: 8px;
     border-bottom: 1px solid #222;
+    padding: 8px;
 }
 
-.project {
-    color: #ffd600;
-    font-weight: bold;
-}
+.project { color: #ffd600; }
 
-.badge {
-    padding: 4px 10px;
-    border-radius: 5px;
-}
+/* STATUS */
+.late { color: red; animation: blink 1s infinite; }
+.done { color: #00ff00; }
+.doing { color: orange; }
 
-.late { background: red; }
-.done { background: green; }
-.doing { background: orange; }
+@keyframes blink {
+    50% { opacity: 0; }
+}
 </style>
 </head>
 
 <body>
 
-<h1>TIME LINE PROJECT</h1>
+<div class="header">
+    <div>PROJECT DASHBOARD</div>
+    <div id="clock"></div>
+</div>
 
-<table id="table">
+<div class="container">
+
+<div class="section">
+<h2>TIẾN ĐỘ</h2>
+<table>
 <thead>
 <tr>
 <th>Dự án</th>
@@ -61,50 +86,116 @@ td {
 <th>Trạng thái</th>
 </tr>
 </thead>
-<tbody></tbody>
+<tbody id="progress"></tbody>
 </table>
+</div>
+
+<div class="section">
+<h2>CÔNG NỢ</h2>
+<table>
+<thead>
+<tr>
+<th>Dự án</th>
+<th>HĐ</th>
+<th>Giá trị</th>
+<th>Đã thu</th>
+<th>Còn lại</th>
+<th>Trạng thái</th>
+</tr>
+</thead>
+<tbody id="debt"></tbody>
+</table>
+</div>
+
+</div>
 
 <script>
-const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_YEMrcZIG5TcRji_fPiaUdaDRg7_6nwuAIJLo1bVhV4SnDFZgNrgFY9LNaQTg2AybQjAN3H7Uyaex/gviz/tq?tqx=out:json&gid=1280059749";
+const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
-async function load() {
-    const res = await fetch(URL);
+/* CHƯA CÓ SHEET CÔNG NỢ → để trống */
+const DEBT_URL = "";
+
+/* CLOCK */
+setInterval(() => {
+    document.getElementById("clock").innerText =
+        new Date().toLocaleString("vi-VN");
+}, 1000);
+
+/* FIX PARSE JSON */
+function parseJSON(text) {
+    try {
+        return JSON.parse(
+            text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
+        );
+    } catch (e) {
+        console.error("Parse lỗi:", e);
+        return null;
+    }
+}
+
+/* FETCH */
+async function fetchSheet(url) {
+    const res = await fetch(url);
     const text = await res.text();
 
-    const json = JSON.parse(text.substr(47).slice(0, -2));
-    const rows = json.table.rows;
+    console.log("RAW DATA:", text);
 
-    const tbody = document.querySelector("#table tbody");
-    tbody.innerHTML = "";
+    const json = parseJSON(text);
+
+    if (!json || !json.table) return [];
+
+    return json.table.rows || [];
+}
+
+/* LOAD PROGRESS */
+async function loadProgress() {
+    const rows = await fetchSheet(PROGRESS_URL);
+    const el = document.getElementById("progress");
+
+    if (!rows.length) {
+        el.innerHTML = "<tr><td colspan='6'>KHÔNG CÓ DỮ LIỆU</td></tr>";
+        return;
+    }
+
+    el.innerHTML = "";
 
     rows.forEach(r => {
         const d = r.c;
 
-        tbody.innerHTML += `
+        let cls = "doing";
+        let txt = "ĐANG LÀM";
+
+        if (d[5]?.v === "late") {
+            cls = "late";
+            txt = "QUÁ HẠN";
+        }
+
+        if (d[5]?.v === "done") {
+            cls = "done";
+            txt = "HOÀN THÀNH";
+        }
+
+        el.innerHTML += `
         <tr>
             <td class="project">${d[0]?.v || ""}</td>
             <td>${d[1]?.v || ""}</td>
             <td>${d[2]?.v || 0}%</td>
             <td>${formatDate(d[3]?.v)}</td>
             <td>${d[4]?.v || ""}</td>
-            <td>${renderStatus(d[5]?.v)}</td>
+            <td class="${cls}">${txt}</td>
         </tr>`;
     });
 }
 
-function renderStatus(s) {
-    if (s === "late") return '<span class="badge late">QUÁ HẠN</span>';
-    if (s === "done") return '<span class="badge done">HOÀN THÀNH</span>';
-    return '<span class="badge doing">ĐANG LÀM</span>';
-}
-
+/* FORMAT */
 function formatDate(d) {
     if (!d) return "";
     return new Date(d).toLocaleDateString("vi-VN");
 }
 
-load();
-setInterval(load, 30000);
+/* INIT */
+loadProgress();
+setInterval(loadProgress, 30000);
 </script>
 
 </body>
