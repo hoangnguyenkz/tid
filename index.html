@@ -12,7 +12,6 @@ body {
     font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
@@ -22,13 +21,11 @@ body {
     border-bottom: 2px solid #00e5ff;
 }
 
-/* LAYOUT */
 .container {
     display: flex;
     height: calc(100vh - 70px);
 }
 
-/* 2 KHỐI */
 .section {
     width: 50%;
     padding: 20px;
@@ -39,14 +36,11 @@ body {
     border-right: 2px solid #00e5ff;
 }
 
-/* TITLE */
 h2 {
     text-align: center;
     font-size: 26px;
-    margin-bottom: 15px;
 }
 
-/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -69,22 +63,9 @@ td {
     font-weight: bold;
 }
 
-/* STATUS */
-.late {
-    color: red;
-    font-weight: bold;
-    animation: blink 1s infinite;
-}
-
-.done {
-    color: #00ff00;
-    font-weight: bold;
-}
-
-.doing {
-    color: orange;
-    font-weight: bold;
-}
+.late { color: red; animation: blink 1s infinite; }
+.done { color: #00ff00; }
+.doing { color: orange; }
 
 @keyframes blink {
     50% { opacity: 0; }
@@ -101,127 +82,110 @@ td {
 
 <div class="container">
 
-    <!-- TIẾN ĐỘ -->
-    <div class="section">
-        <h2>TIẾN ĐỘ DỰ ÁN</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Dự án</th>
-                    <th>Hạng mục</th>
-                    <th>%</th>
-                    <th>Deadline</th>
-                    <th>Nhân sự</th>
-                    <th>Trạng thái</th>
-                </tr>
-            </thead>
-            <tbody id="progress"></tbody>
-        </table>
-    </div>
+<div class="section">
+<h2>TIẾN ĐỘ DỰ ÁN</h2>
+<table>
+<thead>
+<tr>
+<th>Dự án</th>
+<th>Hạng mục</th>
+<th>%</th>
+<th>Deadline</th>
+<th>Nhân sự</th>
+<th>Trạng thái</th>
+</tr>
+</thead>
+<tbody id="progress"></tbody>
+</table>
+</div>
 
-    <!-- CÔNG NỢ -->
-    <div class="section">
-        <h2>CÔNG NỢ DỰ ÁN</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Dự án</th>
-                    <th>HĐ</th>
-                    <th>Giá trị</th>
-                    <th>Đã thu</th>
-                    <th>Còn lại</th>
-                    <th>Trạng thái</th>
-                </tr>
-            </thead>
-            <tbody id="debt"></tbody>
-        </table>
-    </div>
+<div class="section">
+<h2>CÔNG NỢ DỰ ÁN</h2>
+<table>
+<thead>
+<tr>
+<th>Dự án</th>
+<th>HĐ</th>
+<th>Giá trị</th>
+<th>Đã thu</th>
+<th>Còn lại</th>
+<th>Trạng thái</th>
+</tr>
+</thead>
+<tbody id="debt"></tbody>
+</table>
+</div>
 
 </div>
 
 <script>
-/* ===== CONFIG ===== */
 const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
-/* 👉 nếu có sheet công nợ thì điền vào */
-const DEBT_URL = "";
-
-/* CLOCK */
 setInterval(() => {
     document.getElementById("clock").innerText =
         new Date().toLocaleString("vi-VN");
 }, 1000);
 
-/* PARSE JSON */
 function parseJSON(text) {
     return JSON.parse(
         text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
     );
 }
 
-/* FETCH DATA */
 async function fetchSheet(url) {
-    try {
-        const res = await fetch(url);
-        const text = await res.text();
-        const json = parseJSON(text);
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = parseJSON(text);
 
-        // 👇 BỎ 7 DÒNG ĐẦU
-        return (json.table.rows || []).slice(7);
-
-    } catch (e) {
-        console.error("Lỗi load data:", e);
-        return [];
-    }
+    return (json.table.rows || []).slice(7);
 }
 
-/* LOAD PROGRESS */
 async function loadProgress() {
     const rows = await fetchSheet(PROGRESS_URL);
     const el = document.getElementById("progress");
-
-    if (!rows.length) {
-        el.innerHTML = "<tr><td colspan='6'>KHÔNG CÓ DỮ LIỆU</td></tr>";
-        return;
-    }
 
     el.innerHTML = "";
 
     rows.forEach(r => {
         const d = r.c;
 
+        let project = d[1]?.v || "";   // B
+        let item    = d[2]?.v || "";   // C
+        let percent = d[9]?.v || 0;    // J
+        let deadline= d[7]?.v || "";   // H
+        let staff   = d[3]?.v || "";   // D
+
         let cls = "doing";
         let txt = "ĐANG LÀM";
 
-        if (d[5]?.v === "late") {
-            cls = "late";
-            txt = "QUÁ HẠN";
-        }
-
-        if (d[5]?.v === "done") {
+        if (percent >= 100) {
             cls = "done";
             txt = "HOÀN THÀNH";
         }
 
+        // tự tính quá hạn
+        if (deadline && new Date(deadline) < new Date() && percent < 100) {
+            cls = "late";
+            txt = "QUÁ HẠN";
+        }
+
         el.innerHTML += `
         <tr>
-            <td class="project">${d[0]?.v || ""}</td>
-            <td>${d[1]?.v || ""}</td>
-            <td>${d[2]?.v || 0}%</td>
-            <td>${formatDate(d[3]?.v)}</td>
-            <td>${d[4]?.v || ""}</td>
+            <td class="project">${project}</td>
+            <td>${item}</td>
+            <td>${percent}%</td>
+            <td>${formatDate(deadline)}</td>
+            <td>${staff}</td>
             <td class="${cls}">${txt}</td>
         </tr>`;
     });
 }
 
-/* FORMAT DATE */
 function formatDate(d) {
     if (!d) return "";
     return new Date(d).toLocaleDateString("vi-VN");
 }
 
-/* INIT */
 loadProgress();
 setInterval(loadProgress, 30000);
 </script>
