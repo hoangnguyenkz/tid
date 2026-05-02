@@ -12,211 +12,169 @@
             --text-main: #ffffff;
             --text-accent: #f1c40f;
             --cyan: #00d4ff;
-            --status-green: #2ecc71;
-            --status-red: #e74c3c;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: -apple-system, system-ui, sans-serif;
-            margin: 0; padding: 0;
+            font-family: sans-serif;
+            margin: 0;
             text-transform: uppercase;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        /* Thanh điều khiển */
         .controls {
-            padding: 10px 20px;
+            height: 60px;
+            padding: 0 20px;
             background: #111;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             border-bottom: 2px solid #333;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
-        .main-title { font-size: 1.2rem; font-weight: 900; color: #fff; }
-        #clock-time { color: var(--cyan); font-weight: bold; font-size: 1.1rem; }
+        .main-title { font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; }
 
-        /* Layout */
+        /* Bố cục chính */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px;
+            gap: 5px;
             padding: 10px;
         }
 
         @media (min-width: 1024px) {
-            .dashboard-grid { grid-template-columns: 1.2fr 0.8fr; height: calc(100vh - 80px); }
+            .dashboard-grid { 
+                grid-template-columns: 1.2fr 0.8fr; 
+                height: calc(100vh - 80px); 
+            }
         }
 
         .board-column {
-            background: #151515;
-            border-radius: 8px;
+            background: #111;
+            border: 1px solid #222;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
         .board-title-area {
             background: var(--header-bg);
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
+            padding: 15px;
+            color: var(--text-accent);
+            font-weight: bold;
             border-bottom: 1px solid #333;
         }
 
-        .board-title { color: var(--text-accent); font-weight: bold; font-size: 0.9rem; }
-
-        /* Data Display */
-        .data-row {
+        /* Dòng dữ liệu */
+        .row-common {
             display: grid;
-            padding: 12px;
-            border-bottom: 1px solid #222;
             align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #222;
+            font-size: 0.85rem;
         }
 
-        /* PC View */
-        @media (min-width: 768px) {
-            .tiendo-row { grid-template-columns: 40px 1.5fr 1fr 60px 100px 100px; gap: 10px; }
-            .data-header { background: #1a1a1a; color: var(--cyan); font-weight: bold; font-size: 0.75rem; }
+        .tiendo-row { 
+            grid-template-columns: 40px 1.5fr 1fr 60px 100px 90px; 
+            gap: 10px;
         }
 
-        /* Mobile View */
         @media (max-width: 767px) {
             .tiendo-row {
-                grid-template-areas: 
-                    "name name percent"
-                    "cust cust cust"
-                    "staff deadline status";
-                grid-template-columns: 1fr 1fr 80px;
-                gap: 8px;
+                grid-template-columns: 1fr 80px;
+                grid-template-areas: "name percent" "cust status" "deadline staff";
             }
             .data-header { display: none; }
             .col-name { grid-area: name; color: var(--text-accent); font-weight: bold; }
-            .col-cust { grid-area: cust; font-size: 0.8rem; color: #888; }
-            .col-percent { grid-area: percent; text-align: right; color: var(--status-green); font-weight: bold; }
-            .col-staff { grid-area: staff; font-size: 0.75rem; color: var(--cyan); }
-            .col-deadline { grid-area: deadline; font-size: 0.75rem; text-align: center; }
-            .col-status { grid-area: status; text-align: right; }
+            .col-percent { grid-area: percent; text-align: right; color: var(--cyan); }
         }
 
-        .status-badge {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border: 1px solid;
-            border-radius: 3px;
-        }
+        .data-header { background: #1a1a1a; color: var(--cyan); font-weight: bold; }
+        #clock-time { color: var(--cyan); font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="controls">
-        <div class="main-title">TIME LINE PROJECT TID</div>
-        <div id="clock-container">
-            <span id="clock-time">--:--:--</span>
-        </div>
+        <div class="main-title">PROJECT TID</div>
+        <div id="clock-container"><span id="clock-time">--:--:--</span></div>
         <input type="file" id="uploadExcel">
     </div>
 
     <div class="dashboard-grid">
         <div class="board-column">
-            <div class="board-title-area">
-                <div class="board-title">DỰ ÁN ĐANG THỰC HIỆN <span id="totalTiendo"></span></div>
-                <div id="pageTiendo" style="font-size: 0.7rem; color: #555;"></div>
-            </div>
-            <div class="data-row data-header tiendo-row">
+            <div class="board-title-area">TIẾN ĐỘ DỰ ÁN <span id="totalTiendo"></span></div>
+            <div class="row-common data-header tiendo-row">
                 <div>STT</div><div>DỰ ÁN</div><div>KHÁCH HÀNG</div><div>%</div><div>DEADLINE</div><div>TRẠNG THÁI</div>
             </div>
             <div id="tiendoList"></div>
         </div>
 
         <div class="board-column">
-            <div class="board-title-area">
-                <div class="board-title">BẢO LÃNH <span id="totalBaolanh"></span></div>
-            </div>
+            <div class="board-title-area">BẢO LÃNH <span id="totalBaolanh"></span></div>
             <div id="baolanhList"></div>
         </div>
     </div>
 
     <script>
-        const GOOGLE_SHEET_URL = 'YOUR_GOOGLE_SHEET_URL_HERE'; // Thay link CSV vào đây
-        let allData = { tiendo: [], baolanh: [] };
-
-        async function fetchData() {
-            // Nếu dùng Google Sheets, mở khóa đoạn code dưới đây:
-            /*
-            try {
-                const res = await fetch(GOOGLE_SHEET_URL);
-                const csv = await res.text();
-                const wb = XLSX.read(csv, {type:'string'});
-                processExcel(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1}));
-            } catch(e) { console.error(e); }
-            */
-        }
-
         document.getElementById('uploadExcel').addEventListener('change', function(e) {
             const reader = new FileReader();
             reader.onload = (event) => {
                 const data = new Uint8Array(event.target.result);
-                const wb = XLSX.read(data, {type:'array', cellDates: true});
-                processExcel(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1}));
+                const wb = XLSX.read(data, {type: 'array', cellDates: true});
+                const sheet = wb.Sheets[wb.SheetNames[0]];
+                const rawData = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
+                processData(rawData);
             };
             reader.readAsArrayBuffer(e.target.files[0]);
         });
 
-        function processExcel(rawData) {
-            allData.tiendo = [];
-            allData.baolanh = [];
+        function processData(rawData) {
+            const tiendoBody = document.getElementById('tiendoList');
+            tiendoBody.innerHTML = '';
+            let count = 0;
 
-            for(let i = 2; i < rawData.length; i++) {
+            // Bắt đầu từ dòng có dữ liệu (thường là dòng 3 trong Excel của bạn)
+            for (let i = 2; i < rawData.length; i++) {
                 let r = rawData[i];
-                
-                // Lấy giá trị phần trăm (cột 4)
-                let rawPercent = r[4]; 
-                let percentVal = 0;
-                if (typeof rawPercent === 'number') {
-                    percentVal = rawPercent <= 1 ? rawPercent * 100 : rawPercent;
-                } else if (typeof rawPercent === 'string') {
-                    percentVal = parseFloat(rawPercent.replace('%', ''));
+                if (!r[1]) continue; // Bỏ qua nếu tên dự án trống
+
+                // Xử lý cột % (Cột E - Index 4)
+                let pRaw = r[4];
+                let pVal = 0;
+                if (typeof pRaw === 'number') {
+                    pVal = pRaw <= 1 ? pRaw * 100 : pRaw;
+                } else {
+                    pVal = parseFloat(String(pRaw).replace('%', '')) || 0;
                 }
 
-                // CHỈ THÊM NẾU % THẤP HƠN 100
-                if (r[1] && percentVal < 100) {
-                    allData.tiendo.push({
-                        stt: r[0], name: r[1], cust: r[2], 
-                        p: Math.round(percentVal) + '%', 
-                        d: r[5] instanceof Date ? r[5].toLocaleDateString('vi-VN') : r[5],
-                        staff: r[6], s: r[7]
-                    });
-                }
-
-                if (r[9]) {
-                    allData.baolanh.push({stt: r[8], name: r[9], s: r[14]});
+                // LỌC: Chỉ hiện nếu phần trăm < 100
+                if (pVal < 100) {
+                    count++;
+                    const deadline = r[5] instanceof Date ? r[5].toLocaleDateString('vi-VN') : r[5];
+                    
+                    tiendoBody.innerHTML += `
+                        <div class="row-common tiendo-row">
+                            <div style="color:#555">${r[0]}</div>
+                            <div class="col-name">${r[1]}</div>
+                            <div class="col-cust">${r[2]}</div>
+                            <div class="col-percent" style="color:${pVal > 80 ? '#2ecc71' : 'var(--cyan)'}">${Math.round(pVal)}%</div>
+                            <div class="col-deadline">${deadline}</div>
+                            <div style="font-size:0.7rem">${r[7] || ''}</div>
+                        </div>
+                    `;
                 }
             }
-            render();
-        }
-
-        function render() {
-            document.getElementById('totalTiendo').innerText = `(${allData.tiendo.length})`;
-            document.getElementById('tiendoList').innerHTML = allData.tiendo.map(r => `
-                <div class="data-row tiendo-row">
-                    <div style="color:#444" class="data-header">${r.stt}</div>
-                    <div class="col-name">${r.name}</div>
-                    <div class="col-cust">${r.cust}</div>
-                    <div class="col-percent">${r.p}</div>
-                    <div class="col-deadline">${r.d}</div>
-                    <div class="col-status"><span class="status-badge" style="color:var(--cyan)">${r.s}</span></div>
-                </div>
-            `).join('');
+            document.getElementById('totalTiendo').innerText = `(${count})`;
         }
 
         function updateClock() {
-            document.getElementById('clock-time').innerText = new Date().toLocaleTimeString('vi-VN');
+            const now = new Date();
+            document.getElementById('clock-time').innerText = now.toLocaleTimeString('vi-VN');
         }
         setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
