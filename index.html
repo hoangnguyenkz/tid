@@ -2,54 +2,51 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>PROJECT FLIGHT BOARD</title>
+<title>PROJECT DASHBOARD</title>
 
 <style>
 html, body {
     margin: 0;
     height: 100%;
-    background: #000;
+    background: black;
     color: #00e5ff;
-    font-family: "Consolas", "Segoe UI", monospace;
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 30px;
-    font-size: 32px;
-    border-bottom: 3px solid #00e5ff;
-    letter-spacing: 2px;
+    height: 70px;
+    padding: 0 30px;
+    font-size: 28px;
+    border-bottom: 2px solid #00e5ff;
 }
 
-/* LAYOUT */
 .container {
     display: flex;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 70px);
 }
 
 .section {
     flex: 1;
-    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
 }
 
 .section:first-child {
-    border-right: 3px solid #00e5ff;
+    border-right: 2px solid #00e5ff;
 }
 
-/* TITLE */
 h2 {
     text-align: center;
-    font-size: 26px;
-    margin-bottom: 10px;
-    color: #fff;
+    font-size: 24px;
+    margin: 5px 0;
 }
 
-/* TABLE */
 .table-wrap {
-    height: calc(100% - 40px);
+    flex: 1;
     overflow: hidden;
 }
 
@@ -59,62 +56,31 @@ table {
     table-layout: fixed;
 }
 
-/* HEADER ROW */
 th {
-    background: #001f2f;
-    border: 1px solid #00e5ff;
-    padding: 10px;
+    border-bottom: 2px solid #00e5ff;
+    padding: 8px;
     font-size: 18px;
-    text-transform: uppercase;
 }
 
-/* BODY */
 td {
-    border: 1px solid #00e5ff33;
-    padding: 10px;
-    font-size: 18px;
+    border-bottom: 1px solid #222;
+    padding: 8px;
     text-align: center;
+    font-size: 18px;
 }
 
-/* PROJECT NAME */
 .project {
     color: #ffd600;
     font-weight: bold;
 }
 
-/* STATUS BADGE */
-.status {
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    display: inline-block;
-    min-width: 120px;
-}
+/* STATUS */
+.late { color: red; font-weight: bold; }
+.done { color: #00ff00; font-weight: bold; }
+.design { color: #00bfff; font-weight: bold; }
 
-.done {
-    background: #00ff00;
-    color: black;
-}
-
-.late {
-    background: red;
-    color: white;
-    animation: blink 1s infinite;
-}
-
-.design {
-    background: #00bfff;
-    color: black;
-}
-
-@keyframes blink {
-    50% { opacity: 0.4; }
-}
-
-/* PAGE INFO */
 .page-info {
     text-align: center;
-    margin-top: 5px;
     font-size: 14px;
     color: #888;
 }
@@ -124,13 +90,13 @@ td {
 <body>
 
 <div class="header">
-    <div>✈ PROJECT CONTROL BOARD</div>
+    <div>📊 PROJECT DASHBOARD</div>
     <div id="clock"></div>
 </div>
 
 <div class="container">
 
-<!-- LEFT -->
+<!-- TIẾN ĐỘ -->
 <div class="section">
     <h2>TIẾN ĐỘ DỰ ÁN</h2>
     <div class="table-wrap">
@@ -142,7 +108,7 @@ td {
                     <th>%</th>
                     <th>Deadline</th>
                     <th>Nhân sự</th>
-                    <th>Trạng thái</th>
+                    <th>TRẠNG THÁI</th>
                 </tr>
             </thead>
             <tbody id="progress"></tbody>
@@ -151,7 +117,7 @@ td {
     <div class="page-info" id="progressPage"></div>
 </div>
 
-<!-- RIGHT -->
+<!-- BẢO LÃNH -->
 <div class="section">
     <h2>THEO DÕI BẢO LÃNH</h2>
     <div class="table-wrap">
@@ -162,7 +128,7 @@ td {
                     <th>Loại</th>
                     <th>Giá trị</th>
                     <th>Hết hạn</th>
-                    <th>Trạng thái</th>
+                    <th>TRẠNG THÁI</th>
                 </tr>
             </thead>
             <tbody id="guarantee"></tbody>
@@ -206,7 +172,13 @@ async function fetchSheet(url) {
     const text = await res.text();
     const json = parseJSON(text);
 
-    return (json.table.rows || []).slice(4);
+    return (json.table.rows || []).slice(4); // từ dòng 5
+}
+
+/* ROW */
+function getRows() {
+    const height = document.querySelector(".table-wrap").clientHeight;
+    return Math.max(6, Math.floor(height / 42));
 }
 
 /* FORMAT */
@@ -221,12 +193,6 @@ function formatDate(d) {
     let date = new Date(d);
     if (isNaN(date)) return d;
     return `${String(date.getDate()).padStart(2,"0")}/${String(date.getMonth()+1).padStart(2,"0")}/${date.getFullYear()}`;
-}
-
-/* ROW */
-function getRows() {
-    const height = document.querySelector(".table-wrap").clientHeight;
-    return Math.max(6, Math.floor(height / 48));
 }
 
 /* LOAD */
@@ -256,31 +222,32 @@ function renderProgress() {
         const d = r.c;
 
         let item = d[2]?.v || "";
-        let percent = d[9]?.v || 0;
-        let deadline = d[7]?.v;
+        let percentRaw = d[9]?.v || 0;
+        let deadlineRaw = d[7]?.v;
 
-        let status = "";
+        let statusHTML = "";
+
         if (item) {
             let cls = "design";
             let txt = "ĐANG THIẾT KẾ";
 
-            if (Number(percent) >= 100) {
+            if (Number(percentRaw) >= 100) {
                 cls = "done"; txt = "HOÀN THÀNH";
-            } else if (deadline && new Date(deadline) < new Date()) {
+            } else if (deadlineRaw && new Date(deadlineRaw) < new Date()) {
                 cls = "late"; txt = "QUÁ HẠN";
             }
 
-            status = `<span class="status ${cls}">${txt}</span>`;
+            statusHTML = `<span class="${cls}">${txt}</span>`;
         }
 
         el.innerHTML += `
         <tr>
             <td class="project">${d[1]?.v || ""}</td>
             <td>${item}</td>
-            <td>${formatPercent(percent)}</td>
-            <td>${formatDate(deadline)}</td>
+            <td>${formatPercent(percentRaw)}</td>
+            <td>${formatDate(deadlineRaw)}</td>
             <td>${d[3]?.v || ""}</td>
-            <td>${status}</td>
+            <td>${statusHTML}</td>
         </tr>`;
     });
 
