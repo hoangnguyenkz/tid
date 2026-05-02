@@ -74,9 +74,10 @@ td {
     font-weight: bold;
 }
 
+/* STATUS */
 .late { color: red; font-weight: bold; }
 .done { color: #00ff00; font-weight: bold; }
-.doing { color: orange; font-weight: bold; }
+.design { color: #00bfff; font-weight: bold; } /* xanh dương */
 
 .page-info {
     text-align: center;
@@ -106,7 +107,7 @@ td {
                     <th>%</th>
                     <th>Deadline</th>
                     <th>Nhân sự</th>
-                    <th>TT</th>
+                    <th>TRẠNG THÁI</th>
                 </tr>
             </thead>
             <tbody id="progress"></tbody>
@@ -125,7 +126,7 @@ td {
                     <th>Loại</th>
                     <th>Giá trị</th>
                     <th>Hết hạn</th>
-                    <th>TT</th>
+                    <th>TRẠNG THÁI</th>
                 </tr>
             </thead>
             <tbody id="guarantee"></tbody>
@@ -139,13 +140,10 @@ td {
 <script>
 const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
-const GUARANTEE_URL = "";
 const PAGE_TIME = 10000;
 
 let progressData = [];
-let guaranteeData = [];
 let progressPage = 0;
-let guaranteePage = 0;
 
 /* CLOCK */
 setInterval(() => {
@@ -162,8 +160,6 @@ function parseJSON(text) {
 
 /* FETCH */
 async function fetchSheet(url) {
-    if (!url) return [];
-
     const res = await fetch(url);
     const text = await res.text();
     const json = parseJSON(text);
@@ -171,34 +167,23 @@ async function fetchSheet(url) {
     return (json.table.rows || []).slice(7);
 }
 
-/* AUTO ROW */
+/* ROW */
 function getRows() {
     const height = document.querySelector(".table-wrap").clientHeight;
     return Math.max(6, Math.floor(height / 42));
 }
 
-/* FORMAT DATE (FIX CHUẨN CỘT H) */
+/* DATE */
 function formatDate(d) {
     if (!d) return "";
-
-    // Nếu Google trả dạng string → dùng luôn
     if (typeof d === "string") return d;
-
-    // Nếu là dạng Date object → format
-    try {
-        return new Date(d).toLocaleDateString("vi-VN");
-    } catch {
-        return d;
-    }
+    return new Date(d).toLocaleDateString("vi-VN");
 }
 
-/* LOAD DATA */
+/* LOAD */
 async function loadData() {
     progressData = await fetchSheet(PROGRESS_URL);
-    guaranteeData = await fetchSheet(GUARANTEE_URL);
-
-    renderProgress();
-    renderGuarantee();
+    render();
 }
 
 /* PAGING */
@@ -207,8 +192,8 @@ function getPage(data, page) {
     return data.slice(page * rows, page * rows + rows);
 }
 
-/* RENDER PROGRESS */
-function renderProgress() {
+/* RENDER */
+function render() {
     const el = document.getElementById("progress");
     const rows = getRows();
     const pageData = getPage(progressData, progressPage);
@@ -218,14 +203,15 @@ function renderProgress() {
     pageData.forEach(r => {
         const d = r.c;
 
-        let project = d[1]?.v || "";   // B
-        let item    = d[2]?.v || "";   // C
-        let percent = d[9]?.v || 0;    // J
-        let deadlineRaw = d[7]?.v;     // H (GIỮ NGUYÊN)
+        let project = d[1]?.v || "";
+        let item    = d[2]?.v || "";
+        let percent = d[9]?.v || 0;
+        let deadlineRaw = d[7]?.v;
         let deadline = formatDate(deadlineRaw);
-        let staff   = d[3]?.v || "";   // D
+        let staff   = d[3]?.v || "";
 
-        let cls = "doing", txt = "ĐANG LÀM";
+        let cls = "design";
+        let txt = "ĐANG THIẾT KẾ";
 
         if (percent >= 100) {
             cls = "done"; txt = "HOÀN THÀNH";
@@ -251,24 +237,17 @@ function renderProgress() {
         `Trang ${progressPage + 1}/${total}`;
 }
 
-/* RENDER GUARANTEE */
-function renderGuarantee() {
-    const el = document.getElementById("guarantee");
-    el.innerHTML = "";
-}
-
 /* AUTO PAGE */
 setInterval(() => {
     let rows = getRows();
     let total = Math.ceil(progressData.length / rows) || 1;
     progressPage = (progressPage + 1) % total;
-    renderProgress();
+    render();
 }, PAGE_TIME);
 
 /* REFRESH */
 setInterval(loadData, 30000);
 
-/* INIT */
 loadData();
 </script>
 
