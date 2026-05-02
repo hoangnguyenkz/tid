@@ -2,30 +2,39 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>PROJECT DASHBOARD</title>
+<title>LED DASHBOARD</title>
 
 <style>
+:root {
+    --base-font: 20;
+}
+
 body {
     margin: 0;
     background: black;
     color: #00e5ff;
     font-family: "Segoe UI", Arial, sans-serif;
+    overflow: hidden;
+}
+
+/* SCALE SYSTEM */
+.wrapper {
+    transform-origin: top left;
 }
 
 /* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 15px 30px;
-    font-size: 28px;
-    font-weight: bold;
+    padding: 20px 40px;
+    font-size: calc(var(--base-font) * 1.6px);
     border-bottom: 2px solid #00e5ff;
 }
 
 /* LAYOUT */
 .container {
     display: flex;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 80px);
 }
 
 .section {
@@ -40,15 +49,20 @@ body {
 
 h2 {
     text-align: center;
-    font-size: 26px;
-    margin-bottom: 10px;
+    font-size: calc(var(--base-font) * 1.4px);
 }
 
 /* TABLE */
+.table-wrap {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 20px;
+    font-size: calc(var(--base-font) * 1px);
 }
 
 th {
@@ -57,8 +71,8 @@ th {
 }
 
 td {
-    border-bottom: 1px solid #222;
     padding: 10px;
+    border-bottom: 1px solid #222;
     text-align: center;
 }
 
@@ -76,81 +90,80 @@ td {
     50% { opacity: 0; }
 }
 
-/* FOOTER */
+/* ANIMATION */
 .page {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    transition: all 0.6s ease;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.page-info {
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
     color: #888;
-    margin-top: 5px;
 }
 </style>
 </head>
 
 <body>
 
+<div class="wrapper" id="wrapper">
+
 <div class="header">
-    <div>📊 PROJECT DASHBOARD</div>
+    <div>📊 PROJECT LED DASHBOARD</div>
     <div id="clock"></div>
 </div>
 
 <div class="container">
 
-<!-- TIẾN ĐỘ -->
+<!-- PROGRESS -->
 <div class="section">
     <h2>TIẾN ĐỘ DỰ ÁN</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Dự án</th>
-                <th>Hạng mục</th>
-                <th>%</th>
-                <th>Deadline</th>
-                <th>Nhân sự</th>
-                <th>Trạng thái</th>
-            </tr>
-        </thead>
-        <tbody id="progress"></tbody>
-    </table>
-    <div class="page" id="progressPage"></div>
+    <div class="table-wrap">
+        <div id="progressPage" class="page"></div>
+    </div>
+    <div class="page-info" id="progressInfo"></div>
 </div>
 
-<!-- BẢO LÃNH -->
+<!-- GUARANTEE -->
 <div class="section">
-    <h2>THEO DÕI BẢO LÃNH</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Dự án</th>
-                <th>Loại</th>
-                <th>Giá trị</th>
-                <th>Hết hạn</th>
-                <th>Trạng thái</th>
-            </tr>
-        </thead>
-        <tbody id="guarantee"></tbody>
-    </table>
-    <div class="page" id="guaranteePage"></div>
+    <h2>BẢO LÃNH</h2>
+    <div class="table-wrap">
+        <div id="guaranteePage" class="page"></div>
+    </div>
+    <div class="page-info" id="guaranteeInfo"></div>
+</div>
+
 </div>
 
 </div>
 
 <script>
-/* ===== CONFIG ===== */
-const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
+const URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
-/* 👉 thay bằng sheet bảo lãnh nếu có */
-const GUARANTEE_URL = "";
+let data = [];
+let page1 = 0, page2 = 0;
 
-/* PAGING */
-const ROWS = 8;
-const TIME = 10000;
-
-/* STATE */
-let progressData = [];
-let guaranteeData = [];
-
-let progressPage = 0;
-let guaranteePage = 0;
+/* SCALE */
+function scaleUI() {
+    const baseWidth = 1920;
+    const scale = window.innerWidth / baseWidth;
+    document.getElementById("wrapper").style.transform = `scale(${scale})`;
+}
+window.addEventListener("resize", scaleUI);
+scaleUI();
 
 /* CLOCK */
 setInterval(() => {
@@ -160,137 +173,87 @@ setInterval(() => {
 
 /* PARSE */
 function parseJSON(text) {
-    return JSON.parse(
-        text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
-    );
+    return JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
 }
 
 /* FETCH */
-async function fetchSheet(url) {
-    const res = await fetch(url);
+async function loadData() {
+    const res = await fetch(URL);
     const text = await res.text();
     const json = parseJSON(text);
-    return (json.table.rows || []).slice(7);
+
+    data = (json.table.rows || []).slice(7);
+    render();
 }
 
-/* LOAD DATA */
-async function loadData() {
-    progressData = await fetchSheet(PROGRESS_URL);
-
-    if (GUARANTEE_URL) {
-        guaranteeData = await fetchSheet(GUARANTEE_URL);
-    }
-
-    renderProgress();
-    renderGuarantee();
+/* AUTO ROW */
+function getRows() {
+    return Math.floor((window.innerHeight - 200) / 50);
 }
 
-/* PAGINATION */
-function getPage(data, page) {
-    return data.slice(page * ROWS, page * ROWS + ROWS);
-}
+/* BUILD TABLE */
+function buildTable(rows) {
+    let html = "<table><thead><tr>\
+<th>Dự án</th><th>Hạng mục</th><th>%</th><th>Deadline</th><th>Nhân sự</th><th>TT</th>\
+</tr></thead><tbody>";
 
-/* RENDER PROGRESS */
-function renderProgress() {
-    const el = document.getElementById("progress");
-    const pageData = getPage(progressData, progressPage);
-
-    el.innerHTML = "";
-
-    pageData.forEach(r => {
+    rows.forEach(r => {
         const d = r.c;
+        let p = d[9]?.v || 0;
+        let deadline = d[7]?.v;
 
-        let project = d[1]?.v || "";
-        let item    = d[2]?.v || "";
-        let percent = d[9]?.v || 0;
-        let deadline= d[7]?.v || "";
-        let staff   = d[3]?.v || "";
-
-        let cls = "doing";
-        let txt = "ĐANG LÀM";
-
-        if (percent >= 100) {
-            cls = "done";
-            txt = "HOÀN THÀNH";
+        let cls = "doing", txt = "ĐANG LÀM";
+        if (p >= 100) { cls = "done"; txt = "DONE"; }
+        if (deadline && new Date(deadline) < new Date() && p < 100) {
+            cls = "late"; txt = "LATE";
         }
 
-        if (deadline && new Date(deadline) < new Date() && percent < 100) {
-            cls = "late";
-            txt = "QUÁ HẠN";
-        }
-
-        el.innerHTML += `
-        <tr>
-            <td class="project">${project}</td>
-            <td>${item}</td>
-            <td>${percent}%</td>
-            <td>${formatDate(deadline)}</td>
-            <td>${staff}</td>
-            <td class="${cls}">${txt}</td>
+        html += `<tr>
+        <td class="project">${d[1]?.v || ""}</td>
+        <td>${d[2]?.v || ""}</td>
+        <td>${p}%</td>
+        <td>${formatDate(deadline)}</td>
+        <td>${d[3]?.v || ""}</td>
+        <td class="${cls}">${txt}</td>
         </tr>`;
     });
 
-    updatePage("progressPage", progressPage, progressData.length);
+    return html + "</tbody></table>";
 }
 
-/* RENDER GUARANTEE */
-function renderGuarantee() {
-    const el = document.getElementById("guarantee");
-    const pageData = getPage(guaranteeData, guaranteePage);
+/* RENDER PAGE */
+function renderPage(containerId, pageIndex) {
+    const rows = getRows();
+    const start = pageIndex * rows;
+    const pageData = data.slice(start, start + rows);
 
-    el.innerHTML = "";
+    const container = document.getElementById(containerId);
 
-    pageData.forEach(r => {
-        const d = r.c;
+    container.classList.add("fade-out");
 
-        let project = d[1]?.v || "";
-        let type    = d[2]?.v || "";
-        let value   = d[3]?.v || 0;
-        let expire  = d[4]?.v || "";
+    setTimeout(() => {
+        container.innerHTML = buildTable(pageData);
+        container.classList.remove("fade-out");
+        container.classList.add("fade-in");
+    }, 300);
 
-        let status = "OK";
-
-        if (expire && new Date(expire) < new Date()) {
-            status = "HẾT HẠN";
-        }
-
-        el.innerHTML += `
-        <tr>
-            <td class="project">${project}</td>
-            <td>${type}</td>
-            <td>${formatMoney(value)}</td>
-            <td>${formatDate(expire)}</td>
-            <td>${status}</td>
-        </tr>`;
-    });
-
-    updatePage("guaranteePage", guaranteePage, guaranteeData.length);
+    return Math.ceil(data.length / rows);
 }
 
-/* PAGE INFO */
-function updatePage(id, page, total) {
-    const totalPages = Math.ceil(total / ROWS) || 1;
-    document.getElementById(id).innerText =
-        `Trang ${page + 1} / ${totalPages}`;
+/* MAIN RENDER */
+function render() {
+    const total1 = renderPage("progressPage", page1);
+    document.getElementById("progressInfo").innerText = `Trang ${page1+1}/${total1}`;
 }
 
 /* AUTO PAGE */
 setInterval(() => {
-    if (progressData.length) {
-        progressPage = (progressPage + 1) % Math.ceil(progressData.length / ROWS);
-        renderProgress();
-    }
-}, TIME);
+    const rows = getRows();
+    const total = Math.ceil(data.length / rows);
 
-setInterval(() => {
-    if (guaranteeData.length) {
-        guaranteePage = (guaranteePage + 1) % Math.ceil(guaranteeData.length / ROWS);
-        renderGuarantee();
-    }
-}, TIME + 3000); // lệch thời gian để không lật cùng lúc
-
-/* AUTO REFRESH */
-setInterval(loadData, 30000);
+    page1 = (page1 + 1) % total;
+    render();
+}, 10000);
 
 /* FORMAT */
 function formatDate(d) {
@@ -298,13 +261,9 @@ function formatDate(d) {
     return new Date(d).toLocaleDateString("vi-VN");
 }
 
-function formatMoney(n) {
-    if (!n) return "0";
-    return Number(n).toLocaleString("vi-VN") + " đ";
-}
-
 /* INIT */
 loadData();
+setInterval(loadData, 30000);
 </script>
 
 </body>
