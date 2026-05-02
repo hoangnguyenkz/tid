@@ -77,7 +77,7 @@ td {
 /* STATUS */
 .late { color: red; font-weight: bold; }
 .done { color: #00ff00; font-weight: bold; }
-.design { color: #00bfff; font-weight: bold; } /* xanh dương */
+.design { color: #00bfff; font-weight: bold; }
 
 .page-info {
     text-align: center;
@@ -173,11 +173,18 @@ function getRows() {
     return Math.max(6, Math.floor(height / 42));
 }
 
-/* DATE */
-function formatDate(d) {
+/* DATE HIỂN THỊ */
+function displayDate(d) {
     if (!d) return "";
     if (typeof d === "string") return d;
     return new Date(d).toLocaleDateString("vi-VN");
+}
+
+/* DATE SO SÁNH */
+function toDate(d) {
+    if (!d) return null;
+    if (typeof d === "string") return new Date(d);
+    return new Date(d);
 }
 
 /* LOAD */
@@ -207,17 +214,18 @@ function render() {
         let item    = d[2]?.v || "";
         let percent = d[9]?.v || 0;
         let deadlineRaw = d[7]?.v;
-        let deadline = formatDate(deadlineRaw);
+        let deadline = displayDate(deadlineRaw);
         let staff   = d[3]?.v || "";
 
         let cls = "design";
         let txt = "ĐANG THIẾT KẾ";
 
+        const today = new Date();
+        const deadlineDate = toDate(deadlineRaw);
+
         if (percent >= 100) {
             cls = "done"; txt = "HOÀN THÀNH";
-        }
-
-        if (deadlineRaw && new Date(deadlineRaw) < new Date() && percent < 100) {
+        } else if (deadlineDate && deadlineDate < today) {
             cls = "late"; txt = "QUÁ HẠN";
         }
 
