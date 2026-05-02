@@ -96,6 +96,7 @@ td {
 
 <div class="container">
 
+<!-- TIẾN ĐỘ -->
 <div class="section">
     <h2>TIẾN ĐỘ DỰ ÁN</h2>
     <div class="table-wrap">
@@ -116,15 +117,41 @@ td {
     <div class="page-info" id="progressPage"></div>
 </div>
 
+<!-- BẢO LÃNH -->
+<div class="section">
+    <h2>THEO DÕI BẢO LÃNH</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Dự án</th>
+                    <th>Loại</th>
+                    <th>Giá trị</th>
+                    <th>Hết hạn</th>
+                    <th>TRẠNG THÁI</th>
+                </tr>
+            </thead>
+            <tbody id="guarantee"></tbody>
+        </table>
+    </div>
+    <div class="page-info" id="guaranteePage"></div>
+</div>
+
 </div>
 
 <script>
 const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
+/* 👉 THAY LINK SHEET BẢO LÃNH */
+const GUARANTEE_URL = "";
+
 const PAGE_TIME = 10000;
 
 let progressData = [];
+let guaranteeData = [];
+
 let progressPage = 0;
+let guaranteePage = 0;
 
 /* CLOCK */
 setInterval(() => {
@@ -141,6 +168,8 @@ function parseJSON(text) {
 
 /* FETCH */
 async function fetchSheet(url) {
+    if (!url) return [];
+
     const res = await fetch(url);
     const text = await res.text();
     const json = parseJSON(text);
@@ -156,27 +185,15 @@ function getRows() {
 
 /* FORMAT % */
 function formatPercent(p) {
-    if (p == null) return "0%";
-
     let value = Number(p);
-
-    if (value <= 1) value = value * 100;
-
+    if (value <= 1) value *= 100;
     return Math.round(value) + "%";
 }
 
-/* FORMAT DATE dd/mm/yyyy */
+/* FORMAT DATE */
 function formatDate(d) {
     if (!d) return "";
-
-    let date;
-
-    if (typeof d === "string") {
-        date = new Date(d);
-    } else {
-        date = new Date(d);
-    }
-
+    let date = new Date(d);
     if (isNaN(date)) return d;
 
     let day = String(date.getDate()).padStart(2, "0");
@@ -186,16 +203,13 @@ function formatDate(d) {
     return `${day}/${month}/${year}`;
 }
 
-/* TO DATE */
-function toDate(d) {
-    if (!d) return null;
-    return new Date(d);
-}
-
 /* LOAD */
 async function loadData() {
     progressData = await fetchSheet(PROGRESS_URL);
-    render();
+    guaranteeData = await fetchSheet(GUARANTEE_URL);
+
+    renderProgress();
+    renderGuarantee();
 }
 
 /* PAGING */
@@ -204,8 +218,8 @@ function getPage(data, page) {
     return data.slice(page * rows, page * rows + rows);
 }
 
-/* RENDER */
-function render() {
+/* RENDER PROGRESS */
+function renderProgress() {
     const el = document.getElementById("progress");
     const rows = getRows();
     const pageData = getPage(progressData, progressPage);
@@ -215,48 +229,77 @@ function render() {
     pageData.forEach(r => {
         const d = r.c;
 
-        let project = d[1]?.v || "";
-        let item    = d[2]?.v || "";
-        let percent = formatPercent(d[9]?.v);
+        let percentRaw = d[9]?.v || 0;
         let deadlineRaw = d[7]?.v;
-        let deadline = formatDate(deadlineRaw);
-        let staff   = d[3]?.v || "";
 
         let cls = "design";
         let txt = "ĐANG THIẾT KẾ";
 
-        const today = new Date();
-        const deadlineDate = toDate(deadlineRaw);
-
-        if (Number(d[9]?.v) >= 100) {
+        if (Number(percentRaw) >= 100) {
             cls = "done"; txt = "HOÀN THÀNH";
-        } else if (deadlineDate && deadlineDate < today) {
+        } else if (deadlineRaw && new Date(deadlineRaw) < new Date()) {
             cls = "late"; txt = "QUÁ HẠN";
         }
 
         el.innerHTML += `
         <tr>
-            <td class="project">${project}</td>
-            <td>${item}</td>
-            <td>${percent}</td>
-            <td>${deadline}</td>
-            <td>${staff}</td>
+            <td class="project">${d[1]?.v || ""}</td>
+            <td>${d[2]?.v || ""}</td>
+            <td>${formatPercent(percentRaw)}</td>
+            <td>${formatDate(deadlineRaw)}</td>
+            <td>${d[3]?.v || ""}</td>
             <td class="${cls}">${txt}</td>
         </tr>`;
     });
 
-    const total = Math.ceil(progressData.length / rows) || 1;
     document.getElementById("progressPage").innerText =
-        `Trang ${progressPage + 1}/${total}`;
+        `Trang ${progressPage + 1}/${Math.ceil(progressData.length / rows) || 1}`;
+}
+
+/* RENDER GUARANTEE */
+function renderGuarantee() {
+    const el = document.getElementById("guarantee");
+    const rows = getRows();
+    const pageData = getPage(guaranteeData, guaranteePage);
+
+    el.innerHTML = "";
+
+    pageData.forEach(r => {
+        const d = r.c;
+
+        let expire = d[4]?.v;
+        let status = "OK";
+
+        if (expire && new Date(expire) < new Date()) {
+            status = "HẾT HẠN";
+        }
+
+        el.innerHTML += `
+        <tr>
+            <td class="project">${d[1]?.v || ""}</td>
+            <td>${d[2]?.v || ""}</td>
+            <td>${Number(d[3]?.v || 0).toLocaleString("vi-VN")}</td>
+            <td>${formatDate(expire)}</td>
+            <td>${status}</td>
+        </tr>`;
+    });
+
+    document.getElementById("guaranteePage").innerText =
+        `Trang ${guaranteePage + 1}/${Math.ceil(guaranteeData.length / rows) || 1}`;
 }
 
 /* AUTO PAGE */
 setInterval(() => {
     let rows = getRows();
-    let total = Math.ceil(progressData.length / rows) || 1;
-    progressPage = (progressPage + 1) % total;
-    render();
+    progressPage = (progressPage + 1) % (Math.ceil(progressData.length / rows) || 1);
+    renderProgress();
 }, PAGE_TIME);
+
+setInterval(() => {
+    let rows = getRows();
+    guaranteePage = (guaranteePage + 1) % (Math.ceil(guaranteeData.length / rows) || 1);
+    renderGuarantee();
+}, PAGE_TIME + 3000);
 
 /* REFRESH */
 setInterval(loadData, 30000);
