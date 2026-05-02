@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIME LINE PROJECT TID - MOBILE READY</title>
+    <title>TIME LINE PROJECT TID</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
@@ -19,157 +19,204 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
             margin: 0; padding: 0;
             text-transform: uppercase;
         }
 
-        /* Header linh hoạt */
+        /* Header */
         .controls {
-            padding: 10px 15px;
+            padding: 10px 20px;
             background: #111;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #333;
+            flex-wrap: wrap;
             gap: 10px;
         }
 
-        @media (min-width: 768px) {
-            .controls { flex-direction: row; justify-content: space-between; height: 60px; }
-        }
+        .main-title { font-size: 1.2rem; font-weight: 900; color: #fff; }
+        #clock-time { color: var(--cyan); font-weight: bold; font-size: 1.1rem; }
 
-        .main-title { font-size: 1.2rem; font-weight: 900; color: #fff; letter-spacing: 1px; }
-
-        /* Cấu trúc Grid thay đổi theo màn hình */
+        /* Layout */
         .dashboard-grid {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 10px;
             padding: 10px;
         }
 
         @media (min-width: 1024px) {
-            .dashboard-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; height: calc(100vh - 80px); }
+            .dashboard-grid { grid-template-columns: 1.2fr 0.8fr; height: calc(100vh - 80px); }
         }
 
         .board-column {
             background: #151515;
             border-radius: 8px;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
-            margin-bottom: 10px;
+            overflow: hidden;
         }
 
         .board-title-area {
             background: var(--header-bg);
-            padding: 10px;
+            padding: 12px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             border-bottom: 1px solid #333;
         }
 
-        .board-title { color: var(--text-accent); font-size: 0.9rem; font-weight: bold; }
+        .board-title { color: var(--text-accent); font-weight: bold; font-size: 0.9rem; }
 
-        /* Chế độ hiển thị dòng dữ liệu */
+        /* Data Display */
         .data-row {
             display: grid;
             padding: 12px;
             border-bottom: 1px solid #222;
-            gap: 5px;
+            align-items: center;
         }
 
-        /* Trên PC: Hiển thị dạng dòng ngang */
+        /* PC View */
         @media (min-width: 768px) {
-            .tiendo-row { grid-template-columns: 40px 1.5fr 1fr 100px 100px; }
-            .data-header { font-weight: bold; color: var(--cyan); background: #1a1a1a; }
+            .tiendo-row { grid-template-columns: 40px 1.5fr 1fr 60px 100px 100px; gap: 10px; }
+            .data-header { background: #1a1a1a; color: var(--cyan); font-weight: bold; font-size: 0.75rem; }
         }
 
-        /* Trên Mobile: Hiển thị dạng Card */
+        /* Mobile View */
         @media (max-width: 767px) {
-            .tiendo-row { 
+            .tiendo-row {
                 grid-template-areas: 
-                    "stt name name"
-                    "cust cust status"
-                    "item item percent"
-                    "staff deadline deadline";
-                grid-template-columns: 40px 1fr 100px;
+                    "name name percent"
+                    "cust cust cust"
+                    "staff deadline status";
+                grid-template-columns: 1fr 1fr 80px;
+                gap: 8px;
             }
-            .data-header { display: none; } /* Ẩn tiêu đề cột trên mobile */
-            .col-project { grid-area: name; color: var(--text-accent); font-size: 1rem; }
-            .col-customer { grid-area: cust; font-size: 0.8rem; color: #888; }
-            .col-status { grid-area: status; }
+            .data-header { display: none; }
+            .col-name { grid-area: name; color: var(--text-accent); font-weight: bold; }
+            .col-cust { grid-area: cust; font-size: 0.8rem; color: #888; }
             .col-percent { grid-area: percent; text-align: right; color: var(--status-green); font-weight: bold; }
-            .col-deadline { grid-area: deadline; font-size: 0.8rem; text-align: right; }
+            .col-staff { grid-area: staff; font-size: 0.75rem; color: var(--cyan); }
+            .col-deadline { grid-area: deadline; font-size: 0.75rem; text-align: center; }
+            .col-status { grid-area: status; text-align: right; }
         }
 
         .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            text-align: center;
+            font-size: 0.65rem;
+            padding: 2px 6px;
             border: 1px solid;
-            display: inline-block;
+            border-radius: 3px;
         }
-
-        /* Clock & Info */
-        #clock-time { color: var(--cyan); font-weight: bold; font-size: 1.2rem; }
-        #clock-date { font-size: 0.8rem; color: #666; margin-left: 10px; }
     </style>
 </head>
 <body>
 
     <div class="controls">
-        <div class="main-title">PROJECT TID</div>
+        <div class="main-title">TIME LINE PROJECT TID</div>
         <div id="clock-container">
             <span id="clock-time">--:--:--</span>
-            <span id="clock-date">--/--/----</span>
         </div>
-        <input type="file" id="uploadExcel" style="font-size: 10px;">
+        <input type="file" id="uploadExcel">
     </div>
 
     <div class="dashboard-grid">
-        <!-- TIẾN ĐỘ DỰ ÁN -->
         <div class="board-column">
             <div class="board-title-area">
-                <div class="board-title">TIẾN ĐỘ DỰ ÁN <span id="totalTiendo"></span></div>
+                <div class="board-title">DỰ ÁN ĐANG THỰC HIỆN <span id="totalTiendo"></span></div>
+                <div id="pageTiendo" style="font-size: 0.7rem; color: #555;"></div>
             </div>
-            <div class="board-content" id="tiendoList">
-                <!-- Dữ liệu sẽ đổ vào đây -->
+            <div class="data-row data-header tiendo-row">
+                <div>STT</div><div>DỰ ÁN</div><div>KHÁCH HÀNG</div><div>%</div><div>DEADLINE</div><div>TRẠNG THÁI</div>
             </div>
+            <div id="tiendoList"></div>
         </div>
 
-        <!-- BẢO LÃNH (Tự động xuống hàng trên mobile) -->
         <div class="board-column">
             <div class="board-title-area">
                 <div class="board-title">BẢO LÃNH <span id="totalBaolanh"></span></div>
             </div>
-            <div class="board-content" id="baolanhList"></div>
+            <div id="baolanhList"></div>
         </div>
     </div>
 
     <script>
-        // Copy phần logic JavaScript xử lý file Excel của bạn vào đây.
-        // Chỉnh sửa phần hiển thị trong innerHTML để phù hợp với Class mới:
-        
-        function renderTiendoMobile(data) {
-            return data.map(r => `
+        const GOOGLE_SHEET_URL = 'YOUR_GOOGLE_SHEET_URL_HERE'; // Thay link CSV vào đây
+        let allData = { tiendo: [], baolanh: [] };
+
+        async function fetchData() {
+            // Nếu dùng Google Sheets, mở khóa đoạn code dưới đây:
+            /*
+            try {
+                const res = await fetch(GOOGLE_SHEET_URL);
+                const csv = await res.text();
+                const wb = XLSX.read(csv, {type:'string'});
+                processExcel(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1}));
+            } catch(e) { console.error(e); }
+            */
+        }
+
+        document.getElementById('uploadExcel').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const data = new Uint8Array(event.target.result);
+                const wb = XLSX.read(data, {type:'array', cellDates: true});
+                processExcel(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1}));
+            };
+            reader.readAsArrayBuffer(e.target.files[0]);
+        });
+
+        function processExcel(rawData) {
+            allData.tiendo = [];
+            allData.baolanh = [];
+
+            for(let i = 2; i < rawData.length; i++) {
+                let r = rawData[i];
+                
+                // Lấy giá trị phần trăm (cột 4)
+                let rawPercent = r[4]; 
+                let percentVal = 0;
+                if (typeof rawPercent === 'number') {
+                    percentVal = rawPercent <= 1 ? rawPercent * 100 : rawPercent;
+                } else if (typeof rawPercent === 'string') {
+                    percentVal = parseFloat(rawPercent.replace('%', ''));
+                }
+
+                // CHỈ THÊM NẾU % THẤP HƠN 100
+                if (r[1] && percentVal < 100) {
+                    allData.tiendo.push({
+                        stt: r[0], name: r[1], cust: r[2], 
+                        p: Math.round(percentVal) + '%', 
+                        d: r[5] instanceof Date ? r[5].toLocaleDateString('vi-VN') : r[5],
+                        staff: r[6], s: r[7]
+                    });
+                }
+
+                if (r[9]) {
+                    allData.baolanh.push({stt: r[8], name: r[9], s: r[14]});
+                }
+            }
+            render();
+        }
+
+        function render() {
+            document.getElementById('totalTiendo').innerText = `(${allData.tiendo.length})`;
+            document.getElementById('tiendoList').innerHTML = allData.tiendo.map(r => `
                 <div class="data-row tiendo-row">
-                    <div style="color:#444">${r.stt}</div>
-                    <div class="col-project">${r.name}</div>
-                    <div class="col-customer">${r.cust}</div>
+                    <div style="color:#444" class="data-header">${r.stt}</div>
+                    <div class="col-name">${r.name}</div>
+                    <div class="col-cust">${r.cust}</div>
                     <div class="col-percent">${r.p}</div>
-                    <div class="col-status">
-                        <span class="status-badge" style="color:var(--status-green)">${r.s}</span>
-                    </div>
-                    <div class="col-deadline">📅 ${r.d}</div>
+                    <div class="col-deadline">${r.d}</div>
+                    <div class="col-status"><span class="status-badge" style="color:var(--cyan)">${r.s}</span></div>
                 </div>
             `).join('');
         }
-        
-        // Các hàm updateClock và đọc file giữ nguyên như bản trước.
+
+        function updateClock() {
+            document.getElementById('clock-time').innerText = new Date().toLocaleTimeString('vi-VN');
+        }
+        setInterval(updateClock, 1000);
     </script>
 </body>
 </html>
