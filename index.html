@@ -139,6 +139,7 @@
     <div class="dashboard-grid">
         <div class="board-column">
             <div class="board-title-area">
+                <!-- Đã cập nhật tiêu đề thành THEO DÕI DỰ ÁN -->
                 <div class="board-title">THEO DÕI DỰ ÁN <span id="totalTiendo" class="total-count"></span></div>
                 <div class="board-page-indicator" id="pageTiendo">TRANG: 0/0</div>
             </div>
@@ -219,18 +220,7 @@
 
                     for(let i = 2; i < rawData.length; i++) {
                         let r = rawData[i];
-                        
-                        // XỬ LÝ LỌC 100% Ở ĐÂY
-                        let percentRaw = r[4];
-                        let percentValue = 0;
-                        if (typeof percentRaw === 'number') {
-                            percentValue = percentRaw <= 1 ? percentRaw * 100 : percentRaw;
-                        } else {
-                            percentValue = parseFloat(String(percentRaw).replace('%', '')) || 0;
-                        }
-
-                        // Chỉ thêm vào danh sách nếu Dự án chưa xong (Dưới 100%)
-                        if ((r[0] !== "" || r[1] !== "") && percentValue < 100) {
+                        if (r[0] !== "" || r[1] !== "") {
                             allData.tiendo.push({stt:r[0], name:r[1], cust:r[2], item:r[3], p:formatP(r[4]), d:formatDate(r[5]), staff:r[6], s:r[7]});
                             
                             if (r[6]) {
@@ -244,8 +234,6 @@
                                 if(cust) custCounts[cust] = (custCounts[cust] || 0) + 1;
                             }
                         }
-                        
-                        // Bảo lãnh giữ nguyên
                         if (r[8] !== "" || r[9] !== "") {
                             allData.baolanh.push({stt:r[8], name:r[9], cust:r[10], item:r[11], p:formatP(r[12]), debt:formatM(r[13]), s:r[14]});
                         }
