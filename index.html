@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>PROJECT BOARD</title>
+<title>PROJECT DASHBOARD</title>
 
 <style>
 body {
@@ -17,30 +17,48 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 15px 30px;
-    font-size: 32px;
+    font-size: 28px;
     font-weight: bold;
     border-bottom: 2px solid #00e5ff;
 }
 
-/* TABLE */
+/* LAYOUT */
 .container {
-    padding: 20px;
+    display: flex;
+    height: calc(100vh - 70px);
 }
 
+.section {
+    width: 50%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.section:first-child {
+    border-right: 2px solid #00e5ff;
+}
+
+h2 {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 24px;
+    font-size: 20px;
 }
 
 th {
     border-bottom: 2px solid #00e5ff;
-    padding: 12px;
+    padding: 10px;
 }
 
 td {
     border-bottom: 1px solid #222;
-    padding: 12px;
+    padding: 10px;
     text-align: center;
 }
 
@@ -50,32 +68,20 @@ td {
 }
 
 /* STATUS */
-.late {
-    color: red;
-    font-weight: bold;
-    animation: blink 1s infinite;
-}
-
-.done {
-    color: #00ff00;
-    font-weight: bold;
-}
-
-.doing {
-    color: orange;
-    font-weight: bold;
-}
+.late { color: red; animation: blink 1s infinite; }
+.done { color: #00ff00; }
+.doing { color: orange; }
 
 @keyframes blink {
     50% { opacity: 0; }
 }
 
-/* PAGE INFO */
-.footer {
+/* FOOTER */
+.page {
     text-align: center;
-    font-size: 18px;
-    padding: 10px;
+    font-size: 16px;
     color: #888;
+    margin-top: 5px;
 }
 </style>
 </head>
@@ -83,11 +89,15 @@ td {
 <body>
 
 <div class="header">
-    <div>📊 PROJECT STATUS</div>
+    <div>📊 PROJECT DASHBOARD</div>
     <div id="clock"></div>
 </div>
 
 <div class="container">
+
+<!-- TIẾN ĐỘ -->
+<div class="section">
+    <h2>TIẾN ĐỘ DỰ ÁN</h2>
     <table>
         <thead>
             <tr>
@@ -99,22 +109,48 @@ td {
                 <th>Trạng thái</th>
             </tr>
         </thead>
-        <tbody id="tbody"></tbody>
+        <tbody id="progress"></tbody>
     </table>
+    <div class="page" id="progressPage"></div>
 </div>
 
-<div class="footer" id="pageInfo"></div>
+<!-- BẢO LÃNH -->
+<div class="section">
+    <h2>THEO DÕI BẢO LÃNH</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Dự án</th>
+                <th>Loại</th>
+                <th>Giá trị</th>
+                <th>Hết hạn</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody id="guarantee"></tbody>
+    </table>
+    <div class="page" id="guaranteePage"></div>
+</div>
+
+</div>
 
 <script>
 /* ===== CONFIG ===== */
-const URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
+const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
-const ROWS_PER_PAGE = 10;   // số dòng mỗi trang
-const PAGE_TIME = 10000;    // 10 giây lật trang
+/* 👉 thay bằng sheet bảo lãnh nếu có */
+const GUARANTEE_URL = "";
+
+/* PAGING */
+const ROWS = 8;
+const TIME = 10000;
 
 /* STATE */
-let data = [];
-let page = 0;
+let progressData = [];
+let guaranteeData = [];
+
+let progressPage = 0;
+let guaranteePage = 0;
 
 /* CLOCK */
 setInterval(() => {
@@ -130,38 +166,45 @@ function parseJSON(text) {
 }
 
 /* FETCH */
-async function loadData() {
-    const res = await fetch(URL);
+async function fetchSheet(url) {
+    const res = await fetch(url);
     const text = await res.text();
     const json = parseJSON(text);
+    return (json.table.rows || []).slice(7);
+}
 
-    // bỏ 7 dòng đầu
-    data = (json.table.rows || []).slice(7);
+/* LOAD DATA */
+async function loadData() {
+    progressData = await fetchSheet(PROGRESS_URL);
 
-    render();
+    if (GUARANTEE_URL) {
+        guaranteeData = await fetchSheet(GUARANTEE_URL);
+    }
+
+    renderProgress();
+    renderGuarantee();
 }
 
 /* PAGINATION */
-function getPageData() {
-    const start = page * ROWS_PER_PAGE;
-    return data.slice(start, start + ROWS_PER_PAGE);
+function getPage(data, page) {
+    return data.slice(page * ROWS, page * ROWS + ROWS);
 }
 
-/* RENDER */
-function render() {
-    const tbody = document.getElementById("tbody");
-    const pageData = getPageData();
+/* RENDER PROGRESS */
+function renderProgress() {
+    const el = document.getElementById("progress");
+    const pageData = getPage(progressData, progressPage);
 
-    tbody.innerHTML = "";
+    el.innerHTML = "";
 
     pageData.forEach(r => {
         const d = r.c;
 
-        let project = d[1]?.v || ""; // B
-        let item    = d[2]?.v || ""; // C
-        let percent = d[9]?.v || 0;  // J
-        let deadline= d[7]?.v || ""; // H
-        let staff   = d[3]?.v || ""; // D
+        let project = d[1]?.v || "";
+        let item    = d[2]?.v || "";
+        let percent = d[9]?.v || 0;
+        let deadline= d[7]?.v || "";
+        let staff   = d[3]?.v || "";
 
         let cls = "doing";
         let txt = "ĐANG LÀM";
@@ -176,7 +219,7 @@ function render() {
             txt = "QUÁ HẠN";
         }
 
-        tbody.innerHTML += `
+        el.innerHTML += `
         <tr>
             <td class="project">${project}</td>
             <td>${item}</td>
@@ -187,27 +230,64 @@ function render() {
         </tr>`;
     });
 
-    updatePageInfo();
+    updatePage("progressPage", progressPage, progressData.length);
+}
+
+/* RENDER GUARANTEE */
+function renderGuarantee() {
+    const el = document.getElementById("guarantee");
+    const pageData = getPage(guaranteeData, guaranteePage);
+
+    el.innerHTML = "";
+
+    pageData.forEach(r => {
+        const d = r.c;
+
+        let project = d[1]?.v || "";
+        let type    = d[2]?.v || "";
+        let value   = d[3]?.v || 0;
+        let expire  = d[4]?.v || "";
+
+        let status = "OK";
+
+        if (expire && new Date(expire) < new Date()) {
+            status = "HẾT HẠN";
+        }
+
+        el.innerHTML += `
+        <tr>
+            <td class="project">${project}</td>
+            <td>${type}</td>
+            <td>${formatMoney(value)}</td>
+            <td>${formatDate(expire)}</td>
+            <td>${status}</td>
+        </tr>`;
+    });
+
+    updatePage("guaranteePage", guaranteePage, guaranteeData.length);
 }
 
 /* PAGE INFO */
-function updatePageInfo() {
-    const totalPages = Math.ceil(data.length / ROWS_PER_PAGE);
-    document.getElementById("pageInfo").innerText =
+function updatePage(id, page, total) {
+    const totalPages = Math.ceil(total / ROWS) || 1;
+    document.getElementById(id).innerText =
         `Trang ${page + 1} / ${totalPages}`;
 }
 
 /* AUTO PAGE */
 setInterval(() => {
-    if (!data.length) return;
-
-    page++;
-    if (page * ROWS_PER_PAGE >= data.length) {
-        page = 0;
+    if (progressData.length) {
+        progressPage = (progressPage + 1) % Math.ceil(progressData.length / ROWS);
+        renderProgress();
     }
+}, TIME);
 
-    render();
-}, PAGE_TIME);
+setInterval(() => {
+    if (guaranteeData.length) {
+        guaranteePage = (guaranteePage + 1) % Math.ceil(guaranteeData.length / ROWS);
+        renderGuarantee();
+    }
+}, TIME + 3000); // lệch thời gian để không lật cùng lúc
 
 /* AUTO REFRESH */
 setInterval(loadData, 30000);
@@ -216,6 +296,11 @@ setInterval(loadData, 30000);
 function formatDate(d) {
     if (!d) return "";
     return new Date(d).toLocaleDateString("vi-VN");
+}
+
+function formatMoney(n) {
+    if (!n) return "0";
+    return Number(n).toLocaleString("vi-VN") + " đ";
 }
 
 /* INIT */
