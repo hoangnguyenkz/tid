@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>PROJECT DASHBOARD</title>
+<title>PROJECT BOARD</title>
 
 <style>
 body {
@@ -12,49 +12,35 @@ body {
     font-family: "Segoe UI", Arial, sans-serif;
 }
 
+/* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
     padding: 15px 30px;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: bold;
     border-bottom: 2px solid #00e5ff;
 }
 
+/* TABLE */
 .container {
-    display: flex;
-    height: calc(100vh - 70px);
-}
-
-.section {
-    width: 50%;
     padding: 20px;
-    box-sizing: border-box;
-}
-
-.section:first-child {
-    border-right: 2px solid #00e5ff;
-}
-
-h2 {
-    text-align: center;
-    font-size: 26px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 20px;
+    font-size: 24px;
 }
 
 th {
     border-bottom: 2px solid #00e5ff;
-    padding: 10px;
+    padding: 12px;
 }
 
 td {
     border-bottom: 1px solid #222;
-    padding: 10px;
+    padding: 12px;
     text-align: center;
 }
 
@@ -63,12 +49,33 @@ td {
     font-weight: bold;
 }
 
-.late { color: red; animation: blink 1s infinite; }
-.done { color: #00ff00; }
-.doing { color: orange; }
+/* STATUS */
+.late {
+    color: red;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+
+.done {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.doing {
+    color: orange;
+    font-weight: bold;
+}
 
 @keyframes blink {
     50% { opacity: 0; }
+}
+
+/* PAGE INFO */
+.footer {
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+    color: #888;
 }
 </style>
 </head>
@@ -76,84 +83,85 @@ td {
 <body>
 
 <div class="header">
-    <div>📊 PROJECT DASHBOARD</div>
+    <div>📊 PROJECT STATUS</div>
     <div id="clock"></div>
 </div>
 
 <div class="container">
-
-<div class="section">
-<h2>TIẾN ĐỘ DỰ ÁN</h2>
-<table>
-<thead>
-<tr>
-<th>Dự án</th>
-<th>Hạng mục</th>
-<th>%</th>
-<th>Deadline</th>
-<th>Nhân sự</th>
-<th>Trạng thái</th>
-</tr>
-</thead>
-<tbody id="progress"></tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Dự án</th>
+                <th>Hạng mục</th>
+                <th>%</th>
+                <th>Deadline</th>
+                <th>Nhân sự</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
 </div>
 
-<div class="section">
-<h2>CÔNG NỢ DỰ ÁN</h2>
-<table>
-<thead>
-<tr>
-<th>Dự án</th>
-<th>HĐ</th>
-<th>Giá trị</th>
-<th>Đã thu</th>
-<th>Còn lại</th>
-<th>Trạng thái</th>
-</tr>
-</thead>
-<tbody id="debt"></tbody>
-</table>
-</div>
-
-</div>
+<div class="footer" id="pageInfo"></div>
 
 <script>
-const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
+/* ===== CONFIG ===== */
+const URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
 
+const ROWS_PER_PAGE = 10;   // số dòng mỗi trang
+const PAGE_TIME = 10000;    // 10 giây lật trang
+
+/* STATE */
+let data = [];
+let page = 0;
+
+/* CLOCK */
 setInterval(() => {
     document.getElementById("clock").innerText =
         new Date().toLocaleString("vi-VN");
 }, 1000);
 
+/* PARSE */
 function parseJSON(text) {
     return JSON.parse(
         text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
     );
 }
 
-async function fetchSheet(url) {
-    const res = await fetch(url);
+/* FETCH */
+async function loadData() {
+    const res = await fetch(URL);
     const text = await res.text();
     const json = parseJSON(text);
 
-    return (json.table.rows || []).slice(7);
+    // bỏ 7 dòng đầu
+    data = (json.table.rows || []).slice(7);
+
+    render();
 }
 
-async function loadProgress() {
-    const rows = await fetchSheet(PROGRESS_URL);
-    const el = document.getElementById("progress");
+/* PAGINATION */
+function getPageData() {
+    const start = page * ROWS_PER_PAGE;
+    return data.slice(start, start + ROWS_PER_PAGE);
+}
 
-    el.innerHTML = "";
+/* RENDER */
+function render() {
+    const tbody = document.getElementById("tbody");
+    const pageData = getPageData();
 
-    rows.forEach(r => {
+    tbody.innerHTML = "";
+
+    pageData.forEach(r => {
         const d = r.c;
 
-        let project = d[1]?.v || "";   // B
-        let item    = d[2]?.v || "";   // C
-        let percent = d[9]?.v || 0;    // J
-        let deadline= d[7]?.v || "";   // H
-        let staff   = d[3]?.v || "";   // D
+        let project = d[1]?.v || ""; // B
+        let item    = d[2]?.v || ""; // C
+        let percent = d[9]?.v || 0;  // J
+        let deadline= d[7]?.v || ""; // H
+        let staff   = d[3]?.v || ""; // D
 
         let cls = "doing";
         let txt = "ĐANG LÀM";
@@ -163,13 +171,12 @@ async function loadProgress() {
             txt = "HOÀN THÀNH";
         }
 
-        // tự tính quá hạn
         if (deadline && new Date(deadline) < new Date() && percent < 100) {
             cls = "late";
             txt = "QUÁ HẠN";
         }
 
-        el.innerHTML += `
+        tbody.innerHTML += `
         <tr>
             <td class="project">${project}</td>
             <td>${item}</td>
@@ -179,15 +186,40 @@ async function loadProgress() {
             <td class="${cls}">${txt}</td>
         </tr>`;
     });
+
+    updatePageInfo();
 }
 
+/* PAGE INFO */
+function updatePageInfo() {
+    const totalPages = Math.ceil(data.length / ROWS_PER_PAGE);
+    document.getElementById("pageInfo").innerText =
+        `Trang ${page + 1} / ${totalPages}`;
+}
+
+/* AUTO PAGE */
+setInterval(() => {
+    if (!data.length) return;
+
+    page++;
+    if (page * ROWS_PER_PAGE >= data.length) {
+        page = 0;
+    }
+
+    render();
+}, PAGE_TIME);
+
+/* AUTO REFRESH */
+setInterval(loadData, 30000);
+
+/* FORMAT */
 function formatDate(d) {
     if (!d) return "";
     return new Date(d).toLocaleDateString("vi-VN");
 }
 
-loadProgress();
-setInterval(loadProgress, 30000);
+/* INIT */
+loadData();
 </script>
 
 </body>
