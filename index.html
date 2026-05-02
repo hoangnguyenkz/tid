@@ -139,7 +139,6 @@
     <div class="dashboard-grid">
         <div class="board-column">
             <div class="board-title-area">
-                <!-- Đã cập nhật tiêu đề thành THEO DÕI DỰ ÁN -->
                 <div class="board-title">THEO DÕI DỰ ÁN <span id="totalTiendo" class="total-count"></span></div>
                 <div class="board-page-indicator" id="pageTiendo">TRANG: 0/0</div>
             </div>
@@ -220,7 +219,15 @@
 
                     for(let i = 2; i < rawData.length; i++) {
                         let r = rawData[i];
-                        if (r[0] !== "" || r[1] !== "") {
+                        
+                        // Lấy giá trị phần trăm để lọc
+                        let pRaw = r[4];
+                        let pVal = 0;
+                        if (typeof pRaw === 'number') { pVal = pRaw <= 1 ? pRaw * 100 : pRaw; } 
+                        else { pVal = parseFloat(String(pRaw).replace('%', '')) || 0; }
+
+                        // Chỉ nạp dữ liệu nếu tên dự án có và phần trăm < 100
+                        if ((r[0] !== "" || r[1] !== "") && pVal < 100) {
                             allData.tiendo.push({stt:r[0], name:r[1], cust:r[2], item:r[3], p:formatP(r[4]), d:formatDate(r[5]), staff:r[6], s:r[7]});
                             
                             if (r[6]) {
@@ -234,6 +241,7 @@
                                 if(cust) custCounts[cust] = (custCounts[cust] || 0) + 1;
                             }
                         }
+                        
                         if (r[8] !== "" || r[9] !== "") {
                             allData.baolanh.push({stt:r[8], name:r[9], cust:r[10], item:r[11], p:formatP(r[12]), debt:formatM(r[13]), s:r[14]});
                         }
