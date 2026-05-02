@@ -116,25 +116,6 @@ td {
     <div class="page-info" id="progressPage"></div>
 </div>
 
-<div class="section">
-    <h2>BẢO LÃNH</h2>
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Dự án</th>
-                    <th>Loại</th>
-                    <th>Giá trị</th>
-                    <th>Hết hạn</th>
-                    <th>TRẠNG THÁI</th>
-                </tr>
-            </thead>
-            <tbody id="guarantee"></tbody>
-        </table>
-    </div>
-    <div class="page-info" id="guaranteePage"></div>
-</div>
-
 </div>
 
 <script>
@@ -164,26 +145,50 @@ async function fetchSheet(url) {
     const text = await res.text();
     const json = parseJSON(text);
 
-    return (json.table.rows || []).slice(7);
+    return (json.table.rows || []).slice(4);
 }
 
-/* ROW */
+/* AUTO ROW */
 function getRows() {
     const height = document.querySelector(".table-wrap").clientHeight;
     return Math.max(6, Math.floor(height / 42));
 }
 
-/* DATE HIỂN THỊ */
-function displayDate(d) {
-    if (!d) return "";
-    if (typeof d === "string") return d;
-    return new Date(d).toLocaleDateString("vi-VN");
+/* FORMAT % */
+function formatPercent(p) {
+    if (p == null) return "0%";
+
+    let value = Number(p);
+
+    if (value <= 1) value = value * 100;
+
+    return Math.round(value) + "%";
 }
 
-/* DATE SO SÁNH */
+/* FORMAT DATE dd/mm/yyyy */
+function formatDate(d) {
+    if (!d) return "";
+
+    let date;
+
+    if (typeof d === "string") {
+        date = new Date(d);
+    } else {
+        date = new Date(d);
+    }
+
+    if (isNaN(date)) return d;
+
+    let day = String(date.getDate()).padStart(2, "0");
+    let month = String(date.getMonth() + 1).padStart(2, "0");
+    let year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+}
+
+/* TO DATE */
 function toDate(d) {
     if (!d) return null;
-    if (typeof d === "string") return new Date(d);
     return new Date(d);
 }
 
@@ -212,9 +217,9 @@ function render() {
 
         let project = d[1]?.v || "";
         let item    = d[2]?.v || "";
-        let percent = d[9]?.v || 0;
+        let percent = formatPercent(d[9]?.v);
         let deadlineRaw = d[7]?.v;
-        let deadline = displayDate(deadlineRaw);
+        let deadline = formatDate(deadlineRaw);
         let staff   = d[3]?.v || "";
 
         let cls = "design";
@@ -223,7 +228,7 @@ function render() {
         const today = new Date();
         const deadlineDate = toDate(deadlineRaw);
 
-        if (percent >= 100) {
+        if (Number(d[9]?.v) >= 100) {
             cls = "done"; txt = "HOÀN THÀNH";
         } else if (deadlineDate && deadlineDate < today) {
             cls = "late"; txt = "QUÁ HẠN";
@@ -233,7 +238,7 @@ function render() {
         <tr>
             <td class="project">${project}</td>
             <td>${item}</td>
-            <td>${percent}%</td>
+            <td>${percent}</td>
             <td>${deadline}</td>
             <td>${staff}</td>
             <td class="${cls}">${txt}</td>
