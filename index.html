@@ -44,7 +44,6 @@ h2 {
     text-align: center;
     font-size: 26px;
     margin-bottom: 15px;
-    color: #00e5ff;
 }
 
 /* TABLE */
@@ -57,7 +56,6 @@ table {
 th {
     border-bottom: 2px solid #00e5ff;
     padding: 10px;
-    text-align: center;
 }
 
 td {
@@ -85,16 +83,6 @@ td {
 
 .doing {
     color: orange;
-    font-weight: bold;
-}
-
-.debt-ok {
-    color: #00ff00;
-    font-weight: bold;
-}
-
-.debt-bad {
-    color: red;
     font-weight: bold;
 }
 
@@ -152,7 +140,10 @@ td {
 </div>
 
 <script>
+/* ===== CONFIG ===== */
 const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
+
+/* 👉 nếu có sheet công nợ thì điền vào */
 const DEBT_URL = "";
 
 /* CLOCK */
@@ -161,23 +152,39 @@ setInterval(() => {
         new Date().toLocaleString("vi-VN");
 }, 1000);
 
-/* PARSE */
+/* PARSE JSON */
 function parseJSON(text) {
-    return JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
+    return JSON.parse(
+        text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
+    );
 }
 
-/* FETCH */
+/* FETCH DATA */
 async function fetchSheet(url) {
-    const res = await fetch(url);
-    const text = await res.text();
-    const json = parseJSON(text);
-    return json.table.rows || [];
+    try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = parseJSON(text);
+
+        // 👇 BỎ 7 DÒNG ĐẦU
+        return (json.table.rows || []).slice(7);
+
+    } catch (e) {
+        console.error("Lỗi load data:", e);
+        return [];
+    }
 }
 
 /* LOAD PROGRESS */
 async function loadProgress() {
     const rows = await fetchSheet(PROGRESS_URL);
     const el = document.getElementById("progress");
+
+    if (!rows.length) {
+        el.innerHTML = "<tr><td colspan='6'>KHÔNG CÓ DỮ LIỆU</td></tr>";
+        return;
+    }
+
     el.innerHTML = "";
 
     rows.forEach(r => {
@@ -208,6 +215,7 @@ async function loadProgress() {
     });
 }
 
+/* FORMAT DATE */
 function formatDate(d) {
     if (!d) return "";
     return new Date(d).toLocaleDateString("vi-VN");
