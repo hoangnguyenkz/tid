@@ -45,12 +45,10 @@ html, body {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: auto;
-  min-height: 50px;
-  padding: 8px 12px;
+  height: 64px;
+  padding: 0 28px;
   background: var(--bg-header);
   border-bottom: 2px solid var(--border-hi);
-  gap: 8px;
 }
 .header::after {
   content: '';
@@ -62,99 +60,82 @@ html, body {
 .header-logo {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 16px;
+  gap: 10px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text-bright);
-  letter-spacing: 1px;
-  min-width: 0;
-  overflow: hidden;
+  letter-spacing: 1.5px;
 }
 .logo-box {
-  width: 28px; height: 28px;
+  width: 36px; height: 36px;
   border: 2px solid var(--accent);
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700;
+  font-size: 16px; font-weight: 700;
   color: var(--accent);
   animation: glow 3s ease-in-out infinite;
-  flex-shrink: 0;
 }
 @keyframes glow { 0%,100%{ box-shadow:0 0 4px rgba(96,200,240,.3)} 50%{ box-shadow:0 0 14px rgba(96,200,240,.7)} }
 .header-sub {
   font-family: var(--f-mono);
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-dim);
-  letter-spacing: 0.5px;
-  margin-top: 2px;
-  white-space: nowrap;
+  letter-spacing: 1.5px;
+  margin-top: 3px;
 }
-.header-center { 
-  text-align: center;
-  min-width: 0;
-  flex: 1;
-}
+.header-center { text-align: center; }
 .header-title {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 5px;
   color: var(--accent);
   text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .header-tagline {
   font-family: var(--f-mono);
-  font-size: 8px;
+  font-size: 10px;
   color: var(--text-dim);
-  letter-spacing: 1px;
+  letter-spacing: 3px;
   margin-top: 2px;
 }
-.header-right { 
-  text-align: right;
-  min-width: 0;
-}
+.header-right { text-align: right; }
 .header-clock {
   font-family: var(--f-mono);
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 500;
   color: var(--text-bright);
-  letter-spacing: 1px;
-  white-space: nowrap;
+  letter-spacing: 2px;
 }
 .header-date {
   font-family: var(--f-mono);
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-dim);
   margin-top: 2px;
-  white-space: nowrap;
 }
 
 /* ── LAYOUT ── */
 .container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 64px);
   overflow: hidden;
-  gap: 0;
 }
 
 .panel {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 8px 10px;
+  padding: 14px 18px 10px;
   overflow: hidden;
   position: relative;
-  border-bottom: 2px solid var(--border-hi);
 }
 
 .panel:first-child { 
-  flex: 1.2;
+  border-bottom: 2px solid var(--border-hi);
 }
 
 .panel.split-panel {
-  flex: 0.8;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .panel-top {
@@ -163,15 +144,15 @@ html, body {
   display: flex;
   flex-direction: column;
   border-bottom: 2px solid var(--border-hi);
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 .panel-bottom {
   flex: 0.45;
   overflow: hidden;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-direction: column;
 }
 
@@ -188,51 +169,42 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 2px solid var(--border-hi);
-  gap: 8px;
-  min-height: 0;
-  flex-wrap: wrap;
 }
 
 .panel-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 10px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 1.5px;
   color: var(--text-bright);
   text-transform: uppercase;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0;
 }
 
 .panel-title.small {
-  font-size: 11px;
-  letter-spacing: 0.5px;
+  font-size: 13px;
+  letter-spacing: 0.8px;
 }
 
 .title-dot {
-  width: 7px; height: 7px;
+  width: 9px; height: 9px;
   background: var(--accent);
   border-radius: 2px;
   transform: rotate(45deg);
-  flex-shrink: 0;
 }
 
 .panel-badge {
   font-family: var(--f-mono);
-  font-size: 10px;
-  padding: 3px 8px;
+  font-size: 12px;
+  padding: 4px 12px;
   border: 1px solid var(--border-hi);
   color: var(--accent);
   background: rgba(96,200,240,.08);
   border-radius: 3px;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
 /* ── TABLE ── */
@@ -240,29 +212,26 @@ html, body {
   flex: 1; 
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  min-height: 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 12px;
 }
 
 thead tr { background: var(--bg-thead); }
 
 th {
-  padding: 8px 6px;
+  padding: 10px 12px;
   font-family: var(--f-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.8px;
   color: var(--accent);
   text-transform: uppercase;
   text-align: center;
   border-bottom: 2px solid var(--border-hi);
-  white-space: nowrap;
 }
 
 th:first-child { text-align: left; }
@@ -272,104 +241,90 @@ tbody tr:nth-child(even) { background: var(--row-b); }
 tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background .12s;
-  height: 34px;
 }
 
 tbody tr:hover { background: rgba(96,200,240,.09) !important; }
 
 td {
-  padding: 6px;
+  padding: 11px 12px;
   text-align: center;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--text);
   vertical-align: middle;
-  word-break: break-word;
-  overflow: hidden;
 }
 
 td:first-child { text-align: left; }
 
 /* ── CELLS ── */
 .project-name {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--gold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
 }
 
-.item-val, .customer-val, .person-val {
-  font-size: 12px;
+.item-val {
+  font-size: 15px;
   color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
+}
+
+.customer-val {
+  font-size: 15px;
+  color: var(--text);
 }
 
 .pct-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  height: 100%;
+  gap: 5px;
 }
 
 .pct-num {
   font-family: var(--f-mono);
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--accent);
-  line-height: 1;
 }
 
 .bar-bg {
-  width: 50px; 
-  height: 4px;
+  width: 72px; height: 6px;
   background: var(--border);
-  border-radius: 2px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
 .bar-fill {
   height: 100%;
-  border-radius: 2px;
+  border-radius: 3px;
   background: linear-gradient(90deg, var(--accent-dim), var(--accent));
 }
 
 .date-val {
   font-family: var(--f-mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  white-space: nowrap;
-  display: block;
-}
-
-.date-val.overdue { 
-  color: var(--red); 
-  font-weight: 600; 
-}
-
-.type-val { 
-  font-size: 11px; 
+  font-size: 15px;
   color: var(--text-dim);
 }
+
+.date-val.overdue { color: var(--red); font-weight: 600; }
+
+.person-val { font-size: 15px; color: var(--text); }
+
+.type-val { font-size: 15px; color: var(--text-dim); }
 
 .value-val {
   font-family: var(--f-mono);
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--gold);
-  white-space: nowrap;
-  display: block;
 }
 
 .count-val {
   font-family: var(--f-mono);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--accent);
 }
@@ -378,30 +333,30 @@ td:first-child { text-align: left; }
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 2px 6px;
-  font-size: 9px;
+  gap: 7px;
+  padding: 5px 14px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.2px;
-  border-radius: 3px;
+  letter-spacing: .4px;
+  border-radius: 4px;
   white-space: nowrap;
   text-transform: uppercase;
 }
 
 .badge-dot {
-  width: 4px; height: 4px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-/* Badges */
+/* Solid-fill badges */
 .b-done { color:#061810; background:var(--green); }
 .b-done .badge-dot { background:#061810; }
 .b-late { color:#fff; background:var(--red); animation: flash 1.4s step-end infinite; }
 .b-late .badge-dot { background:#fff; animation: blink 1.4s step-end infinite; }
 @keyframes flash { 0%,100%{opacity:1} 50%{opacity:.78} }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-.b-wip { color:var(--accent); background:rgba(96,200,240,.12); border:1px solid var(--accent); }
+.b-wip { color:var(--accent); background:rgba(96,200,240,.12); border:1.5px solid var(--accent); }
 .b-wip .badge-dot { background:var(--accent); animation:pdot 2s ease-in-out infinite; }
 @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.25} }
 
@@ -410,163 +365,202 @@ td:first-child { text-align: left; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 6px;
-  padding-top: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid var(--border-hi);
-  gap: 8px;
-  font-size: 10px;
 }
 
 .page-info {
   font-family: var(--f-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-dim);
-  letter-spacing: 0.3px;
-  white-space: nowrap;
+  letter-spacing: 1px;
 }
 
-.page-dots { 
-  display: flex; 
-  gap: 4px; 
-  align-items: center;
-}
+.page-dots { display:flex; gap:5px; align-items:center; }
 
 .dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--border-hi);
-  transition: background .3s, transform .3s;
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--border-hi);
+  transition:background .3s,transform .3s;
 }
 
 .dot.active {
-  background: var(--accent);
-  transform: scale(1.2);
+  background:var(--accent);
+  transform:scale(1.4);
+  box-shadow:0 0 5px var(--accent);
 }
 
 /* ── STATES ── */
 .empty-state, .loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  color: var(--text-dim);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  gap: 6px;
+  display:flex; align-items:center; justify-content:center;
+  height:80px;
+  color:var(--text-dim);
+  font-family:var(--f-mono);
+  font-size:13px;
+  letter-spacing:2px;
+  gap:10px;
 }
 
-.empty-state { 
-  border: 1px dashed var(--border-hi); 
-  border-radius: 3px; 
-}
+.empty-state { border:1px dashed var(--border-hi); border-radius:4px; margin-top:8px; }
 
 .ld span {
-  display: inline-block;
-  width: 4px; height: 4px;
-  background: var(--accent);
-  border-radius: 50%;
-  margin: 0 2px;
-  animation: ld 1.2s ease-in-out infinite;
+  display:inline-block;
+  width:5px; height:5px;
+  background:var(--accent);
+  border-radius:50%;
+  margin:0 2px;
+  animation:ld 1.2s ease-in-out infinite;
 }
 
-.ld span:nth-child(2) { animation-delay: 0.2s; }
-.ld span:nth-child(3) { animation-delay: 0.4s; }
+.ld span:nth-child(2){animation-delay:.2s}
+.ld span:nth-child(3){animation-delay:.4s}
 
-@keyframes ld {
-  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-  40% { opacity: 1; transform: scale(1.2); }
-}
+@keyframes ld{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1.2)}}
 
 /* ── REFRESH BAR ── */
 .refresh-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
-  width: 0;
+  position:absolute; bottom:0; left:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--accent-dim),var(--accent));
 }
 
-.refresh-bar.animating { 
-  animation: shrink 30s linear forwards; 
-}
+.refresh-bar.animating { animation:shrink 30s linear forwards; }
 
-@keyframes shrink {
-  from { width: 100%; opacity: 0.8; }
-  to { width: 0%; opacity: 0.2; }
-}
+@keyframes shrink{from{width:100%;opacity:.8}to{width:0%;opacity:.2}}
 
-/* ── TABLET & DESKTOP (≥768px) ── */
-@media (min-width: 768px) {
+/* ── DESKTOP (≥1024px) ── */
+@media (min-width: 1024px) {
   .container {
     flex-direction: row;
-    gap: 0;
   }
 
   .panel {
-    border-bottom: none;
-    border-right: 2px solid var(--border-hi);
-    padding: 10px 12px;
-  }
-
-  .panel:last-child {
-    border-right: none;
+    padding: 14px 18px 10px;
   }
 
   .panel:first-child { 
-    flex: 1;
+    border-bottom: none;
     border-right: 2px solid var(--border-hi);
+    flex: 1;
   }
 
   .panel.split-panel {
     flex: 1;
-  }
-
-  .panel-bottom {
-    flex-direction: row;
-    gap: 10px;
+    border-right: none;
   }
 
   .panel-top {
     flex: 0.6;
+    border-bottom: 2px solid var(--border-hi);
     margin-bottom: 10px;
     padding-bottom: 10px;
   }
 
   .panel-bottom {
     flex: 0.4;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .sub-panel {
+    flex: 1;
   }
 
   th {
-    padding: 10px 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  td {
+    padding: 11px 12px;
+    font-size: 16px;
+  }
+
+  .panel-title {
+    font-size: 17px;
+  }
+
+  .panel-title.small {
+    font-size: 13px;
+  }
+
+  .pct-num {
+    font-size: 16px;
+  }
+
+  .bar-bg {
+    width: 72px;
+    height: 6px;
+  }
+
+  .count-val {
+    font-size: 16px;
+  }
+
+  .badge {
+    font-size: 13px;
+    padding: 5px 14px;
+  }
+}
+
+/* ── TABLET (768px - 1023px) ── */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
+
+  .panel {
+    padding: 12px 14px 8px;
+  }
+
+  .panel:first-child { 
+    border-bottom: none;
+    border-right: 2px solid var(--border-hi);
+    flex: 1;
+  }
+
+  .panel.split-panel {
+    flex: 0.8;
+    border-right: none;
+  }
+
+  .panel-top {
+    flex: 0.55;
+  }
+
+  .panel-bottom {
+    flex: 0.45;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  th {
+    padding: 8px 10px;
     font-size: 12px;
   }
 
   td {
-    padding: 8px;
-    font-size: 13px;
-    height: 40px;
+    padding: 9px 10px;
+    font-size: 14px;
   }
 
-  tbody tr {
-    height: 40px;
-  }
-
-  .header-title {
-    font-size: 18px;
-  }
-
-  .header-clock {
-    font-size: 18px;
+  .panel-header {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
   }
 
   .panel-title {
     font-size: 14px;
   }
 
-  .pct-num {
+  .panel-title.small {
     font-size: 12px;
+  }
+
+  .pct-num {
+    font-size: 14px;
   }
 
   .bar-bg {
@@ -579,61 +573,184 @@ td:first-child { text-align: left; }
   }
 
   .badge {
-    font-size: 10px;
-    padding: 3px 8px;
+    font-size: 11px;
+    padding: 4px 10px;
   }
 
-  .badge-dot {
-    width: 5px;
-    height: 5px;
+  .item-val, .customer-val, .person-val {
+    font-size: 13px;
   }
 }
 
-/* ── DESKTOP (≥1024px) ── */
-@media (min-width: 1024px) {
-  .panel {
-    padding: 14px 16px;
-  }
-
+/* ── MOBILE (< 768px) ── */
+@media (max-width: 767px) {
   .header {
-    padding: 10px 16px;
+    height: 50px;
+    padding: 0 12px;
   }
 
-  th {
-    padding: 12px 10px;
-    font-size: 13px;
-  }
-
-  td {
-    padding: 10px;
+  .header-logo {
     font-size: 14px;
-    height: 44px;
+    gap: 6px;
   }
 
-  tbody tr {
-    height: 44px;
+  .logo-box {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .header-sub {
+    font-size: 8px;
+  }
+
+  .header-title {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+  }
+
+  .header-tagline {
+    font-size: 7px;
+  }
+
+  .header-clock {
+    font-size: 14px;
+  }
+
+  .header-date {
+    font-size: 8px;
+  }
+
+  .container {
+    flex-direction: column;
+    height: calc(100vh - 50px);
+  }
+
+  .panel {
+    padding: 8px 10px 6px;
+  }
+
+  .panel:first-child {
+    flex: 1.2;
+    border-bottom: 2px solid var(--border-hi);
+    border-right: none;
+  }
+
+  .panel.split-panel {
+    flex: 0.8;
+  }
+
+  .panel-top {
+    flex: 0.55;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+
+  .panel-bottom {
+    flex: 0.45;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sub-panel {
+    flex: 1;
+    min-height: 80px;
   }
 
   .panel-header {
-    margin-bottom: 12px;
-    padding-bottom: 12px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
   }
 
   .panel-title {
-    font-size: 15px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .panel-title.small {
+    font-size: 11px;
+  }
+
+  .panel-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  th {
+    padding: 6px 4px;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  td {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+
+  .project-name {
+    font-size: 11px;
+  }
+
+  .item-val, .customer-val, .person-val {
+    font-size: 10px;
+  }
+
+  .pct-wrap {
+    gap: 2px;
   }
 
   .pct-num {
-    font-size: 13px;
+    font-size: 10px;
   }
 
   .bar-bg {
-    width: 70px;
-    height: 6px;
+    width: 40px;
+    height: 4px;
+  }
+
+  .date-val {
+    font-size: 9px;
+  }
+
+  .type-val {
+    font-size: 10px;
+  }
+
+  .value-val {
+    font-size: 10px;
   }
 
   .count-val {
-    font-size: 15px;
+    font-size: 12px;
+  }
+
+  .badge {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+
+  .badge-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .page-info {
+    font-size: 9px;
+  }
+
+  .page-dots {
+    gap: 3px;
+  }
+
+  .dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .empty-state, .loading-state {
+    height: 50px;
+    font-size: 10px;
+    gap: 6px;
   }
 }
 </style>
@@ -643,13 +760,13 @@ td:first-child { text-align: left; }
   <div>
     <div class="header-logo">
       <div class="logo-box">T</div>
-      <span>TID CORP</span>
+      TID CORP
     </div>
-    <div class="header-sub">SYSTEM v2.0</div>
+    <div class="header-sub">MONITORING SYSTEM v2.0</div>
   </div>
   <div class="header-center">
-    <div class="header-title">DASHBOARD</div>
-    <div class="header-tagline">REAL-TIME</div>
+    <div class="header-title">PROJECT DASHBOARD</div>
+    <div class="header-tagline">REAL-TIME · LIVE DATA</div>
   </div>
   <div class="header-right">
     <div class="header-clock" id="clock">--:--:--</div>
@@ -662,26 +779,26 @@ td:first-child { text-align: left; }
   <div class="panel">
     <div class="panel-header">
       <div class="panel-title"><div class="title-dot"></div>TIẾN ĐỘ DỰ ÁN</div>
-      <div class="panel-badge" id="progress-count">— MỤC</div>
+      <div class="panel-badge" id="progress-count">— HẠNG MỤC</div>
     </div>
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th style="width:18%">DỰ ÁN</th>
-          <th style="width:15%">HẠNG MỤC</th>
-          <th style="width:10%">%</th>
+          <th style="width:16%">DỰ ÁN</th>
+          <th style="width:14%">HẠNG MỤC</th>
+          <th style="width:10%">TIẾN ĐỘ</th>
           <th style="width:12%">DEADLINE</th>
-          <th style="width:12%">KH</th>
-          <th style="width:12%">NS</th>
-          <th style="width:12%">TRẠNG THÁI</th>
+          <th style="width:12%">KHÁCH HÀNG</th>
+          <th style="width:12%">NHÂN SỰ</th>
+          <th style="width:16%">TRẠNG THÁI</th>
         </tr></thead>
         <tbody id="progress">
-          <tr><td colspan="7"><div class="loading-state">TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
+          <tr><td colspan="7"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
         </tbody>
       </table>
     </div>
     <div class="panel-footer">
-      <div class="page-info" id="progressPage">1/1</div>
+      <div class="page-info" id="progressPage">TRANG 1 / 1</div>
       <div class="page-dots" id="progressDots"></div>
     </div>
     <div class="refresh-bar" id="refreshBar1"></div>
@@ -692,8 +809,8 @@ td:first-child { text-align: left; }
     <!-- TOP: THEO DÕI BẢO LÃNH -->
     <div class="panel-top">
       <div class="panel-header">
-        <div class="panel-title"><div class="title-dot"></div>BẢO LÃNH</div>
-        <div class="panel-badge" id="guarantee-count">— BL</div>
+        <div class="panel-title"><div class="title-dot"></div>THEO DÕI BẢO LÃNH</div>
+        <div class="panel-badge" id="guarantee-count">— BẢO LÃNH</div>
       </div>
       <div class="table-wrap">
         <table>
@@ -704,7 +821,7 @@ td:first-child { text-align: left; }
             <th style="width:21%">HẾT HẠN</th>
           </tr></thead>
           <tbody id="guarantee">
-            <tr><td colspan="4"><div class="loading-state">TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
+            <tr><td colspan="4"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -715,17 +832,17 @@ td:first-child { text-align: left; }
       <!-- DANH SÁCH NHÂN SỰ -->
       <div class="sub-panel">
         <div class="panel-header">
-          <div class="panel-title small"><div class="title-dot"></div>NHÂN SỰ</div>
-          <div class="panel-badge" id="staff-count">— NS</div>
+          <div class="panel-title small"><div class="title-dot"></div>DANH SÁCH NHÂN SỰ</div>
+          <div class="panel-badge" id="staff-count">— NHÂN SỰ</div>
         </div>
         <div class="table-wrap">
           <table>
             <thead><tr>
-              <th style="width:65%">TÊN</th>
-              <th style="width:35%">SỐ</th>
+              <th style="width:65%">TÊN NHÂN SỰ</th>
+              <th style="width:35%">SỐ LƯỢNG</th>
             </tr></thead>
             <tbody id="staff-list">
-              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ</div></td></tr>
+              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>
             </tbody>
           </table>
         </div>
@@ -734,17 +851,17 @@ td:first-child { text-align: left; }
       <!-- DANH SÁCH KHÁCH HÀNG -->
       <div class="sub-panel">
         <div class="panel-header">
-          <div class="panel-title small"><div class="title-dot"></div>KHÁCH HÀNG</div>
-          <div class="panel-badge" id="customer-count">— KH</div>
+          <div class="panel-title small"><div class="title-dot"></div>DANH SÁCH KHÁCH HÀNG</div>
+          <div class="panel-badge" id="customer-count">— KHÁCH HÀNG</div>
         </div>
         <div class="table-wrap">
           <table>
             <thead><tr>
-              <th style="width:65%">TÊN</th>
-              <th style="width:35%">SỐ</th>
+              <th style="width:65%">TÊN KHÁCH HÀNG</th>
+              <th style="width:35%">SỐ LƯỢNG</th>
             </tr></thead>
             <tbody id="customer-list">
-              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ</div></td></tr>
+              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>
             </tbody>
           </table>
         </div>
@@ -773,8 +890,8 @@ function tickClock() {
 setInterval(tickClock,1000); tickClock();
 
 function parseGViz(t) { return JSON.parse(t.substring(t.indexOf("{"),t.lastIndexOf("}")+1)); }
-function fmtDate(v) { if(!v)return"—"; const d=new Date(v); return isNaN(d)?v:`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`; }
-function fmtMoney(v) { if(!v)return"—"; return typeof v==="number"?`${Math.round(v/1000000)}M`:v; }
+function fmtDate(v) { if(!v)return"—"; const d=new Date(v); return isNaN(d)?v:`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`; }
+function fmtMoney(v) { if(!v)return"—"; return typeof v==="number"?v.toLocaleString("vi-VN")+" đ":v; }
 
 function parseGoogleSheetDate(dateValue) {
   if (!dateValue) return null;
@@ -808,7 +925,10 @@ function parseGoogleSheetDate(dateValue) {
 
 function isOverdue(dateValue) {
   const deadline = parseGoogleSheetDate(dateValue);
-  if (!deadline || isNaN(deadline)) return false;
+  
+  if (!deadline || isNaN(deadline)) {
+    return false;
+  }
   
   deadline.setHours(0, 0, 0, 0);
   const today = new Date();
@@ -819,9 +939,7 @@ function isOverdue(dateValue) {
 
 function rowsPerPage() {
   const w = document.querySelector(".table-wrap");
-  if (!w) return 5;
-  const height = w.clientHeight;
-  return Math.max(3, Math.floor((height - 30) / 34));
+  return w ? Math.max(4, Math.floor((w.clientHeight - 44) / 45)) : 7;
 }
 
 async function fetchSheet(url) {
@@ -840,10 +958,10 @@ function renderProgress(){
   const total = Math.ceil(progressData.length / rows) || 1;
   const page = progressData.slice(progressPage * rows, progressPage * rows + rows);
 
-  document.getElementById("progress-count").innerText = `${progressData.length} MỤC`;
+  document.getElementById("progress-count").innerText = `${progressData.length} HẠNG MỤC`;
 
   if (!progressData.length) {
-    el.innerHTML = `<tr><td colspan="7"><div class="empty-state">KHÔNG CÓ</div></td></tr>`;
+    el.innerHTML = `<tr><td colspan="7"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
     return;
   }
 
@@ -867,27 +985,31 @@ function renderProgress(){
     let bdg = "";
     if (item) {
       if (pct === 100) {
-        bdg = badge("b-done", "HT");
+        bdg = badge("b-done", "HOÀN THÀNH");
       } else if (overdue) {
-        bdg = badge("b-late", "QH");
+        bdg = badge("b-late", "QUÁ HẠN");
       } else {
-        bdg = badge("b-wip", "ĐT");
+        bdg = badge("b-wip", "ĐANG THỰC HIỆN");
       }
     }
 
     return `<tr>
       <td><div class="project-name" title="${project}">${project}</div></td>
-      <td><span class="item-val" title="${item}">${item}</span></td>
-      <td>${item ? `<div class="pct-wrap"><span class="pct-num">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div></div>` : "—"}
+      <td><span class="item-val">${item}</span></td>
+      <td>${item ? `
+        <div class="pct-wrap">
+          <span class="pct-num">${pct}%</span>
+          <div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div>
+        </div>` : ""}
       </td>
-      <td><span class="date-val${overdue ? " overdue":""}" title="${deadlineDisplay}">${deadlineDisplay}</span></td>
-      <td><span class="customer-val" title="${customer}">${customer}</span></td>
-      <td><span class="person-val" title="${person}">${person}</span></td>
+      <td><span class="date-val${overdue ? " overdue":""}">${deadlineDisplay}</span></td>
+      <td><span class="customer-val">${customer}</span></td>
+      <td><span class="person-val">${person}</span></td>
       <td>${bdg}</td>
     </tr>`;
   }).join("");
 
-  document.getElementById("progressPage").innerText = `${progressPage+1}/${total}`;
+  document.getElementById("progressPage").innerText = `TRANG ${progressPage+1} / ${total}`;
   
   renderStaffList();
   renderCustomerList();
@@ -908,16 +1030,16 @@ function renderStaffList(){
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
 
-  document.getElementById("staff-count").innerText = `${staffArray.length} NS`;
+  document.getElementById("staff-count").innerText = `${staffArray.length} NHÂN SỰ`;
 
   if (!staffArray.length) {
-    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ</div></td></tr>`;
+    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
     return;
   }
 
   el.innerHTML = staffArray.map(staff => `
     <tr>
-      <td><span class="person-val" title="${staff.name}">${staff.name}</span></td>
+      <td><span class="person-val">${staff.name}</span></td>
       <td><span class="count-val">${staff.count}</span></td>
     </tr>
   `).join("");
@@ -938,16 +1060,16 @@ function renderCustomerList(){
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
 
-  document.getElementById("customer-count").innerText = `${customerArray.length} KH`;
+  document.getElementById("customer-count").innerText = `${customerArray.length} KHÁCH HÀNG`;
 
   if (!customerArray.length) {
-    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ</div></td></tr>`;
+    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
     return;
   }
 
   el.innerHTML = customerArray.map(customer => `
     <tr>
-      <td><span class="customer-val" title="${customer.name}">${customer.name}</span></td>
+      <td><span class="customer-val">${customer.name}</span></td>
       <td><span class="count-val">${customer.count}</span></td>
     </tr>
   `).join("");
@@ -957,21 +1079,21 @@ function renderGuarantee(){
   const el=document.getElementById("guarantee");
   
   if(!guaranteeData.length){
-    el.innerHTML=`<tr><td colspan="4"><div class="empty-state">KHÔNG CÓ</div></td></tr>`;
+    el.innerHTML=`<tr><td colspan="4"><div class="empty-state">CHƯA CÓ DỮ LIỆU</div></td></tr>`;
   } else {
     el.innerHTML=guaranteeData.map(r=>{
       const d=r.c;
       const project=d[0]?.v||"", type=d[1]?.v||"—", value=d[2]?.v, expiryRaw=d[3]?.v;
       return `<tr>
         <td><div class="project-name" title="${project}">${project}</div></td>
-        <td><span class="type-val" title="${type}">${type}</span></td>
-        <td><span class="value-val" title="${fmtMoney(value)}">${fmtMoney(value)}</span></td>
-        <td><span class="date-val" title="${fmtDate(expiryRaw)}">${fmtDate(expiryRaw)}</span></td>
+        <td><span class="type-val">${type}</span></td>
+        <td><span class="value-val">${fmtMoney(value)}</span></td>
+        <td><span class="date-val">${fmtDate(expiryRaw)}</span></td>
       </tr>`;
     }).join("");
   }
   
-  document.getElementById("guarantee-count").innerText=`${guaranteeData.length} BL`;
+  document.getElementById("guarantee-count").innerText=`${guaranteeData.length} BẢO LÃNH`;
 }
 
 async function loadData(){
@@ -979,7 +1101,7 @@ async function loadData(){
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
   renderProgress();
   renderGuarantee();
-  ["refreshBar1", "refreshBar2"].forEach(id=>{
+  ["refreshBar1","refreshBar2"].forEach(id=>{
     const el=document.getElementById(id);
     el.classList.remove("animating"); void el.offsetWidth; el.classList.add("animating");
   });
