@@ -204,6 +204,10 @@ td:first-child { text-align: left; }
   font-size: 15px;
   color: var(--text);
 }
+.customer-val {
+  font-size: 15px;
+  color: var(--text);
+}
 .pct-wrap {
   display: flex;
   flex-direction: column;
@@ -364,15 +368,16 @@ td:first-child { text-align: left; }
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th style="width:20%">DỰ ÁN</th>
-          <th style="width:20%">HẠNG MỤC</th>
-          <th style="width:12%">TIẾN ĐỘ</th>
-          <th style="width:14%">DEADLINE</th>
-          <th style="width:14%">NHÂN SỰ</th>
-          <th style="width:20%">TRẠNG THÁI</th>
+          <th style="width:16%">DỰ ÁN</th>
+          <th style="width:14%">HẠNG MỤC</th>
+          <th style="width:10%">TIẾN ĐỘ</th>
+          <th style="width:12%">DEADLINE</th>
+          <th style="width:12%">KHÁCH HÀNG</th>
+          <th style="width:12%">NHÂN SỰ</th>
+          <th style="width:16%">TRẠNG THÁI</th>
         </tr></thead>
         <tbody id="progress">
-          <tr><td colspan="6"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
+          <tr><td colspan="7"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
         </tbody>
       </table>
     </div>
@@ -521,7 +526,7 @@ function renderProgress(){
   document.getElementById("progress-count").innerText = `${progressData.length} HẠNG MỤC`;
 
   if (!progressData.length) {
-    el.innerHTML = `<tr><td colspan="6"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
+    el.innerHTML = `<tr><td colspan="7"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
     return;
   }
 
@@ -529,6 +534,7 @@ function renderProgress(){
     const d = r.c;
     const project = d[1]?.v || "";
     const item = d[2]?.v || "";
+    const customer = d[4]?.v || "—"; // Cột E - KHÁCH HÀNG
     const person = d[3]?.v || "—";
     
     // Lấy deadline từ cột H (index 7)
@@ -572,6 +578,7 @@ function renderProgress(){
         </div>` : ""}
       </td>
       <td><span class="date-val${overdue ? " overdue":""}">${deadlineDisplay}</span></td>
+      <td><span class="customer-val">${customer}</span></td>
       <td><span class="person-val">${person}</span></td>
       <td>${bdg}</td>
     </tr>`;
