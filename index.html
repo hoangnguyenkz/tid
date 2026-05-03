@@ -437,28 +437,32 @@ function fmtMoney(v) { if(!v)return"—"; return typeof v==="number"?v.toLocaleS
 function parseGoogleSheetDate(dateStr) {
   if (!dateStr) return null;
   
-  // Cách 1: Nếu là string "Date(2026,4,15,0,0,0)"
-  if (typeof dateStr === 'string' && dateStr.includes('Date(')) {
-    const match = dateStr.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
+  // Nếu là string dạng "24/04/2026" hoặc "DD/MM/YYYY"
+  if (typeof dateStr === 'string') {
+    // Thử parse dạng DD/MM/YYYY
+    const match = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
     if (match) {
-      const [, year, month, day, hour, minute, second] = match.map(Number);
-      // Month là 0-based trong Google Sheets
+      const [, day, month, year] = match.map(Number);
+      return new Date(year, month - 1, day); // month - 1 vì JS dùng 0-based
+    }
+    
+    // Thử parse dạng Date(year,month,day,...)
+    const dateMatch = dateStr.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
+    if (dateMatch) {
+      const [, year, month, day, hour, minute, second] = dateMatch.map(Number);
       return new Date(year, month, day, hour, minute, second);
     }
+    
+    // Thử parse string thông thường
+    const parsed = new Date(dateStr);
+    if (!isNaN(parsed)) return parsed;
   }
   
-  // Cách 2: Nếu là Date object hoặc có thể parse được
-  if (dateStr instanceof Date) {
-    return dateStr;
-  }
-  
-  // Cách 3: Parse string thông thường
-  const parsed = new Date(dateStr);
-  if (!isNaN(parsed)) return parsed;
+  if (dateStr instanceof Date) return dateStr;
   
   return null;
 }
-
+  
 function isOverdue(dateValue) {
   const deadline = parseGoogleSheetDate(dateValue);
   if (!deadline || isNaN(deadline)) return false;
