@@ -432,41 +432,46 @@ function parseGViz(t) { return JSON.parse(t.substring(t.indexOf("{"),t.lastIndex
 function fmtDate(v) { if(!v)return"—"; const d=new Date(v); return isNaN(d)?v:`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`; }
 function fmtMoney(v) { if(!v)return"—"; return typeof v==="number"?v.toLocaleString("vi-VN")+" đ":v; }
 
-function parseGoogleDate(dateValue) {
-  if (!dateValue) return null;
+// Parse Google Sheets date format: Date(year, month, day, hour, minute, second)
+// Lưu ý: month là 0-based, nên tháng 5 trong Sheets là tháng 4 trong Date()
+function parseGoogleSheetDate(dateStr) {
+  if (!dateStr) return null;
   
-  // Nếu là Date object
-  if (dateValue instanceof Date) {
-    return dateValue;
+  // Cách 1: Nếu là string "Date(2026,4,15,0,0,0)"
+  if (typeof dateStr === 'string' && dateStr.includes('Date(')) {
+    const match = dateStr.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
+    if (match) {
+      const [, year, month, day, hour, minute, second] = match.map(Number);
+      // Month là 0-based trong Google Sheets
+      return new Date(year, month, day, hour, minute, second);
+    }
   }
   
-  // Nếu là string
-  if (typeof dateValue === 'string') {
-    const parsed = new Date(dateValue);
-    if (!isNaN(parsed)) return parsed;
+  // Cách 2: Nếu là Date object hoặc có thể parse được
+  if (dateStr instanceof Date) {
+    return dateStr;
   }
   
-  // Nếu là số (serial date từ Google Sheets)
-  if (typeof dateValue === 'number') {
-    // Google Sheets serial date bắt đầu từ 1/1/1900
-    const date = new Date(1900, 0, dateValue);
-    return date;
-  }
+  // Cách 3: Parse string thông thường
+  const parsed = new Date(dateStr);
+  if (!isNaN(parsed)) return parsed;
   
   return null;
 }
 
 function isOverdue(dateValue) {
-  const deadline = parseGoogleDate(dateValue);
+  const deadline = parseGoogleSheetDate(dateValue);
   if (!deadline || isNaN(deadline)) return false;
   
+  // Reset time để chỉ so sánh ngày
   deadline.setHours(0, 0, 0, 0);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
-  console.log(`Checking deadline: ${deadline.toDateString()} vs today: ${today.toDateString()}, isOverdue: ${deadline < today}`);
+  const result = deadline < today;
+  console.log(`DEBUG: Deadline: ${deadline.toDateString()}, Today: ${today.toDateString()}, Overdue: ${result}, Raw: ${dateValue}`);
   
-  return deadline < today;
+  return result;
 }
 
 function rowsPerPage() {
@@ -522,19 +527,20 @@ function renderProgress(){
     if (pct > 0 && pct <= 1) pct *= 100;
     pct = Math.round(pct);
 
-    // Logic Trạng Thái
-    let bdg = "";
+    // Kiểm tra trạng thái QUÁ HẠN
     const overdue = isOverdue(deadlineValue);
-    
+
+    // Logic Trạng Thái: % = 100 HOÀN THÀNH, deadline < hôm nay = QUÁ HẠN, deadline >= hôm nay = ĐANG THỰC HIỆN
+    let bdg = "";
     if (item) {
       if (pct === 100) {
         // % = 100 => HOÀN THÀNH
         bdg = badge("b-done", "HOÀN THÀNH");
       } else if (overdue) {
-        // Deadline < hôm nay => QUÁ HẠN
+        // Deadline trước hôm nay => QUÁ HẠN
         bdg = badge("b-late", "QUÁ HẠN");
       } else {
-        // Deadline >= hôm nay => ĐANG THỰC HIỆN
+        // Deadline sau hôm nay hoặc không có deadline => ĐANG THỰC HIỆN
         bdg = badge("b-wip", "ĐANG THỰC HIỆN");
       }
     }
@@ -592,7 +598,7 @@ function renderGuarantee(){
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
-  console.log("Progress Data:", progressData);
+  console.log("Progress Data loaded:", progressData);
   renderProgress(); renderGuarantee();
   ["refreshBar1","refreshBar2"].forEach(id=>{
     const el=document.getElementById(id);
