@@ -509,7 +509,7 @@ function renderProgress(){
       return `<tr>
         <td><div class="project-name" title="${project}">${project}</div></td>
         <td><span class="item-val">${item}</span></td>
-        <td><div class="pct-wrap"><span class="pct-num">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div></div></td>
+        <td>${item ? `<div class="pct-wrap"><span class="pct-num">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div></div>` : ""}</td>
         <td><span class="date-val${overdue(deadlineRaw)?" overdue":""}">${fmtDate(deadlineRaw)}</span></td>
         <td><span class="person-val">${person}</span></td>
         <td>${bdg}</td>
