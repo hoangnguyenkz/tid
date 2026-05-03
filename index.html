@@ -515,7 +515,7 @@ function renderProgress(){
     return;
   }
 
-  el.innerHTML = page.map(r => {
+  el.innerHTML = page.map((r, idx) => {
     const d = r.c;
     const project = d[1]?.v || "";
     const item = d[2]?.v || "";
@@ -531,20 +531,23 @@ function renderProgress(){
     if (pct > 0 && pct <= 1) pct *= 100;
     pct = Math.round(pct);
 
+    // DEBUG
+    if (idx === 1) {
+      console.log(`Row 1 - Deadline Raw:`, deadlineValue, `Display:`, deadlineDisplay);
+      console.log(`isOverdue result:`, isOverdue(deadlineValue));
+    }
+
     // Kiểm tra trạng thái QUÁ HẠN
     const overdue = isOverdue(deadlineValue);
 
-    // Logic Trạng Thái: % = 100 HOÀN THÀNH, deadline < hôm nay = QUÁ HẠN, deadline >= hôm nay = ĐANG THỰC HIỆN
+    // Logic Trạng Thái
     let bdg = "";
     if (item) {
       if (pct === 100) {
-        // % = 100 => HOÀN THÀNH
         bdg = badge("b-done", "HOÀN THÀNH");
       } else if (overdue) {
-        // Deadline trước hôm nay => QUÁ HẠN
         bdg = badge("b-late", "QUÁ HẠN");
       } else {
-        // Deadline sau hôm nay hoặc không có deadline => ĐANG THỰC HIỆN
         bdg = badge("b-wip", "ĐANG THỰC HIỆN");
       }
     }
