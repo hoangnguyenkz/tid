@@ -502,7 +502,9 @@ function renderProgress(){
     el.innerHTML=page.map(r=>{
       const d=r.c;
       const project=d[1]?.v||"", item=d[2]?.v||"", person=d[3]?.v||"—";
-      const deadlineRaw=d[7]?.v;
+      const deadlineCell=d[7];
+      const deadlineRaw=deadlineCell?.v;
+      const deadlineDisplay=deadlineCell?.f || deadlineCell?.v || "";
       let pct=Number(d[9]?.v||0); if(pct>0&&pct<=1)pct*=100; pct=Math.round(pct);
       let bdg="";
       if(item){ if(pct>=100) bdg=badge("b-done","HOÀN THÀNH"); else if(overdue(deadlineRaw)) bdg=badge("b-late","QUÁ HẠN"); else bdg=badge("b-wip","ĐANG THỰC HIỆN"); }
@@ -510,7 +512,7 @@ function renderProgress(){
         <td><div class="project-name" title="${project}">${project}</div></td>
         <td><span class="item-val">${item}</span></td>
         <td>${item ? `<div class="pct-wrap"><span class="pct-num">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div></div>` : ""}</td>
-        <td><span class="date-val${overdue(deadlineRaw)?" overdue":""}">${fmtDate(deadlineRaw)}</span></td>
+        <td><span class="date-val${overdue(deadlineRaw)?" overdue":""}">${deadlineDisplay}</span></td>
         <td><span class="person-val">${person}</span></td>
         <td>${bdg}</td>
       </tr>`;
