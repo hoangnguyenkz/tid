@@ -4,70 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PROJECT DASHBOARD</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg:        #080c10;
-  --bg2:       #0d1318;
-  --bg3:       #111820;
-  --border:    #1e2d3d;
-  --border2:   #243344;
-  --accent:    #00c8ff;
-  --accent2:   #0077aa;
-  --accent-glow: rgba(0,200,255,0.12);
-  --gold:      #f0b429;
-  --gold-dim:  #8a6614;
-  --green:     #00e676;
-  --green-dim: #005c2a;
-  --red:       #ff3d5a;
-  --red-dim:   #6b0018;
-  --orange:    #ff8c42;
-  --text:      #c8d8e8;
-  --text-dim:  #5a7a90;
-  --text-bright: #e8f4ff;
-  --mono:      'Share Tech Mono', monospace;
-  --head:      'Rajdhani', sans-serif;
-  --body:      'Barlow Condensed', sans-serif;
+  --bg:          #0a0f1e;
+  --bg-header:   #0d1428;
+  --bg-thead:    #111d38;
+  --row-a:       #0e1830;
+  --row-b:       #0b1326;
+  --border:      #1e3358;
+  --border-hi:   #2e4f88;
+  --accent:      #60c8f0;
+  --accent-dim:  #2a7aaa;
+  --gold:        #ffc94d;
+  --green:       #3de08a;
+  --red:         #ff6b6b;
+  --orange:      #ffaa4d;
+  --text:        #d8eaf8;
+  --text-bright: #ffffff;
+  --text-dim:    #6a90b8;
+  --f-sans:      'IBM Plex Sans', sans-serif;
+  --f-mono:      'IBM Plex Mono', monospace;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--body);
+  font-family: var(--f-sans);
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
-
-/* ── SCANLINE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.06) 2px,
-    rgba(0,0,0,0.06) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* ── CORNER DECORATIONS ── */
-.corner {
-  position: absolute;
-  width: 18px; height: 18px;
-  border-color: var(--accent);
-  border-style: solid;
-  opacity: 0.5;
-}
-.corner-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
-.corner-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
-.corner-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
-.corner-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
 
 /* ── HEADER ── */
 .header {
@@ -76,157 +45,127 @@ body::before {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   height: 64px;
-  padding: 0 24px;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border2);
+  padding: 0 28px;
+  background: var(--bg-header);
+  border-bottom: 2px solid var(--border-hi);
 }
-
 .header::after {
   content: '';
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0.6;
+  bottom: -2px; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent 5%, var(--accent) 50%, transparent 95%);
+  opacity: 0.45;
 }
 
 .header-logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--head);
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: 3px;
   color: var(--text-bright);
-  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
-
-.header-logo-icon {
-  width: 42px; height: 42px;
-  border: 1.5px solid var(--accent);
+.logo-box {
+  width: 36px; height: 36px;
+  border: 2px solid var(--accent);
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
+  font-size: 16px; font-weight: 700;
   color: var(--accent);
-  position: relative;
-  animation: pulse-border 3s ease-in-out infinite;
+  animation: glow 3s ease-in-out infinite;
+}
+@keyframes glow { 0%,100%{ box-shadow:0 0 4px rgba(96,200,240,.3)} 50%{ box-shadow:0 0 14px rgba(96,200,240,.7)} }
+.header-sub {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 1.5px;
+  margin-top: 3px;
 }
 
-@keyframes pulse-border {
-  0%, 100% { box-shadow: 0 0 6px rgba(0,200,255,0.3); }
-  50%       { box-shadow: 0 0 16px rgba(0,200,255,0.6); }
-}
-
+.header-center { text-align: center; }
 .header-title {
-  text-align: center;
-  font-family: var(--head);
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 5px;
   color: var(--accent);
   text-transform: uppercase;
 }
-
-.header-subtitle {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 2px;
+.header-tagline {
+  font-family: var(--f-mono);
+  font-size: 10px;
   color: var(--text-dim);
-  text-align: center;
+  letter-spacing: 3px;
   margin-top: 2px;
 }
 
+.header-right { text-align: right; }
 .header-clock {
-  text-align: right;
-  font-family: var(--mono);
-  font-size: 20px;
-  color: var(--accent);
-  letter-spacing: 1px;
+  font-family: var(--f-mono);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-bright);
+  letter-spacing: 2px;
 }
-
 .header-date {
-  font-family: var(--mono);
-  font-size: 12px;
+  font-family: var(--f-mono);
+  font-size: 11px;
   color: var(--text-dim);
-  text-align: right;
   margin-top: 2px;
 }
 
-/* ── MAIN ── */
+/* ── LAYOUT ── */
 .container {
   display: flex;
   height: calc(100vh - 64px);
-  gap: 0;
 }
-
-/* ── PANEL ── */
 .panel {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px 20px 12px;
-  position: relative;
+  padding: 14px 18px 10px;
   overflow: hidden;
+  position: relative;
 }
-
-.panel:first-child {
-  border-right: 1px solid var(--border2);
-}
-
-/* dim vertical glow separators */
-.panel:first-child::after {
-  content: '';
-  position: absolute;
-  top: 0; right: -1px;
-  width: 1px; height: 100%;
-  background: linear-gradient(180deg, transparent, var(--accent2), transparent);
-  opacity: 0.4;
-}
+.panel:first-child { border-right: 2px solid var(--border-hi); }
 
 /* ── PANEL HEADER ── */
 .panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
+  border-bottom: 2px solid var(--border-hi);
 }
-
-.panel-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0;
-  height: 1px; width: 40%;
-  background: var(--accent);
-  opacity: 0.5;
-}
-
 .panel-title {
-  font-family: var(--head);
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 1.5px;
   color: var(--text-bright);
   text-transform: uppercase;
 }
-
-.panel-tag {
-  font-family: var(--mono);
-  font-size: 13px;
-  padding: 3px 10px;
-  border: 1px solid var(--border2);
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  background: var(--bg3);
+.title-dot {
+  width: 9px; height: 9px;
+  background: var(--accent);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+.panel-badge {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-hi);
+  color: var(--accent);
+  background: rgba(96,200,240,.08);
+  border-radius: 3px;
 }
 
 /* ── TABLE ── */
-.table-wrap {
-  flex: 1;
-  overflow: hidden;
-}
+.table-wrap { flex: 1; overflow: hidden; }
 
 table {
   width: 100%;
@@ -234,359 +173,271 @@ table {
   table-layout: fixed;
 }
 
-thead tr {
-  border-bottom: 1px solid var(--border2);
-}
+thead tr { background: var(--bg-thead); }
 
 th {
-  padding: 10px 10px;
-  font-family: var(--mono);
+  padding: 10px 12px;
+  font-family: var(--f-sans);
   font-size: 13px;
-  letter-spacing: 2px;
-  color: var(--text-dim);
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--accent);
   text-transform: uppercase;
-  font-weight: 400;
   text-align: center;
+  border-bottom: 2px solid var(--border-hi);
 }
-
 th:first-child { text-align: left; }
 
+tbody tr:nth-child(odd)  { background: var(--row-a); }
+tbody tr:nth-child(even) { background: var(--row-b); }
 tbody tr {
-  border-bottom: 1px solid rgba(30,45,61,0.6);
-  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+  transition: background .12s;
 }
-
-tbody tr:hover {
-  background: rgba(0,200,255,0.04);
-}
+tbody tr:hover { background: rgba(96,200,240,.09) !important; }
 
 td {
-  padding: 11px 10px;
+  padding: 11px 12px;
   text-align: center;
-  font-size: 17px;
-  font-family: var(--body);
+  font-size: 16px;
   font-weight: 400;
   color: var(--text);
   vertical-align: middle;
 }
-
 td:first-child { text-align: left; }
 
-/* Project name */
+/* ── CELLS ── */
 .project-name {
-  font-family: var(--head);
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-/* Percent bar */
-.percent-wrap {
+.item-val {
+  font-size: 15px;
+  color: var(--text);
+}
+.pct-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
-
-.percent-bar-bg {
-  width: 70px; height: 5px;
-  background: var(--border);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.percent-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--accent2), var(--accent));
-  transition: width 0.8s ease;
-}
-
-.percent-label {
-  font-family: var(--mono);
-  font-size: 15px;
+.pct-num {
+  font-family: var(--f-mono);
+  font-size: 16px;
+  font-weight: 500;
   color: var(--accent);
 }
-
-/* Date */
+.bar-bg {
+  width: 72px; height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+}
 .date-val {
-  font-family: var(--mono);
+  font-family: var(--f-mono);
   font-size: 15px;
   color: var(--text-dim);
 }
-
-.date-val.overdue { color: var(--red); }
-
-/* Personnel */
-.person-val {
-  font-family: var(--body);
-  font-size: 16px;
-  color: var(--text);
+.date-val.overdue { color: var(--red); font-weight: 600; }
+.person-val { font-size: 15px; color: var(--text); }
+.type-val   { font-size: 15px; color: var(--text-dim); }
+.value-val  {
+  font-family: var(--f-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--gold);
 }
 
-/* Status badges */
+/* ── BADGES ── */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  font-family: var(--mono);
+  gap: 7px;
+  padding: 5px 14px;
   font-size: 13px;
-  letter-spacing: 1.5px;
-  font-weight: 400;
-  border-radius: 2px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  border-radius: 4px;
   white-space: nowrap;
   text-transform: uppercase;
 }
-
-.badge::before {
-  content: '';
-  width: 6px; height: 6px;
+.badge-dot {
+  width: 7px; height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.badge.done {
-  color: var(--green);
-  background: rgba(0,230,118,0.08);
-  border: 1px solid rgba(0,230,118,0.25);
-}
-.badge.done::before { background: var(--green); box-shadow: 0 0 5px var(--green); }
+/* Solid-fill badges — high contrast */
+.b-done    { color:#061810; background:var(--green); }
+.b-done    .badge-dot { background:#061810; }
 
-.badge.late {
-  color: var(--red);
-  background: rgba(255,61,90,0.08);
-  border: 1px solid rgba(255,61,90,0.25);
-  animation: blink-border 1.5s step-end infinite;
-}
-.badge.late::before { background: var(--red); box-shadow: 0 0 5px var(--red); animation: blink 1.5s step-end infinite; }
+.b-late    { color:#fff; background:var(--red); animation: flash 1.4s step-end infinite; }
+.b-late    .badge-dot { background:#fff; animation: blink 1.4s step-end infinite; }
+@keyframes flash { 0%,100%{opacity:1} 50%{opacity:.78} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-@keyframes blink { 0%,100%{ opacity:1 } 50%{ opacity:0 } }
-@keyframes blink-border { 0%,100%{ border-color: rgba(255,61,90,0.35) } 50%{ border-color: rgba(255,61,90,0.08) } }
+.b-wip     { color:var(--accent); background:rgba(96,200,240,.12); border:1.5px solid var(--accent); }
+.b-wip     .badge-dot { background:var(--accent); animation:pdot 2s ease-in-out infinite; }
+@keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-.badge.design {
-  color: var(--accent);
-  background: rgba(0,200,255,0.06);
-  border: 1px solid rgba(0,200,255,0.2);
-}
-.badge.design::before { background: var(--accent); box-shadow: 0 0 5px var(--accent); animation: pulse-dot 2s ease-in-out infinite; }
-@keyframes pulse-dot { 0%,100%{ opacity:1 } 50%{ opacity:0.3 } }
+.b-active  { color:#061810; background:var(--green); }
+.b-active  .badge-dot { background:#061810; }
 
-.badge.pending {
-  color: var(--orange);
-  background: rgba(255,140,66,0.07);
-  border: 1px solid rgba(255,140,66,0.2);
-}
-.badge.pending::before { background: var(--orange); }
+.b-warn    { color:#1a1000; background:var(--orange); }
+.b-warn    .badge-dot { background:#1a1000; }
 
-.badge.warning {
-  color: var(--gold);
-  background: rgba(240,180,41,0.07);
-  border: 1px solid rgba(240,180,41,0.2);
-}
-.badge.warning::before { background: var(--gold); }
+.b-expired { color:#fff; background:var(--red); }
+.b-expired .badge-dot { background:#fff; }
 
-/* Guarantee value */
-.value-val {
-  font-family: var(--mono);
-  font-size: 16px;
-  color: var(--gold);
-}
-
-.type-val {
-  font-family: var(--body);
-  font-size: 16px;
-  color: var(--text-dim);
-  font-weight: 300;
-  letter-spacing: 0.5px;
-}
+.b-info    { color:var(--accent); background:rgba(96,200,240,.12); border:1.5px solid var(--accent); }
+.b-info    .badge-dot { background:var(--accent); }
 
 /* ── FOOTER ── */
 .panel-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid var(--border);
-  margin-top: 6px;
+  border-top: 1px solid var(--border-hi);
 }
-
 .page-info {
-  font-family: var(--mono);
-  font-size: 13px;
+  font-family: var(--f-mono);
+  font-size: 12px;
   color: var(--text-dim);
   letter-spacing: 1px;
 }
-
-.page-dots {
-  display: flex;
-  gap: 4px;
-}
-
+.page-dots { display:flex; gap:5px; align-items:center; }
 .dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--border2);
-  transition: background 0.3s;
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--border-hi);
+  transition:background .3s,transform .3s;
 }
-.dot.active { background: var(--accent); box-shadow: 0 0 5px var(--accent); }
-
-/* Empty state */
-.empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100px;
-  color: var(--text-dim);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 2px;
-  border: 1px dashed var(--border);
+.dot.active {
+  background:var(--accent);
+  transform:scale(1.4);
+  box-shadow:0 0 5px var(--accent);
 }
 
-/* Loading */
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: var(--text-dim);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 2px;
-  padding: 40px;
+/* ── STATES ── */
+.empty-state, .loading-state {
+  display:flex; align-items:center; justify-content:center;
+  height:80px;
+  color:var(--text-dim);
+  font-family:var(--f-mono);
+  font-size:13px;
+  letter-spacing:2px;
+  gap:10px;
 }
+.empty-state { border:1px dashed var(--border-hi); border-radius:4px; margin-top:8px; }
 
-.loading-dots span {
-  display: inline-block;
-  width: 4px; height: 4px;
-  background: var(--accent);
-  border-radius: 50%;
-  margin: 0 2px;
-  animation: ld 1.2s ease-in-out infinite;
+.ld span {
+  display:inline-block;
+  width:5px; height:5px;
+  background:var(--accent);
+  border-radius:50%;
+  margin:0 2px;
+  animation:ld 1.2s ease-in-out infinite;
 }
-.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes ld { 0%,80%,100%{ opacity:0.2; transform:scale(0.8) } 40%{ opacity:1; transform:scale(1.2) } }
+.ld span:nth-child(2){animation-delay:.2s}
+.ld span:nth-child(3){animation-delay:.4s}
+@keyframes ld{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1.2)}}
 
-/* REFRESH indicator */
+/* ── REFRESH BAR ── */
 .refresh-bar {
-  position: absolute;
-  bottom: 0; left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent2), var(--accent));
-  animation: none;
+  position:absolute; bottom:0; left:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--accent-dim),var(--accent));
 }
-
-.refresh-bar.animating {
-  animation: refill 30s linear forwards;
-}
-
-@keyframes refill {
-  from { width: 100%; opacity: 0.7; }
-  to   { width: 0%;   opacity: 0.3; }
-}
+.refresh-bar.animating { animation:shrink 30s linear forwards; }
+@keyframes shrink{from{width:100%;opacity:.8}to{width:0%;opacity:.2}}
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div>
     <div class="header-logo">
-      <div class="header-logo-icon">⬡</div>
+      <div class="logo-box">T</div>
       TID CORP
     </div>
-    <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-top:2px;">MONITORING SYSTEM v2.0</div>
+    <div class="header-sub">MONITORING SYSTEM v2.0</div>
   </div>
-
-  <div>
+  <div class="header-center">
     <div class="header-title">PROJECT DASHBOARD</div>
-    <div class="header-subtitle">REAL-TIME · LIVE DATA</div>
+    <div class="header-tagline">REAL-TIME · LIVE DATA</div>
   </div>
-
-  <div>
+  <div class="header-right">
     <div class="header-clock" id="clock">--:--:--</div>
-    <div class="header-date" id="date">--/--/----</div>
+    <div class="header-date"  id="date">--/--/----</div>
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="container">
 
   <!-- TIẾN ĐỘ -->
-  <div class="panel" id="panel-progress">
-    <div class="corner corner-tl"></div>
-    <div class="corner corner-bl"></div>
-
+  <div class="panel">
     <div class="panel-header">
-      <div class="panel-title">⬖ TIẾN ĐỘ DỰ ÁN</div>
-      <div class="panel-tag" id="progress-count">— HẠNG MỤC</div>
+      <div class="panel-title"><div class="title-dot"></div>TIẾN ĐỘ DỰ ÁN</div>
+      <div class="panel-badge" id="progress-count">— HẠNG MỤC</div>
     </div>
-
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th style="width:20%">DỰ ÁN</th>
-            <th style="width:20%">HẠNG MỤC</th>
-            <th style="width:12%">TIẾN ĐỘ</th>
-            <th style="width:13%">DEADLINE</th>
-            <th style="width:15%">NHÂN SỰ</th>
-            <th style="width:20%">TRẠNG THÁI</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th style="width:20%">DỰ ÁN</th>
+          <th style="width:20%">HẠNG MỤC</th>
+          <th style="width:12%">TIẾN ĐỘ</th>
+          <th style="width:14%">DEADLINE</th>
+          <th style="width:14%">NHÂN SỰ</th>
+          <th style="width:20%">TRẠNG THÁI</th>
+        </tr></thead>
         <tbody id="progress">
-          <tr><td colspan="6"><div class="loading">ĐANG TẢI DỮ LIỆU <span class="loading-dots"><span></span><span></span><span></span></span></div></td></tr>
+          <tr><td colspan="6"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
         </tbody>
       </table>
     </div>
-
     <div class="panel-footer">
-      <div class="page-info" id="progressPage">TRANG 1/1</div>
+      <div class="page-info" id="progressPage">TRANG 1 / 1</div>
       <div class="page-dots" id="progressDots"></div>
     </div>
-
     <div class="refresh-bar" id="refreshBar1"></div>
   </div>
 
   <!-- BẢO LÃNH -->
-  <div class="panel" id="panel-guarantee">
-    <div class="corner corner-tr"></div>
-    <div class="corner corner-br"></div>
-
+  <div class="panel">
     <div class="panel-header">
-      <div class="panel-title">⬗ THEO DÕI BẢO LÃNH</div>
-      <div class="panel-tag" id="guarantee-count">— BẢO LÃNH</div>
+      <div class="panel-title"><div class="title-dot"></div>THEO DÕI BẢO LÃNH</div>
+      <div class="panel-badge" id="guarantee-count">— BẢO LÃNH</div>
     </div>
-
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th style="width:28%">DỰ ÁN</th>
-            <th style="width:18%">LOẠI</th>
-            <th style="width:18%">GIÁ TRỊ</th>
-            <th style="width:18%">HẾT HẠN</th>
-            <th style="width:18%">TRẠNG THÁI</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th style="width:28%">DỰ ÁN</th>
+          <th style="width:18%">LOẠI</th>
+          <th style="width:18%">GIÁ TRỊ</th>
+          <th style="width:18%">HẾT HẠN</th>
+          <th style="width:18%">TRẠNG THÁI</th>
+        </tr></thead>
         <tbody id="guarantee">
-          <tr><td colspan="5"><div class="loading">ĐANG TẢI DỮ LIỆU <span class="loading-dots"><span></span><span></span><span></span></span></div></td></tr>
+          <tr><td colspan="5"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
         </tbody>
       </table>
     </div>
-
     <div class="panel-footer">
-      <div class="page-info" id="guaranteePage">TRANG 1/1</div>
+      <div class="page-info" id="guaranteePage">TRANG 1 / 1</div>
       <div class="page-dots" id="guaranteeDots"></div>
     </div>
-
     <div class="refresh-bar" id="refreshBar2"></div>
   </div>
 
@@ -603,221 +454,122 @@ let guaranteeData = [];
 let progressPage  = 0;
 let guaranteePage = 0;
 
-/* ── CLOCK ── */
 function tickClock() {
-  const now = new Date();
-  const hh  = String(now.getHours()).padStart(2,"0");
-  const mm  = String(now.getMinutes()).padStart(2,"0");
-  const ss  = String(now.getSeconds()).padStart(2,"0");
-  document.getElementById("clock").innerText = `${hh}:${mm}:${ss}`;
-  document.getElementById("date").innerText  =
-    now.toLocaleDateString("vi-VN",{weekday:"short",day:"2-digit",month:"2-digit",year:"numeric"}).toUpperCase();
+  const n = new Date(), p = v => String(v).padStart(2,"0");
+  document.getElementById("clock").innerText = `${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  document.getElementById("date").innerText  = n.toLocaleDateString("vi-VN",{weekday:"short",day:"2-digit",month:"2-digit",year:"numeric"}).toUpperCase();
 }
-setInterval(tickClock, 1000);
-tickClock();
+setInterval(tickClock,1000); tickClock();
 
-/* ── HELPERS ── */
-function parseJSON(text) {
-  return JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
-}
+function parseGViz(t) { return JSON.parse(t.substring(t.indexOf("{"),t.lastIndexOf("}")+1)); }
+function fmtDate(v)   { if(!v)return"—"; const d=new Date(v); return isNaN(d)?v:`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`; }
+function fmtMoney(v)  { if(!v)return"—"; return typeof v==="number"?v.toLocaleString("vi-VN")+" đ":v; }
+function overdue(v)   { return v && new Date(v)<new Date(); }
 
-function formatDate(d) {
-  if (!d) return "—";
-  let date = new Date(d);
-  if (isNaN(date)) return d;
-  return `${String(date.getDate()).padStart(2,"0")}/${String(date.getMonth()+1).padStart(2,"0")}/${date.getFullYear()}`;
+function rowsPerPage() {
+  const w = document.querySelector(".table-wrap");
+  return w ? Math.max(4, Math.floor((w.clientHeight - 44) / 45)) : 7;
 }
 
-function formatValue(v) {
-  if (!v) return "—";
-  if (typeof v === "number") return v.toLocaleString("vi-VN") + " đ";
-  return v;
-}
-
-function isOverdue(d) {
-  if (!d) return false;
-  return new Date(d) < new Date();
-}
-
-function getRowHeight() {
-  // Each tbody row is ~42px
-  const wrap = document.querySelector(".table-wrap");
-  if (!wrap) return 8;
-  return Math.max(5, Math.floor((wrap.clientHeight - 36) / 42));
-}
-
-/* ── FETCH ── */
 async function fetchSheet(url) {
-  if (!url) return [];
-  const res  = await fetch(url);
-  const text = await res.text();
-  const json = parseJSON(text);
-  return (json.table.rows || []).slice(4);
+  if(!url) return [];
+  const r = await fetch(url), t = await r.text();
+  return (parseGViz(t).table.rows||[]).slice(4);
 }
 
-/* ── PAGE DOTS ── */
-function renderDots(containerId, total, current) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = "";
-  for (let i = 0; i < Math.min(total, 8); i++) {
-    const d = document.createElement("div");
-    d.className = "dot" + (i === current ? " active" : "");
+function renderDots(id,total,cur){
+  const el=document.getElementById(id); el.innerHTML="";
+  for(let i=0;i<Math.min(total,10);i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i===cur?" active":"");
     el.appendChild(d);
   }
 }
 
-/* ── RENDER PROGRESS ── */
-function renderProgress() {
-  const el       = document.getElementById("progress");
-  const rowCount = getRowHeight();
-  const start    = progressPage * rowCount;
-  const pageData = progressData.slice(start, start + rowCount);
-  const total    = Math.ceil(progressData.length / rowCount) || 1;
+function badge(cls,label){
+  return `<span class="badge ${cls}"><span class="badge-dot"></span>${label}</span>`;
+}
 
-  document.getElementById("progress-count").innerText =
-    `${progressData.length} HẠNG MỤC`;
+function renderProgress(){
+  const el=document.getElementById("progress");
+  const rows=rowsPerPage(), total=Math.ceil(progressData.length/rows)||1;
+  const page=progressData.slice(progressPage*rows, progressPage*rows+rows);
+  document.getElementById("progress-count").innerText=`${progressData.length} HẠNG MỤC`;
 
-  if (!progressData.length) {
-    el.innerHTML = `<tr><td colspan="6"><div class="empty">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
-    return;
+  if(!progressData.length){
+    el.innerHTML=`<tr><td colspan="6"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
+  } else {
+    el.innerHTML=page.map(r=>{
+      const d=r.c;
+      const project=d[1]?.v||"", item=d[2]?.v||"", person=d[3]?.v||"—";
+      const deadlineRaw=d[7]?.v;
+      let pct=Number(d[9]?.v||0); if(pct>0&&pct<=1)pct*=100; pct=Math.round(pct);
+      let bdg="";
+      if(item){ if(pct>=100) bdg=badge("b-done","HOÀN THÀNH"); else if(overdue(deadlineRaw)) bdg=badge("b-late","QUÁ HẠN"); else bdg=badge("b-wip","ĐANG THỰC HIỆN"); }
+      return `<tr>
+        <td><div class="project-name" title="${project}">${project}</div></td>
+        <td><span class="item-val">${item}</span></td>
+        <td><div class="pct-wrap"><span class="pct-num">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div></div></td>
+        <td><span class="date-val${overdue(deadlineRaw)?" overdue":""}">${fmtDate(deadlineRaw)}</span></td>
+        <td><span class="person-val">${person}</span></td>
+        <td>${bdg}</td>
+      </tr>`;
+    }).join("");
   }
-
-  el.innerHTML = pageData.map(r => {
-    const d          = r.c;
-    const project    = d[1]?.v || "";
-    const item       = d[2]?.v || "";
-    const percentRaw = d[9]?.v || 0;
-    const deadlineRaw = d[7]?.v;
-    const person     = d[3]?.v || "—";
-
-    let pct = Number(percentRaw);
-    if (pct <= 1) pct *= 100;
-    pct = Math.round(pct);
-
-    let badge = "";
-    if (item) {
-      if (pct >= 100) {
-        badge = `<span class="badge done">HOÀN THÀNH</span>`;
-      } else if (deadlineRaw && isOverdue(deadlineRaw)) {
-        badge = `<span class="badge late">QUÁ HẠN</span>`;
-      } else {
-        badge = `<span class="badge design">ĐANG THỰC HIỆN</span>`;
-      }
-    }
-
-    const dateClass = (deadlineRaw && isOverdue(deadlineRaw)) ? " overdue" : "";
-
-    return `<tr>
-      <td><div class="project-name" title="${project}">${project}</div></td>
-      <td style="font-size:16px;text-align:left">${item}</td>
-      <td>
-        <div class="percent-wrap">
-          <span class="percent-label">${pct}%</span>
-          <div class="percent-bar-bg">
-            <div class="percent-bar-fill" style="width:${Math.min(pct,100)}%"></div>
-          </div>
-        </div>
-      </td>
-      <td><span class="date-val${dateClass}">${formatDate(deadlineRaw)}</span></td>
-      <td><span class="person-val">${person}</span></td>
-      <td>${badge}</td>
-    </tr>`;
-  }).join("");
-
-  document.getElementById("progressPage").innerText =
-    `TRANG ${progressPage + 1} / ${total}`;
-  renderDots("progressDots", total, progressPage);
+  document.getElementById("progressPage").innerText=`TRANG ${progressPage+1} / ${total}`;
+  renderDots("progressDots",total,progressPage);
 }
 
-/* ── RENDER GUARANTEE ── */
-function renderGuarantee() {
-  const el       = document.getElementById("guarantee");
-  const rowCount = getRowHeight();
-  const start    = guaranteePage * rowCount;
-  const pageData = guaranteeData.slice(start, start + rowCount);
-  const total    = Math.ceil(guaranteeData.length / rowCount) || 1;
+function renderGuarantee(){
+  const el=document.getElementById("guarantee");
+  const rows=rowsPerPage(), total=Math.ceil(guaranteeData.length/rows)||1;
+  const page=guaranteeData.slice(guaranteePage*rows, guaranteePage*rows+rows);
+  document.getElementById("guarantee-count").innerText=`${guaranteeData.length} BẢO LÃNH`;
 
-  document.getElementById("guarantee-count").innerText =
-    `${guaranteeData.length} BẢO LÃNH`;
-
-  if (!guaranteeData.length) {
-    el.innerHTML = `<tr><td colspan="5"><div class="empty">CHƯA CÓ DỮ LIỆU BẢO LÃNH</div></td></tr>`;
-    return;
+  if(!guaranteeData.length){
+    el.innerHTML=`<tr><td colspan="5"><div class="empty-state">CHƯA CÓ DỮ LIỆU</div></td></tr>`;
+  } else {
+    el.innerHTML=page.map(r=>{
+      const d=r.c;
+      const project=d[0]?.v||"", type=d[1]?.v||"—", value=d[2]?.v, expiryRaw=d[3]?.v, statusRaw=d[4]?.v||"";
+      let daysLeft=null; if(expiryRaw) daysLeft=Math.ceil((new Date(expiryRaw)-new Date())/86400000);
+      let bdg;
+      if(daysLeft!==null){
+        if(daysLeft<0)       bdg=badge("b-expired","HẾT HẠN");
+        else if(daysLeft<=30)bdg=badge("b-warn",   `SẮP HẾT (${daysLeft}N)`);
+        else                 bdg=badge("b-active",  "CÒN HIỆU LỰC");
+      } else { bdg=badge("b-info", statusRaw?statusRaw.toUpperCase():"HIỆU LỰC"); }
+      return `<tr>
+        <td><div class="project-name" title="${project}">${project}</div></td>
+        <td><span class="type-val">${type}</span></td>
+        <td><span class="value-val">${fmtMoney(value)}</span></td>
+        <td><span class="date-val${(daysLeft!==null&&daysLeft<0)?" overdue":""}">${fmtDate(expiryRaw)}</span></td>
+        <td>${bdg}</td>
+      </tr>`;
+    }).join("");
   }
-
-  el.innerHTML = pageData.map(r => {
-    const d         = r.c;
-    const project   = d[0]?.v || "";
-    const type      = d[1]?.v || "—";
-    const value     = d[2]?.v;
-    const expiryRaw = d[3]?.v;
-    const statusRaw = d[4]?.v || "";
-
-    let daysLeft = null;
-    if (expiryRaw) {
-      const exp = new Date(expiryRaw);
-      daysLeft  = Math.ceil((exp - new Date()) / 86400000);
-    }
-
-    let badge = "";
-    if (daysLeft !== null) {
-      if (daysLeft < 0)  badge = `<span class="badge late">HẾT HẠN</span>`;
-      else if (daysLeft <= 30) badge = `<span class="badge warning">SẮP HẾT HẠN</span>`;
-      else badge = `<span class="badge pending">CÒN HIỆU LỰC</span>`;
-    } else {
-      badge = statusRaw
-        ? `<span class="badge design">${statusRaw.toUpperCase()}</span>`
-        : `<span class="badge design">HIỆU LỰC</span>`;
-    }
-
-    const dateClass = (daysLeft !== null && daysLeft < 0) ? " overdue" : "";
-
-    return `<tr>
-      <td><div class="project-name" title="${project}">${project}</div></td>
-      <td><span class="type-val">${type}</span></td>
-      <td><span class="value-val">${formatValue(value)}</span></td>
-      <td><span class="date-val${dateClass}">${formatDate(expiryRaw)}</span></td>
-      <td>${badge}</td>
-    </tr>`;
-  }).join("");
-
-  document.getElementById("guaranteePage").innerText =
-    `TRANG ${guaranteePage + 1} / ${total}`;
-  renderDots("guaranteeDots", total, guaranteePage);
+  document.getElementById("guaranteePage").innerText=`TRANG ${guaranteePage+1} / ${total}`;
+  renderDots("guaranteeDots",total,guaranteePage);
 }
 
-/* ── LOAD ── */
-async function loadData() {
-  progressData  = await fetchSheet(PROGRESS_URL).catch(() => []);
-  guaranteeData = await fetchSheet(GUARANTEE_URL).catch(() => []);
-  renderProgress();
-  renderGuarantee();
-  animateRefreshBar();
-}
-
-function animateRefreshBar() {
-  ["refreshBar1","refreshBar2"].forEach(id => {
-    const el = document.getElementById(id);
-    el.classList.remove("animating");
-    void el.offsetWidth;
-    el.classList.add("animating");
+async function loadData(){
+  progressData  = await fetchSheet(PROGRESS_URL).catch(()=>[]);
+  guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
+  renderProgress(); renderGuarantee();
+  ["refreshBar1","refreshBar2"].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove("animating"); void el.offsetWidth; el.classList.add("animating");
   });
 }
 
-/* ── AUTO PAGE ── */
-setInterval(() => {
-  const rowCount = getRowHeight();
-  const pTotal   = Math.ceil(progressData.length / rowCount) || 1;
-  const gTotal   = Math.ceil(guaranteeData.length / rowCount) || 1;
-  progressPage   = (progressPage + 1) % pTotal;
-  guaranteePage  = (guaranteePage + 1) % gTotal;
-  renderProgress();
-  renderGuarantee();
+setInterval(()=>{
+  const rows=rowsPerPage();
+  progressPage =(progressPage +1)%(Math.ceil(progressData.length /rows)||1);
+  guaranteePage=(guaranteePage+1)%(Math.ceil(guaranteeData.length/rows)||1);
+  renderProgress(); renderGuarantee();
 }, PAGE_TIME);
 
-/* ── REFRESH ── */
 setInterval(loadData, REFRESH_TIME);
-
 loadData();
 </script>
 </body>
