@@ -432,49 +432,59 @@ function parseGViz(t) { return JSON.parse(t.substring(t.indexOf("{"),t.lastIndex
 function fmtDate(v) { if(!v)return"—"; const d=new Date(v); return isNaN(d)?v:`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`; }
 function fmtMoney(v) { if(!v)return"—"; return typeof v==="number"?v.toLocaleString("vi-VN")+" đ":v; }
 
-// Parse Google Sheets date format: Date(year, month, day, hour, minute, second)
-// Lưu ý: month là 0-based, nên tháng 5 trong Sheets là tháng 4 trong Date()
-function parseGoogleSheetDate(dateStr) {
-  if (!dateStr) return null;
+function parseGoogleSheetDate(dateValue) {
+  if (!dateValue) return null;
   
-  // Nếu là string dạng "24/04/2026" hoặc "DD/MM/YYYY"
-  if (typeof dateStr === 'string') {
-    // Thử parse dạng DD/MM/YYYY
-    const match = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  // Nếu là string dạng "Date(2026,3,24,0,0,0)" - Google Sheets format
+  if (typeof dateValue === 'string' && dateValue.includes('Date(')) {
+    const match = dateValue.match(/Date\((\d+),(\d+),(\d+)/);
     if (match) {
-      const [, day, month, year] = match.map(Number);
-      return new Date(year, month - 1, day); // month - 1 vì JS dùng 0-based
+      const year = parseInt(match[1]);
+      const month = parseInt(match[2]); // 0-based (0=Jan, 1=Feb, ..., 3=Apr)
+      const day = parseInt(match[3]);
+      const parsedDate = new Date(year, month, day, 0, 0, 0);
+      return parsedDate;
     }
-    
-    // Thử parse dạng Date(year,month,day,...)
-    const dateMatch = dateStr.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
-    if (dateMatch) {
-      const [, year, month, day, hour, minute, second] = dateMatch.map(Number);
-      return new Date(year, month, day, hour, minute, second);
-    }
-    
-    // Thử parse string thông thường
-    const parsed = new Date(dateStr);
-    if (!isNaN(parsed)) return parsed;
   }
   
-  if (dateStr instanceof Date) return dateStr;
+  // Nếu là string dạng "24/04/2026"
+  if (typeof dateValue === 'string') {
+    const ddmmMatch = dateValue.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (ddmmMatch) {
+      const day = parseInt(ddmmMatch[1]);
+      const month = parseInt(ddmmMatch[2]) - 1; // Convert to 0-based
+      const year = parseInt(ddmmMatch[3]);
+      const parsedDate = new Date(year, month, day, 0, 0, 0);
+      return parsedDate;
+    }
+  }
+  
+  // Nếu là Date object
+  if (dateValue instanceof Date && !isNaN(dateValue)) {
+    return dateValue;
+  }
+  
+  // Nếu là số
+  if (typeof dateValue === 'number') {
+    const parsedDate = new Date(dateValue);
+    if (!isNaN(parsedDate)) return parsedDate;
+  }
   
   return null;
 }
-  
+
 function isOverdue(dateValue) {
   const deadline = parseGoogleSheetDate(dateValue);
-  if (!deadline || isNaN(deadline)) return false;
   
-  // Reset time để chỉ so sánh ngày
+  if (!deadline || isNaN(deadline)) {
+    return false;
+  }
+  
   deadline.setHours(0, 0, 0, 0);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
   const result = deadline < today;
-  console.log(`DEBUG: Deadline: ${deadline.toDateString()}, Today: ${today.toDateString()}, Overdue: ${result}, Raw: ${dateValue}`);
-  
   return result;
 }
 
@@ -515,7 +525,7 @@ function renderProgress(){
     return;
   }
 
-  el.innerHTML = page.map((r, idx) => {
+  el.innerHTML = page.map(r => {
     const d = r.c;
     const project = d[1]?.v || "";
     const item = d[2]?.v || "";
@@ -531,23 +541,23 @@ function renderProgress(){
     if (pct > 0 && pct <= 1) pct *= 100;
     pct = Math.round(pct);
 
-    // DEBUG
-    if (idx === 1) {
-      console.log(`Row 1 - Deadline Raw:`, deadlineValue, `Display:`, deadlineDisplay);
-      console.log(`isOverdue result:`, isOverdue(deadlineValue));
-    }
-
     // Kiểm tra trạng thái QUÁ HẠN
     const overdue = isOverdue(deadlineValue);
 
-    // Logic Trạng Thái
+    // Logic Trạng Thái: 
+    // 1. % = 100 => HOÀN THÀNH
+    // 2. deadline < hôm nay => QUÁ HẠN
+    // 3. deadline >= hôm nay => ĐANG THỰC HIỆN
     let bdg = "";
     if (item) {
       if (pct === 100) {
+        // % = 100 => HOÀN THÀNH
         bdg = badge("b-done", "HOÀN THÀNH");
       } else if (overdue) {
+        // Deadline trước hôm nay => QUÁ HẠN
         bdg = badge("b-late", "QUÁ HẠN");
       } else {
+        // Deadline sau hôm nay hoặc không có deadline => ĐANG THỰC HIỆN
         bdg = badge("b-wip", "ĐANG THỰC HIỆN");
       }
     }
@@ -605,7 +615,6 @@ function renderGuarantee(){
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
-  console.log("Progress Data loaded:", progressData);
   renderProgress(); renderGuarantee();
   ["refreshBar1","refreshBar2"].forEach(id=>{
     const el=document.getElementById(id);
