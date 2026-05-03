@@ -431,7 +431,44 @@ setInterval(tickClock,1000); tickClock();
 function parseGViz(t) { return JSON.parse(t.substring(t.indexOf("{"),t.lastIndexOf("}")+1)); }
 function fmtDate(v) { if(!v)return"—"; const d=new Date(v); return isNaN(d)?v:`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`; }
 function fmtMoney(v) { if(!v)return"—"; return typeof v==="number"?v.toLocaleString("vi-VN")+" đ":v; }
-function overdue(v) { return v && new Date(v) < new Date(); }
+
+function parseGoogleDate(dateValue) {
+  if (!dateValue) return null;
+  
+  // Nếu là Date object
+  if (dateValue instanceof Date) {
+    return dateValue;
+  }
+  
+  // Nếu là string
+  if (typeof dateValue === 'string') {
+    const parsed = new Date(dateValue);
+    if (!isNaN(parsed)) return parsed;
+  }
+  
+  // Nếu là số (serial date từ Google Sheets)
+  if (typeof dateValue === 'number') {
+    // Google Sheets serial date bắt đầu từ 1/1/1900
+    const date = new Date(1900, 0, dateValue);
+    return date;
+  }
+  
+  return null;
+}
+
+function isOverdue(dateValue) {
+  const deadline = parseGoogleDate(dateValue);
+  if (!deadline || isNaN(deadline)) return false;
+  
+  deadline.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  console.log(`Checking deadline: ${deadline.toDateString()} vs today: ${today.toDateString()}, isOverdue: ${deadline < today}`);
+  
+  return deadline < today;
+}
+
 function rowsPerPage() {
   const w = document.querySelector(".table-wrap");
   return w ? Math.max(4, Math.floor((w.clientHeight - 44) / 45)) : 7;
@@ -456,7 +493,6 @@ function badge(cls,label){
   return `<span class="badge ${cls}"><span class="badge-dot"></span>${label}</span>`;
 }
 
-/* ====================== HÀM ĐÃ SỬA ====================== */
 function renderProgress(){
   const el = document.getElementById("progress");
   const rows = rowsPerPage();
@@ -476,22 +512,29 @@ function renderProgress(){
     const item = d[2]?.v || "";
     const person = d[3]?.v || "—";
     
+    // Lấy deadline từ cột H (index 7)
     const deadlineCell = d[7];
-    const deadlineRaw = deadlineCell?.v;
+    const deadlineValue = deadlineCell?.v;
     const deadlineDisplay = deadlineCell?.f || deadlineCell?.v || "—";
 
+    // Lấy % từ cột J (index 9)
     let pct = Number(d[9]?.v || 0);
     if (pct > 0 && pct <= 1) pct *= 100;
     pct = Math.round(pct);
 
-    // Logic Trạng Thái Mới
+    // Logic Trạng Thái
     let bdg = "";
+    const overdue = isOverdue(deadlineValue);
+    
     if (item) {
-      if (pct >= 100) {
+      if (pct === 100) {
+        // % = 100 => HOÀN THÀNH
         bdg = badge("b-done", "HOÀN THÀNH");
-      } else if (overdue(deadlineRaw)) {
+      } else if (overdue) {
+        // Deadline < hôm nay => QUÁ HẠN
         bdg = badge("b-late", "QUÁ HẠN");
       } else {
+        // Deadline >= hôm nay => ĐANG THỰC HIỆN
         bdg = badge("b-wip", "ĐANG THỰC HIỆN");
       }
     }
@@ -505,7 +548,7 @@ function renderProgress(){
           <div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div>
         </div>` : ""}
       </td>
-      <td><span class="date-val${overdue(deadlineRaw)?" overdue":""}">${deadlineDisplay}</span></td>
+      <td><span class="date-val${overdue ? " overdue":""}">${deadlineDisplay}</span></td>
       <td><span class="person-val">${person}</span></td>
       <td>${bdg}</td>
     </tr>`;
@@ -549,6 +592,7 @@ function renderGuarantee(){
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
+  console.log("Progress Data:", progressData);
   renderProgress(); renderGuarantee();
   ["refreshBar1","refreshBar2"].forEach(id=>{
     const el=document.getElementById(id);
