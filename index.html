@@ -507,7 +507,7 @@ function renderProgress(){
       const deadlineDisplay=deadlineCell?.f || deadlineCell?.v || "";
       let pct=Number(d[9]?.v||0); if(pct>0&&pct<=1)pct*=100; pct=Math.round(pct);
       let bdg="";
-      if(item){ if(pct>=100) bdg=badge("b-done","HOÀN THÀNH"); else if(overdue(deadlineRaw)) bdg=badge("b-wip","ĐANG THỰC HIỆN"); else bdg=badge("b-late","QUÁ HẠN"); }
+      if(item){ if(pct>=100) bdg=badge("b-done","HOÀN THÀNH"); else if(!deadlineRaw) bdg=badge("b-wip","ĐANG THỰC HIỆN"); else if(new Date(deadlineRaw)>=new Date()) bdg=badge("b-late","QUÁ HẠN"); else bdg=badge("b-wip","ĐANG THỰC HIỆN"); }
       return `<tr>
         <td><div class="project-name" title="${project}">${project}</div></td>
         <td><span class="item-val">${item}</span></td>
