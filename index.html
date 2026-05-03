@@ -121,6 +121,31 @@ html, body {
   position: relative;
 }
 .panel:first-child { border-right: 2px solid var(--border-hi); }
+.panel.split-panel {
+  flex-direction: column;
+  overflow: hidden;
+}
+.panel-top {
+  flex: 0.6;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 2px solid var(--border-hi);
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+.panel-bottom {
+  flex: 0.4;
+  overflow: hidden;
+  display: flex;
+  gap: 10px;
+}
+.sub-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 /* ── PANEL HEADER ── */
 .panel-header {
   display: flex;
@@ -139,6 +164,9 @@ html, body {
   letter-spacing: 1.5px;
   color: var(--text-bright);
   text-transform: uppercase;
+}
+.panel-title.small {
+  font-size: 14px;
 }
 .title-dot {
   width: 9px; height: 9px;
@@ -244,6 +272,12 @@ td:first-child { text-align: left; }
   font-size: 15px;
   font-weight: 500;
   color: var(--gold);
+}
+.count-val {
+  font-family: var(--f-mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
 }
 /* ── BADGES ── */
 .badge {
@@ -387,30 +421,70 @@ td:first-child { text-align: left; }
     </div>
     <div class="refresh-bar" id="refreshBar1"></div>
   </div>
-  <!-- BẢO LÃNH -->
-  <div class="panel">
-    <div class="panel-header">
-      <div class="panel-title"><div class="title-dot"></div>THEO DÕI BẢO LÃNH</div>
-      <div class="panel-badge" id="guarantee-count">— BẢO LÃNH</div>
+  <!-- BẢO LÃNH + NHÂN SỰ + KHÁCH HÀNG -->
+  <div class="panel split-panel">
+    <!-- TOP: THEO DÕI BẢO LÃNH -->
+    <div class="panel-top">
+      <div class="panel-header">
+        <div class="panel-title"><div class="title-dot"></div>THEO DÕI BẢO LÃNH</div>
+        <div class="panel-badge" id="guarantee-count">— BẢO LÃNH</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:35%">DỰ ÁN</th>
+            <th style="width:20%">LOẠI</th>
+            <th style="width:20%">GIÁ TRỊ</th>
+            <th style="width:25%">HẾT HẠN</th>
+          </tr></thead>
+          <tbody id="guarantee">
+            <tr><td colspan="4"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th style="width:28%">DỰ ÁN</th>
-          <th style="width:18%">LOẠI</th>
-          <th style="width:18%">GIÁ TRỊ</th>
-          <th style="width:18%">HẾT HẠN</th>
-          <th style="width:18%">TRẠNG THÁI</th>
-        </tr></thead>
-        <tbody id="guarantee">
-          <tr><td colspan="5"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
-        </tbody>
-      </table>
+
+    <!-- BOTTOM: NHÂN SỰ + KHÁCH HÀNG -->
+    <div class="panel-bottom">
+      <!-- DANH SÁCH NHÂN SỰ -->
+      <div class="sub-panel">
+        <div class="panel-header">
+          <div class="panel-title small"><div class="title-dot"></div>DANH SÁCH NHÂN SỰ</div>
+          <div class="panel-badge" id="staff-count">— NHÂN SỰ</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:65%">TÊN NHÂN SỰ</th>
+              <th style="width:35%">SỐ LƯỢNG</th>
+            </tr></thead>
+            <tbody id="staff-list">
+              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DANH SÁCH KHÁCH HÀNG -->
+      <div class="sub-panel">
+        <div class="panel-header">
+          <div class="panel-title small"><div class="title-dot"></div>DANH SÁCH KHÁCH HÀNG</div>
+          <div class="panel-badge" id="customer-count">— KHÁCH HÀNG</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:65%">TÊN KHÁCH HÀNG</th>
+              <th style="width:35%">SỐ LƯỢNG</th>
+            </tr></thead>
+            <tbody id="customer-list">
+              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div class="panel-footer">
-      <div class="page-info" id="guaranteePage">TRANG 1 / 1</div>
-      <div class="page-dots" id="guaranteeDots"></div>
-    </div>
+
     <div class="refresh-bar" id="refreshBar2"></div>
   </div>
 </div>
@@ -424,7 +498,6 @@ const REFRESH_TIME = 30000;
 let progressData = [];
 let guaranteeData = [];
 let progressPage = 0;
-let guaranteePage = 0;
 
 function tickClock() {
   const n = new Date(), p = v => String(v).padStart(2,"0");
@@ -440,36 +513,32 @@ function fmtMoney(v) { if(!v)return"—"; return typeof v==="number"?v.toLocaleS
 function parseGoogleSheetDate(dateValue) {
   if (!dateValue) return null;
   
-  // Nếu là string dạng "Date(2026,3,24,0,0,0)" - Google Sheets format
   if (typeof dateValue === 'string' && dateValue.includes('Date(')) {
     const match = dateValue.match(/Date\((\d+),(\d+),(\d+)/);
     if (match) {
       const year = parseInt(match[1]);
-      const month = parseInt(match[2]); // 0-based (0=Jan, 1=Feb, ..., 3=Apr)
+      const month = parseInt(match[2]);
       const day = parseInt(match[3]);
       const parsedDate = new Date(year, month, day, 0, 0, 0);
       return parsedDate;
     }
   }
   
-  // Nếu là string dạng "24/04/2026"
   if (typeof dateValue === 'string') {
     const ddmmMatch = dateValue.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
     if (ddmmMatch) {
       const day = parseInt(ddmmMatch[1]);
-      const month = parseInt(ddmmMatch[2]) - 1; // Convert to 0-based
+      const month = parseInt(ddmmMatch[2]) - 1;
       const year = parseInt(ddmmMatch[3]);
       const parsedDate = new Date(year, month, day, 0, 0, 0);
       return parsedDate;
     }
   }
   
-  // Nếu là Date object
   if (dateValue instanceof Date && !isNaN(dateValue)) {
     return dateValue;
   }
   
-  // Nếu là số
   if (typeof dateValue === 'number') {
     const parsedDate = new Date(dateValue);
     if (!isNaN(parsedDate)) return parsedDate;
@@ -504,15 +573,6 @@ async function fetchSheet(url) {
   return (parseGViz(t).table.rows||[]).slice(4);
 }
 
-function renderDots(id,total,cur){
-  const el=document.getElementById(id); el.innerHTML="";
-  for(let i=0;i<Math.min(total,10);i++){
-    const d=document.createElement("div");
-    d.className="dot"+(i===cur?" active":"");
-    el.appendChild(d);
-  }
-}
-
 function badge(cls,label){
   return `<span class="badge ${cls}"><span class="badge-dot"></span>${label}</span>`;
 }
@@ -534,36 +594,26 @@ function renderProgress(){
     const d = r.c;
     const project = d[1]?.v || "";
     const item = d[2]?.v || "";
-    const customer = d[4]?.v || "—"; // Cột E - KHÁCH HÀNG
+    const customer = d[4]?.v || "—";
     const person = d[3]?.v || "—";
     
-    // Lấy deadline từ cột H (index 7)
     const deadlineCell = d[7];
     const deadlineValue = deadlineCell?.v;
     const deadlineDisplay = deadlineCell?.f || deadlineCell?.v || "—";
 
-    // Lấy % từ cột J (index 9)
     let pct = Number(d[9]?.v || 0);
     if (pct > 0 && pct <= 1) pct *= 100;
     pct = Math.round(pct);
 
-    // Kiểm tra trạng thái QUÁ HẠN
     const overdue = isOverdue(deadlineValue);
 
-    // Logic Trạng Thái: 
-    // 1. % = 100 => HOÀN THÀNH
-    // 2. deadline < hôm nay => QUÁ HẠN
-    // 3. deadline >= hôm nay => ĐANG THỰC HIỆN
     let bdg = "";
     if (item) {
       if (pct === 100) {
-        // % = 100 => HOÀN THÀNH
         bdg = badge("b-done", "HOÀN THÀNH");
       } else if (overdue) {
-        // Deadline trước hôm nay => QUÁ HẠN
         bdg = badge("b-late", "QUÁ HẠN");
       } else {
-        // Deadline sau hôm nay hoặc không có deadline => ĐANG THỰC HIỆN
         bdg = badge("b-wip", "ĐANG THỰC HIỆN");
       }
     }
@@ -585,45 +635,101 @@ function renderProgress(){
   }).join("");
 
   document.getElementById("progressPage").innerText = `TRANG ${progressPage+1} / ${total}`;
-  renderDots("progressDots", total, progressPage);
+  
+  // Render bảng NHÂN SỰ và KHÁCH HÀNG
+  renderStaffList();
+  renderCustomerList();
+}
+
+function renderStaffList(){
+  const el = document.getElementById("staff-list");
+  
+  // Tính tần suất nhân sự từ progressData
+  const staffCount = {};
+  progressData.forEach(r => {
+    const person = r.c[3]?.v;
+    if (person && person !== "—" && person.trim()) {
+      staffCount[person] = (staffCount[person] || 0) + 1;
+    }
+  });
+
+  const staffArray = Object.entries(staffCount)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
+  document.getElementById("staff-count").innerText = `${staffArray.length} NHÂN SỰ`;
+
+  if (!staffArray.length) {
+    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
+    return;
+  }
+
+  el.innerHTML = staffArray.map(staff => `
+    <tr>
+      <td><span class="person-val">${staff.name}</span></td>
+      <td><span class="count-val">${staff.count}</span></td>
+    </tr>
+  `).join("");
+}
+
+function renderCustomerList(){
+  const el = document.getElementById("customer-list");
+  
+  // Tính tần suất khách hàng từ progressData
+  const customerCount = {};
+  progressData.forEach(r => {
+    const customer = r.c[4]?.v;
+    if (customer && customer !== "—" && customer.trim()) {
+      customerCount[customer] = (customerCount[customer] || 0) + 1;
+    }
+  });
+
+  const customerArray = Object.entries(customerCount)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
+  document.getElementById("customer-count").innerText = `${customerArray.length} KHÁCH HÀNG`;
+
+  if (!customerArray.length) {
+    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
+    return;
+  }
+
+  el.innerHTML = customerArray.map(customer => `
+    <tr>
+      <td><span class="customer-val">${customer.name}</span></td>
+      <td><span class="count-val">${customer.count}</span></td>
+    </tr>
+  `).join("");
 }
 
 function renderGuarantee(){
   const el=document.getElementById("guarantee");
-  const rows=rowsPerPage(), total=Math.ceil(guaranteeData.length/rows)||1;
-  const page=guaranteeData.slice(guaranteePage*rows, guaranteePage*rows+rows);
-  document.getElementById("guarantee-count").innerText=`${guaranteeData.length} BẢO LÃNH`;
+  
   if(!guaranteeData.length){
-    el.innerHTML=`<tr><td colspan="5"><div class="empty-state">CHƯA CÓ DỮ LIỆU</div></td></tr>`;
+    el.innerHTML=`<tr><td colspan="4"><div class="empty-state">CHƯA CÓ DỮ LIỆU</div></td></tr>`;
   } else {
-    el.innerHTML=page.map(r=>{
+    el.innerHTML=guaranteeData.map(r=>{
       const d=r.c;
-      const project=d[0]?.v||"", type=d[1]?.v||"—", value=d[2]?.v, expiryRaw=d[3]?.v, statusRaw=d[4]?.v||"";
-      let daysLeft=null; if(expiryRaw) daysLeft=Math.ceil((new Date(expiryRaw)-new Date())/86400000);
-      let bdg;
-      if(daysLeft!==null){
-        if(daysLeft<0) bdg=badge("b-expired","HẾT HẠN");
-        else if(daysLeft<=30)bdg=badge("b-warn", `SẮP HẾT (${daysLeft}N)`);
-        else bdg=badge("b-active", "CÒN HIỆU LỰC");
-      } else { bdg=badge("b-info", statusRaw?statusRaw.toUpperCase():"HIỆU LỰC"); }
+      const project=d[0]?.v||"", type=d[1]?.v||"—", value=d[2]?.v, expiryRaw=d[3]?.v;
       return `<tr>
         <td><div class="project-name" title="${project}">${project}</div></td>
         <td><span class="type-val">${type}</span></td>
         <td><span class="value-val">${fmtMoney(value)}</span></td>
-        <td><span class="date-val${(daysLeft!==null&&daysLeft<0)?" overdue":""}">${fmtDate(expiryRaw)}</span></td>
-        <td>${bdg}</td>
+        <td><span class="date-val">${fmtDate(expiryRaw)}</span></td>
       </tr>`;
     }).join("");
   }
-  document.getElementById("guaranteePage").innerText=`TRANG ${guaranteePage+1} / ${total}`;
-  renderDots("guaranteeDots",total,guaranteePage);
+  
+  document.getElementById("guarantee-count").innerText=`${guaranteeData.length} BẢO LÃNH`;
 }
 
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
-  renderProgress(); renderGuarantee();
-  ["refreshBar1","refreshBar2"].forEach(id=>{
+  renderProgress();
+  renderGuarantee();
+  ["refreshBar2"].forEach(id=>{
     const el=document.getElementById(id);
     el.classList.remove("animating"); void el.offsetWidth; el.classList.add("animating");
   });
@@ -632,8 +738,7 @@ async function loadData(){
 setInterval(()=>{
   const rows=rowsPerPage();
   progressPage =(progressPage +1)%(Math.ceil(progressData.length /rows)||1);
-  guaranteePage=(guaranteePage+1)%(Math.ceil(guaranteeData.length/rows)||1);
-  renderProgress(); renderGuarantee();
+  renderProgress();
 }, PAGE_TIME);
 
 setInterval(loadData, REFRESH_TIME);
