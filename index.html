@@ -29,55 +29,61 @@
 
         .header {
             display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
-            height: 55px; padding: 0 20px; background: var(--bg-header); border-bottom: 2px solid var(--border-hi);
+            height: 60px; padding: 0 20px; background: var(--bg-header); border-bottom: 2px solid var(--border-hi);
         }
         .header-logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: var(--text-bright); }
-        .logo-box { width: 28px; height: 28px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); }
-        .header-title { font-size: 18px; font-weight: 700; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; }
+        .logo-box { width: 30px; height: 30px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+        .header-title { font-size: 20px; font-weight: 700; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; }
         .header-right { text-align: right; font-family: var(--f-mono); }
-        .header-clock { font-size: 18px; color: var(--text-bright); font-weight: 600; }
-        .header-date { font-size: 11px; color: var(--accent); }
+        .header-clock { font-size: 20px; color: var(--text-bright); font-weight: 600; }
+        .header-date { font-size: 12px; color: var(--accent); }
 
-        .container { display: flex; height: calc(100vh - 55px); padding: 10px; gap: 10px; }
+        .container { display: flex; height: calc(100vh - 60px); padding: 12px; gap: 12px; }
         
-        /* Cột trái: 65% - Hiển thị 16 dòng */
-        .col-left { flex: 0 0 65%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 10px; position: relative; }
+        /* CỘT TRÁI - TIẾN ĐỘ (65%) */
+        .col-left { flex: 0 0 65%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 15px; position: relative; }
         
-        /* Cột phải: 35% */
-        .col-right { flex: 0 0 calc(35% - 10px); display: flex; flex-direction: column; gap: 10px; }
+        /* CỘT PHẢI - BẢO LÃNH & TOP (35%) */
+        .col-right { flex: 0 0 calc(35% - 12px); display: flex; flex-direction: column; gap: 12px; }
 
-        /* Mở rộng bảng Bảo lãnh chiếm 70% chiều cao cột phải để hiện đủ dữ liệu */
-        .panel-top-right { flex: 0 0 70%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 10px; }
-        .panel-bottom-right { flex: 1; display: flex; gap: 10px; min-height: 0; }
+        .panel-top-right { flex: 0 0 68%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 12px; overflow: hidden; }
+        .panel-bottom-right { flex: 1; display: flex; gap: 12px; min-height: 0; }
         .sub-panel { flex: 1; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 10px; display: flex; flex-direction: column; }
 
-        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid var(--border-hi); padding-bottom: 5px; }
-        .panel-title { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
-        .title-dot { width: 5px; height: 5px; background: var(--accent); transform: rotate(45deg); }
-        .badge-count { font-family: var(--f-mono); font-size: 11px; padding: 1px 6px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; }
+        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border-hi); padding-bottom: 8px; }
+        .panel-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
+        .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
+        .badge-count { font-family: var(--f-mono); font-size: 12px; padding: 2px 8px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; }
 
+        /* BẢNG DỮ LIỆU */
         .table-wrap { flex: 1; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: var(--bg-thead); color: var(--accent); font-size: 10.5px; padding: 8px 4px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
-        td { padding: 7px 4px; font-size: 11.5px; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        th { background: var(--bg-thead); color: var(--accent); font-size: 12px; padding: 12px 6px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
+        
+        /* Tăng kích thước dòng cho bảng bên trái */
+        #p-table td { padding: 14px 6px; font-size: 14px; font-weight: 500; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Kích thước dòng bảng bảo lãnh */
+        #g-table td { padding: 8px 4px; font-size: 11px; border-bottom: 1px solid var(--border); text-align: center; }
+
         tbody tr:nth-child(odd) { background: var(--row-a); }
         tbody tr:nth-child(even) { background: var(--row-b); }
         
-        .text-left { text-align: left; }
+        .text-left { text-align: left !important; }
         .gold-bold { color: var(--gold); font-weight: 700; }
         .accent-text { color: var(--accent); }
         
-        .bar-container { display: flex; align-items: center; gap: 5px; justify-content: center; }
-        .bar-bg { width: 50px; height: 5px; background: #1a2a4a; border-radius: 2px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--accent); }
+        .bar-container { display: flex; align-items: center; gap: 8px; justify-content: center; }
+        .bar-bg { width: 60px; height: 8px; background: #1a2a4a; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-        .st { font-size: 9px; padding: 2px 5px; border-radius: 2px; font-weight: 700; }
+        .st { font-size: 10px; padding: 3px 8px; border-radius: 3px; font-weight: 700; }
         .st-done { background: var(--green); color: #000; }
         .st-wip { border: 1px solid var(--accent); color: var(--accent); }
         .st-late { background: var(--red); color: #fff; }
 
-        .footer-info { display: flex; justify-content: space-between; font-size: 10px; color: var(--accent); font-family: var(--f-mono); padding-top: 5px; }
-        .refresh-line { position: absolute; bottom: 0; left: 0; height: 2px; background: var(--accent); width: 0; }
+        .footer-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--accent); font-family: var(--f-mono); padding-top: 10px; }
+        .refresh-line { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 0; }
         .refresh-line.animating { animation: run 30s linear forwards; }
         @keyframes run { from { width: 100%; } to { width: 0%; } }
     </style>
@@ -94,7 +100,7 @@
 </div>
 
 <div class="container">
-    <!-- CỘT TRÁI: 16 DÒNG/TRANG -->
+    <!-- CỘT TRÁI: TIẾN ĐỘ DỰ ÁN (Hiển thị 16 dòng, chữ lớn) -->
     <div class="col-left">
         <div class="panel-header">
             <div class="panel-title"><div class="title-dot"></div> TIẾN ĐỘ DỰ ÁN</div>
@@ -107,9 +113,9 @@
                         <th style="width: 22%;">DỰ ÁN</th>
                         <th style="width: 18%;">KHÁCH HÀNG</th>
                         <th style="width: 20%;">HẠNG MỤC</th>
-                        <th style="width: 15%;">TIẾN ĐỘ</th>
+                        <th style="width: 16%;">TIẾN ĐỘ</th>
                         <th style="width: 12%;">DEADLINE</th>
-                        <th style="width: 13%;">TRẠNG THÁI</th>
+                        <th style="width: 12%;">TRẠNG THÁI</th>
                     </tr>
                 </thead>
                 <tbody id="p-table"></tbody>
@@ -117,26 +123,27 @@
         </div>
         <div class="footer-info">
             <div id="p-page">PAGE 1/1</div>
-            <div id="p-sync">Đang đồng bộ...</div>
+            <div id="p-sync">Đang đồng bộ dữ liệu...</div>
         </div>
         <div class="refresh-line" id="line1"></div>
     </div>
 
-    <!-- CỘT PHẢI -->
+    <!-- CỘT PHẢI: BẢO LÃNH & THỐNG KÊ -->
     <div class="col-right">
         <div class="panel-top-right">
             <div class="panel-header">
                 <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
                 <div class="badge-count" id="g-count" style="background:var(--accent)">0</div>
             </div>
-            <div class="table-wrap" style="overflow-y: hidden;">
+            <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 35%;">DỰ ÁN</th>
-                            <th style="width: 25%;">KHÁCH HÀNG</th>
-                            <th style="width: 15%;">LOẠI</th>
-                            <th style="width: 25%;">GIÁ TRỊ</th>
+                            <th style="width: 32%;">DỰ ÁN</th>
+                            <th style="width: 20%;">KHÁCH HÀNG</th>
+                            <th style="width: 12%;">LOẠI</th>
+                            <th style="width: 18%;">GIÁ TRỊ</th>
+                            <th style="width: 18%;">HẾT HẠN</th>
                         </tr>
                     </thead>
                     <tbody id="g-table"></tbody>
@@ -163,7 +170,7 @@
     const URL_GUARANTEE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Bao%20lanh`;
 
     let dataP = [], dataG = [], currentPage = 0;
-    const ROWS_PER_PAGE = 16; // Điều kiện 16 dòng 1 trang
+    const ROWS_PER_PAGE = 16; 
 
     async function fetchData() {
         try {
@@ -176,8 +183,8 @@
 
             renderAll();
             startProgressLine();
-            document.getElementById("p-sync").innerText = "Đã cập nhật: " + new Date().toLocaleTimeString();
-        } catch (e) { document.getElementById("p-sync").innerText = "Lỗi kết nối!"; }
+            document.getElementById("p-sync").innerText = "Cập nhật lúc: " + new Date().toLocaleTimeString();
+        } catch (e) { document.getElementById("p-sync").innerText = "Lỗi kết nối dữ liệu!"; }
     }
 
     function renderAll() {
@@ -202,9 +209,9 @@
             return `<tr>
                 <td class="text-left gold-bold">${d[1]?.v || "—"}</td>
                 <td class="text-left accent-text">${d[4]?.v || "—"}</td>
-                <td class="text-left">${d[2]?.v || "—"}</td>
-                <td><div class="bar-container"><span style="width:25px">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
-                <td style="font-family:var(--f-mono);">${d[7]?.f || "—"}</td>
+                <td class="text-left" style="color:#fff">${d[2]?.v || "—"}</td>
+                <td><div class="bar-container"><span style="width:35px; font-family:var(--f-mono)">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
+                <td style="font-family:var(--f-mono); color:var(--accent)">${d[7]?.f || "—"}</td>
                 <td><span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'XONG':(isLate?'TRỄ':'LÀM')}</span></td>
             </tr>`;
         }).join("");
@@ -213,14 +220,16 @@
     function renderGuarantees() {
         const el = document.getElementById("g-table");
         document.getElementById("g-count").innerText = dataG.length;
-        // Hiển thị tối đa 14 dòng bảo lãnh để không bị tràn
-        el.innerHTML = dataG.slice(0, 14).map(row => {
+        
+        // Hiển thị tối đa 16 dòng bảo lãnh
+        el.innerHTML = dataG.slice(0, 16).map(row => {
             const d = row.c;
             return `<tr>
-                <td class="text-left" style="color:#fff;">${d[9]?.v || "—"}</td>
+                <td class="text-left" style="color:#fff; font-weight:600;">${d[9]?.v || "—"}</td>
                 <td class="text-left accent-text">${d[10]?.v || "—"}</td>
-                <td><span class="st st-wip" style="font-size:8px">${d[13]?.v || "—"}</span></td>
-                <td class="gold-bold">${d[12]?.f || "0"}</td>
+                <td><span class="st st-wip" style="font-size:9px; padding:2px 4px;">${d[13]?.v || "—"}</span></td>
+                <td class="gold-bold">${d[12]?.f || d[12]?.v || "0"}</td>
+                <td style="color:var(--red); font-family:var(--f-mono);">${d[7]?.f || "—"}</td>
             </tr>`;
         }).join("");
     }
@@ -235,7 +244,7 @@
         const fill = (map, id) => {
             const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0, 4);
             document.getElementById(id).innerHTML = sorted.map(([n, v]) => 
-                `<tr><td class="text-left" style="font-size:10px;">${n}</td><td class="accent-text" style="font-weight:700; width:25px; text-align:right;">${v}</td></tr>`
+                `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
             ).join("");
         };
         fill(staff, "s-table");
