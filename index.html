@@ -207,83 +207,54 @@ html, body {
   border-radius: 3px;
 }
 
-/* ── TABLE WRAPPER ── */
-.table-wrap {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+/* ── TABLE ── */
+.table-wrap { 
+  flex: 1; 
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* ── GRID TABLE ── */
-.grid-table {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
-  gap: 0;
-  height: 100%;
-  overflow: hidden;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
-.grid-header {
-  display: contents;
-}
+thead tr { background: var(--bg-thead); }
 
-.grid-row {
-  display: contents;
-}
-
-.grid-cell {
+th {
   padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  text-align: center;
-  font-size: 16px;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  word-break: break-word;
-  overflow: hidden;
-}
-
-.grid-cell:last-child {
-  border-right: none;
-}
-
-.grid-cell.header {
-  background: var(--bg-thead);
-  font-weight: 600;
+  font-family: var(--f-sans);
   font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
   color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  text-align: center;
   border-bottom: 2px solid var(--border-hi);
 }
 
-.grid-row:nth-child(odd) .grid-cell {
-  background: var(--row-a);
+th:first-child { text-align: left; }
+
+tbody tr:nth-child(odd) { background: var(--row-a); }
+tbody tr:nth-child(even) { background: var(--row-b); }
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .12s;
 }
 
-.grid-row:nth-child(even) .grid-cell {
-  background: var(--row-b);
+tbody tr:hover { background: rgba(96,200,240,.09) !important; }
+
+td {
+  padding: 11px 12px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text);
+  vertical-align: middle;
 }
 
-.grid-row:hover .grid-cell {
-  background: rgba(96,200,240,.09);
-}
-
-.grid-cell:first-child {
-  text-align: left;
-  justify-content: flex-start;
-}
-
-/* ── BODY SCROLL ── */
-.grid-body {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
+td:first-child { text-align: left; }
 
 /* ── CELLS ── */
 .project-name {
@@ -310,7 +281,6 @@ html, body {
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  width: 100%;
 }
 
 .pct-num {
@@ -379,6 +349,7 @@ html, body {
   flex-shrink: 0;
 }
 
+/* Solid-fill badges */
 .b-done { color:#061810; background:var(--green); }
 .b-done .badge-dot { background:#061810; }
 .b-late { color:#fff; background:var(--red); animation: flash 1.4s step-end infinite; }
@@ -424,13 +395,15 @@ html, body {
 /* ── STATES ── */
 .empty-state, .loading-state {
   display:flex; align-items:center; justify-content:center;
-  height:60px;
+  height:80px;
   color:var(--text-dim);
   font-family:var(--f-mono);
   font-size:13px;
   letter-spacing:2px;
   gap:10px;
 }
+
+.empty-state { border:1px dashed var(--border-hi); border-radius:4px; margin-top:8px; }
 
 .ld span {
   display:inline-block;
@@ -480,12 +453,55 @@ html, body {
 
   .panel-top {
     flex: 0.6;
+    border-bottom: 2px solid var(--border-hi);
+    margin-bottom: 10px;
+    padding-bottom: 10px;
   }
 
   .panel-bottom {
     flex: 0.4;
     flex-direction: row;
     gap: 10px;
+  }
+
+  .sub-panel {
+    flex: 1;
+  }
+
+  th {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  td {
+    padding: 11px 12px;
+    font-size: 16px;
+  }
+
+  .panel-title {
+    font-size: 17px;
+  }
+
+  .panel-title.small {
+    font-size: 13px;
+  }
+
+  .pct-num {
+    font-size: 16px;
+  }
+
+  .bar-bg {
+    width: 72px;
+    height: 6px;
+  }
+
+  .count-val {
+    font-size: 16px;
+  }
+
+  .badge {
+    font-size: 13px;
+    padding: 5px 14px;
   }
 }
 
@@ -507,6 +523,7 @@ html, body {
 
   .panel.split-panel {
     flex: 0.8;
+    border-right: none;
   }
 
   .panel-top {
@@ -516,14 +533,29 @@ html, body {
   .panel-bottom {
     flex: 0.45;
     flex-direction: row;
+    gap: 8px;
   }
 
-  .grid-cell {
+  th {
     padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  td {
+    padding: 9px 10px;
     font-size: 14px;
   }
 
-  .grid-cell.header {
+  .panel-header {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+
+  .panel-title {
+    font-size: 14px;
+  }
+
+  .panel-title.small {
     font-size: 12px;
   }
 
@@ -534,6 +566,19 @@ html, body {
   .bar-bg {
     width: 60px;
     height: 5px;
+  }
+
+  .count-val {
+    font-size: 14px;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .item-val, .customer-val, .person-val {
+    font-size: 13px;
   }
 }
 
@@ -564,8 +609,16 @@ html, body {
     letter-spacing: 1.5px;
   }
 
+  .header-tagline {
+    font-size: 7px;
+  }
+
   .header-clock {
     font-size: 14px;
+  }
+
+  .header-date {
+    font-size: 8px;
   }
 
   .container {
@@ -578,46 +631,126 @@ html, body {
   }
 
   .panel:first-child {
-    flex: 1.5;
+    flex: 1.2;
     border-bottom: 2px solid var(--border-hi);
+    border-right: none;
   }
 
   .panel.split-panel {
-    flex: 1;
+    flex: 0.8;
   }
 
   .panel-top {
-    flex: 0.45;
-    margin-bottom: 6px;
+    flex: 0.55;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
   }
 
   .panel-bottom {
-    flex: 0.55;
-    flex-direction: row;
-    gap: 6px;
+    flex: 0.45;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .grid-cell {
-    padding: 5px 3px;
+  .sub-panel {
+    flex: 1;
+    min-height: 80px;
+  }
+
+  .panel-header {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+
+  .panel-title {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .panel-title.small {
+    font-size: 11px;
+  }
+
+  .panel-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  th {
+    padding: 6px 4px;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  td {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+
+  .project-name {
+    font-size: 11px;
+  }
+
+  .item-val, .customer-val, .person-val {
     font-size: 10px;
   }
 
-  .grid-cell.header {
-    font-size: 9px;
-    padding: 5px 2px;
+  .pct-wrap {
+    gap: 2px;
   }
 
   .pct-num {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .bar-bg {
-    width: 35px;
-    height: 3px;
+    width: 40px;
+    height: 4px;
+  }
+
+  .date-val {
+    font-size: 9px;
+  }
+
+  .type-val {
+    font-size: 10px;
+  }
+
+  .value-val {
+    font-size: 10px;
   }
 
   .count-val {
-    font-size: 11px;
+    font-size: 12px;
+  }
+
+  .badge {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+
+  .badge-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .page-info {
+    font-size: 9px;
+  }
+
+  .page-dots {
+    gap: 3px;
+  }
+
+  .dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .empty-state, .loading-state {
+    height: 50px;
+    font-size: 10px;
+    gap: 6px;
   }
 }
 </style>
@@ -649,20 +782,20 @@ html, body {
       <div class="panel-badge" id="progress-count">— HẠNG MỤC</div>
     </div>
     <div class="table-wrap">
-      <div class="grid-table" id="progressTable" style="grid-template-columns: 1fr 1fr 0.8fr 1fr 1fr 1fr 1.3fr;">
-        <div class="grid-row grid-header">
-          <div class="grid-cell header">DỰ ÁN</div>
-          <div class="grid-cell header">HẠNG MỤC</div>
-          <div class="grid-cell header">TIẾN ĐỘ</div>
-          <div class="grid-cell header">DEADLINE</div>
-          <div class="grid-cell header">KH</div>
-          <div class="grid-cell header">NS</div>
-          <div class="grid-cell header">TRẠNG THÁI</div>
-        </div>
-        <div class="grid-body" id="progress">
-          <div class="loading-state" style="grid-column: 1/-1;">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div>
-        </div>
-      </div>
+      <table>
+        <thead><tr>
+          <th style="width:16%">DỰ ÁN</th>
+          <th style="width:14%">HẠNG MỤC</th>
+          <th style="width:10%">TIẾN ĐỘ</th>
+          <th style="width:12%">DEADLINE</th>
+          <th style="width:12%">KHÁCH HÀNG</th>
+          <th style="width:12%">NHÂN SỰ</th>
+          <th style="width:16%">TRẠNG THÁI</th>
+        </tr></thead>
+        <tbody id="progress">
+          <tr><td colspan="7"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
+        </tbody>
+      </table>
     </div>
     <div class="panel-footer">
       <div class="page-info" id="progressPage">TRANG 1 / 1</div>
@@ -680,17 +813,17 @@ html, body {
         <div class="panel-badge" id="guarantee-count">— BẢO LÃNH</div>
       </div>
       <div class="table-wrap">
-        <div class="grid-table" id="guaranteeTable" style="grid-template-columns: 1.5fr 1fr 1fr 1fr;">
-          <div class="grid-row grid-header">
-            <div class="grid-cell header">DỰ ÁN</div>
-            <div class="grid-cell header">LOẠI</div>
-            <div class="grid-cell header">GIÁ TRỊ</div>
-            <div class="grid-cell header">HẾT HẠN</div>
-          </div>
-          <div class="grid-body" id="guarantee">
-            <div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div>
-          </div>
-        </div>
+        <table>
+          <thead><tr>
+            <th style="width:35%">DỰ ÁN</th>
+            <th style="width:22%">LOẠI</th>
+            <th style="width:22%">GIÁ TRỊ</th>
+            <th style="width:21%">HẾT HẠN</th>
+          </tr></thead>
+          <tbody id="guarantee">
+            <tr><td colspan="4"><div class="loading-state">ĐANG TẢI <span class="ld"><span></span><span></span><span></span></span></div></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -699,38 +832,38 @@ html, body {
       <!-- DANH SÁCH NHÂN SỰ -->
       <div class="sub-panel">
         <div class="panel-header">
-          <div class="panel-title small"><div class="title-dot"></div>NHÂN SỰ</div>
-          <div class="panel-badge" id="staff-count">— NS</div>
+          <div class="panel-title small"><div class="title-dot"></div>DANH SÁCH NHÂN SỰ</div>
+          <div class="panel-badge" id="staff-count">— NHÂN SỰ</div>
         </div>
         <div class="table-wrap">
-          <div class="grid-table" id="staffTable" style="grid-template-columns: 1.5fr 1fr;">
-            <div class="grid-row grid-header">
-              <div class="grid-cell header">TÊN NHÂN SỰ</div>
-              <div class="grid-cell header">SỐ LƯỢNG</div>
-            </div>
-            <div class="grid-body" id="staff-list">
-              <div class="empty-state">KHÔNG CÓ</div>
-            </div>
-          </div>
+          <table>
+            <thead><tr>
+              <th style="width:65%">TÊN NHÂN SỰ</th>
+              <th style="width:35%">SỐ LƯỢNG</th>
+            </tr></thead>
+            <tbody id="staff-list">
+              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
       <!-- DANH SÁCH KHÁCH HÀNG -->
       <div class="sub-panel">
         <div class="panel-header">
-          <div class="panel-title small"><div class="title-dot"></div>KHÁCH HÀNG</div>
-          <div class="panel-badge" id="customer-count">— KH</div>
+          <div class="panel-title small"><div class="title-dot"></div>DANH SÁCH KHÁCH HÀNG</div>
+          <div class="panel-badge" id="customer-count">— KHÁCH HÀNG</div>
         </div>
         <div class="table-wrap">
-          <div class="grid-table" id="customerTable" style="grid-template-columns: 1.5fr 1fr;">
-            <div class="grid-row grid-header">
-              <div class="grid-cell header">TÊN KHÁCH HÀNG</div>
-              <div class="grid-cell header">SỐ LƯỢNG</div>
-            </div>
-            <div class="grid-body" id="customer-list">
-              <div class="empty-state">KHÔNG CÓ</div>
-            </div>
-          </div>
+          <table>
+            <thead><tr>
+              <th style="width:65%">TÊN KHÁCH HÀNG</th>
+              <th style="width:35%">SỐ LƯỢNG</th>
+            </tr></thead>
+            <tbody id="customer-list">
+              <tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -744,7 +877,6 @@ const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3g
 const GUARANTEE_URL = "";
 const PAGE_TIME = 10000;
 const REFRESH_TIME = 30000;
-const ROWS_PER_PAGE = 16;
 
 let progressData = [];
 let guaranteeData = [];
@@ -793,13 +925,21 @@ function parseGoogleSheetDate(dateValue) {
 
 function isOverdue(dateValue) {
   const deadline = parseGoogleSheetDate(dateValue);
-  if (!deadline || isNaN(deadline)) return false;
+  
+  if (!deadline || isNaN(deadline)) {
+    return false;
+  }
   
   deadline.setHours(0, 0, 0, 0);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
   return deadline < today;
+}
+
+function rowsPerPage() {
+  const w = document.querySelector(".table-wrap");
+  return w ? Math.max(4, Math.floor((w.clientHeight - 44) / 45)) : 7;
 }
 
 async function fetchSheet(url) {
@@ -814,13 +954,14 @@ function badge(cls,label){
 
 function renderProgress(){
   const el = document.getElementById("progress");
-  const total = Math.ceil(progressData.length / ROWS_PER_PAGE) || 1;
-  const page = progressData.slice(progressPage * ROWS_PER_PAGE, progressPage * ROWS_PER_PAGE + ROWS_PER_PAGE);
+  const rows = rowsPerPage();
+  const total = Math.ceil(progressData.length / rows) || 1;
+  const page = progressData.slice(progressPage * rows, progressPage * rows + rows);
 
-  document.getElementById("progress-count").innerText = `${progressData.length} MỤC`;
+  document.getElementById("progress-count").innerText = `${progressData.length} HẠNG MỤC`;
 
   if (!progressData.length) {
-    el.innerHTML = `<div class="loading-state">KHÔNG CÓ DỮ LIỆU</div>`;
+    el.innerHTML = `<tr><td colspan="7"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
     return;
   }
 
@@ -844,36 +985,31 @@ function renderProgress(){
     let bdg = "";
     if (item) {
       if (pct === 100) {
-        bdg = badge("b-done", "HT");
+        bdg = badge("b-done", "HOÀN THÀNH");
       } else if (overdue) {
-        bdg = badge("b-late", "QH");
+        bdg = badge("b-late", "QUÁ HẠN");
       } else {
-        bdg = badge("b-wip", "ĐT");
+        bdg = badge("b-wip", "ĐANG THỰC HIỆN");
       }
     }
 
-    return `
-      <div class="grid-row">
-        <div class="grid-cell"><div class="project-name" title="${project}">${project}</div></div>
-        <div class="grid-cell"><span class="item-val">${item}</span></div>
-        <div class="grid-cell">${item ? `<div class="pct-wrap"><span class="pct-num">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div></div>` : "—"}</div>
-        <div class="grid-cell"><span class="date-val${overdue ? " overdue":""}" title="${deadlineDisplay}">${deadlineDisplay}</span></div>
-        <div class="grid-cell"><span class="customer-val">${customer}</span></div>
-        <div class="grid-cell"><span class="person-val">${person}</span></div>
-        <div class="grid-cell">${bdg}</div>
-      </div>
-    `;
+    return `<tr>
+      <td><div class="project-name" title="${project}">${project}</div></td>
+      <td><span class="item-val">${item}</span></td>
+      <td>${item ? `
+        <div class="pct-wrap">
+          <span class="pct-num">${pct}%</span>
+          <div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%"></div></div>
+        </div>` : ""}
+      </td>
+      <td><span class="date-val${overdue ? " overdue":""}">${deadlineDisplay}</span></td>
+      <td><span class="customer-val">${customer}</span></td>
+      <td><span class="person-val">${person}</span></td>
+      <td>${bdg}</td>
+    </tr>`;
   }).join("");
 
   document.getElementById("progressPage").innerText = `TRANG ${progressPage+1} / ${total}`;
-  
-  const dotsEl = document.getElementById("progressDots");
-  dotsEl.innerHTML = "";
-  for(let i=0;i<Math.min(total,10);i++){
-    const d=document.createElement("div");
-    d.className="dot"+(i===progressPage?" active":"");
-    dotsEl.appendChild(d);
-  }
   
   renderStaffList();
   renderCustomerList();
@@ -894,18 +1030,18 @@ function renderStaffList(){
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
 
-  document.getElementById("staff-count").innerText = `${staffArray.length} NS`;
+  document.getElementById("staff-count").innerText = `${staffArray.length} NHÂN SỰ`;
 
   if (!staffArray.length) {
-    el.innerHTML = `<div class="empty-state">KHÔNG CÓ</div>`;
+    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
     return;
   }
 
   el.innerHTML = staffArray.map(staff => `
-    <div class="grid-row">
-      <div class="grid-cell"><span class="person-val">${staff.name}</span></div>
-      <div class="grid-cell"><span class="count-val">${staff.count}</span></div>
-    </div>
+    <tr>
+      <td><span class="person-val">${staff.name}</span></td>
+      <td><span class="count-val">${staff.count}</span></td>
+    </tr>
   `).join("");
 }
 
@@ -924,18 +1060,18 @@ function renderCustomerList(){
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
 
-  document.getElementById("customer-count").innerText = `${customerArray.length} KH`;
+  document.getElementById("customer-count").innerText = `${customerArray.length} KHÁCH HÀNG`;
 
   if (!customerArray.length) {
-    el.innerHTML = `<div class="empty-state">KHÔNG CÓ</div>`;
+    el.innerHTML = `<tr><td colspan="2"><div class="empty-state">KHÔNG CÓ DỮ LIỆU</div></td></tr>`;
     return;
   }
 
   el.innerHTML = customerArray.map(customer => `
-    <div class="grid-row">
-      <div class="grid-cell"><span class="customer-val">${customer.name}</span></div>
-      <div class="grid-cell"><span class="count-val">${customer.count}</span></div>
-    </div>
+    <tr>
+      <td><span class="customer-val">${customer.name}</span></td>
+      <td><span class="count-val">${customer.count}</span></td>
+    </tr>
   `).join("");
 }
 
@@ -943,29 +1079,26 @@ function renderGuarantee(){
   const el=document.getElementById("guarantee");
   
   if(!guaranteeData.length){
-    el.innerHTML=`<div class="empty-state">KHÔNG CÓ</div>`;
+    el.innerHTML=`<tr><td colspan="4"><div class="empty-state">CHƯA CÓ DỮ LIỆU</div></td></tr>`;
   } else {
     el.innerHTML=guaranteeData.map(r=>{
       const d=r.c;
       const project=d[0]?.v||"", type=d[1]?.v||"—", value=d[2]?.v, expiryRaw=d[3]?.v;
-      return `
-        <div class="grid-row">
-          <div class="grid-cell"><div class="project-name" title="${project}">${project}</div></div>
-          <div class="grid-cell"><span class="type-val">${type}</span></div>
-          <div class="grid-cell"><span class="value-val">${fmtMoney(value)}</span></div>
-          <div class="grid-cell"><span class="date-val">${fmtDate(expiryRaw)}</span></div>
-        </div>
-      `;
+      return `<tr>
+        <td><div class="project-name" title="${project}">${project}</div></td>
+        <td><span class="type-val">${type}</span></td>
+        <td><span class="value-val">${fmtMoney(value)}</span></td>
+        <td><span class="date-val">${fmtDate(expiryRaw)}</span></td>
+      </tr>`;
     }).join("");
   }
   
-  document.getElementById("guarantee-count").innerText=`${guaranteeData.length} BL`;
+  document.getElementById("guarantee-count").innerText=`${guaranteeData.length} BẢO LÃNH`;
 }
 
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
-  progressPage = 0;
   renderProgress();
   renderGuarantee();
   ["refreshBar1","refreshBar2"].forEach(id=>{
@@ -975,8 +1108,8 @@ async function loadData(){
 }
 
 setInterval(()=>{
-  const total = Math.ceil(progressData.length / ROWS_PER_PAGE) || 1;
-  progressPage = (progressPage + 1) % total;
+  const rows=rowsPerPage();
+  progressPage =(progressPage +1)%(Math.ceil(progressData.length /rows)||1);
   renderProgress();
 }, PAGE_TIME);
 
