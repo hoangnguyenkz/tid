@@ -196,6 +196,7 @@
         .st-wip { border: 1px solid var(--accent); color: var(--accent); }
         .st-late { background: var(--red); color: #fff; animation: flash 1.4s step-end infinite; }
         @keyframes flash { 0%,100%{opacity:1} 50%{opacity:.7} }
+        @keyframes flash-red { 0%,100%{color:#ff6b6b;} 50%{color:transparent;} }
 
         /* Footer */
         .footer-info {
@@ -459,11 +460,11 @@
             </div>
         </div>
 
-        <!-- THỐNG KÊ  + KHÁCH HÀNG -->
+        <!-- THỐNG KÊ NHÂN SỰ + KHÁCH HÀNG -->
         <div class="panel-bottom-right">
             <div class="sub-panel">
                 <div class="panel-header">
-                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div> THỐNG KÊ DỰ ÁN/ NHÂN SỰ (<span id="s-total">0</span>)</div>
+                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/NHÂN SỰ (<span id="s-total">0</span>)</div>
                 </div>
                 <div class="table-wrap">
                     <table><tbody id="s-table"></tbody></table>
@@ -471,7 +472,7 @@
             </div>
             <div class="sub-panel">
                 <div class="panel-header">
-                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div> THỐNG KÊ DỰ ÁN/ KHÁCH HÀNG (<span id="c-total">0</span>)</div>
+                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/ KHÁCH HÀNG (<span id="c-total">0</span>)</div>
                 </div>
                 <div class="table-wrap">
                     <table><tbody id="c-table"></tbody></table>
@@ -592,7 +593,7 @@
             if (expDate) { const e = new Date(expDate); e.setHours(0,0,0,0); daysLeft = Math.ceil((e - today) / 86400000); }
             const nearExpiry = daysLeft !== null && daysLeft <= 10;
             const dateStyle = nearExpiry
-                ? "color:#fff;font-family:var(--f-mono);white-space:nowrap;animation:flash 1.4s step-end infinite;"
+                ? "color:#ff6b6b;font-family:var(--f-mono);white-space:nowrap;animation:flash-red 1.4s step-end infinite;font-weight:700;"
                 : "color:#fff;font-family:var(--f-mono);white-space:nowrap;";
             return `<tr>
                 <td class="text-left" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[9]?.v || "—"}</td>
