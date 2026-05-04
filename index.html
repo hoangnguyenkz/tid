@@ -57,7 +57,6 @@
         .header-center { text-align: center; }
         .header-title { font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 2px; }
 
-        /* Khối thời gian góc phải */
         .header-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
         .header-clock { font-family: var(--f-mono); font-size: 22px; color: var(--text-bright); line-height: 1; font-weight: 500; }
         .header-date { font-family: var(--f-mono); font-size: 13px; color: var(--accent); margin-top: 4px; letter-spacing: 1px; }
@@ -110,22 +109,23 @@
         /* ── TABLE ── */
         .table-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; height: 100%; }
-        th { background: var(--bg-thead); color: var(--accent); font-size: 12px; padding: 12px 8px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
-        td { padding: 14px 8px; font-size: 14px; border-bottom: 1px solid var(--border); text-align: center; }
+        th { background: var(--bg-thead); color: var(--accent); font-size: 11px; padding: 12px 6px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
+        td { padding: 12px 6px; font-size: 13px; border-bottom: 1px solid var(--border); text-align: center; }
         
         tbody tr:nth-child(odd) { background: var(--row-a); }
         tbody tr:nth-child(even) { background: var(--row-b); }
         
-        .project-name { font-weight: 700; color: var(--gold); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
-        .item-text { color: var(--text-bright); font-weight: 500; text-align: left; display: block; }
+        .project-name { font-weight: 700; color: var(--gold); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+        .customer-name { color: var(--accent); font-weight: 500; text-align: left; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-text { color: var(--text-bright); font-weight: 400; text-align: left; display: block; font-size: 13px; }
 
         /* ── PROGRESS BAR ── */
-        .pct-num { font-family: var(--f-mono); font-size: 13px; color: var(--accent); font-weight: 600; }
+        .pct-num { font-family: var(--f-mono); font-size: 12px; color: var(--accent); font-weight: 600; }
         .bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-top: 5px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--accent); transition: width 0.5s; }
 
         /* ── BADGES ── */
-        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 3px; text-transform: uppercase; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; font-size: 10px; font-weight: 700; border-radius: 3px; text-transform: uppercase; }
         .b-done { background: var(--green); color: #000; }
         .b-wip { border: 1px solid var(--accent); color: var(--accent); }
         .b-late { background: var(--red); color: #fff; }
@@ -148,11 +148,10 @@
             .panel-top { height: auto; min-height: 350px; flex: none; }
             .panel-bottom { flex-direction: column; height: auto; gap: 20px; }
             .sub-panel { min-height: 250px; }
-            th, td { font-size: 12px; padding: 10px 4px; }
-            .project-name { max-width: 90px; font-size: 12px; }
+            th, td { font-size: 11px; padding: 10px 4px; }
+            .project-name, .customer-name { max-width: 70px; font-size: 11px; }
             .header { grid-template-columns: 1fr 1fr; padding: 0 10px; height: auto; padding: 10px; }
             .header-center { display: none; }
-            .header-right { align-items: flex-end; }
         }
 
         @media (min-width: 1024px) {
@@ -168,11 +167,9 @@
     
     <div class="header-center">
         <div class="header-title">PROJECT DASHBOARD</div>
-        <!-- Vị trí cũ của ngày tháng đã được xóa -->
     </div>
 
     <div class="header-right">
-        <!-- Đồng hồ và Ngày tháng được gộp chung tại đây -->
         <div class="header-clock" id="clock">00:00:00</div>
         <div class="header-date" id="date">--/--/----</div>
     </div>
@@ -188,11 +185,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 22%;">DỰ ÁN</th>
-                        <th style="width: 28%;">HẠNG MỤC</th>
-                        <th style="width: 15%;">TIẾN ĐỘ</th>
-                        <th style="width: 15%;">DEADLINE</th>
-                        <th style="width: 20%;">TRẠNG THÁI</th>
+                        <th style="width: 18%;">DỰ ÁN</th>
+                        <th style="width: 18%;">KHÁCH HÀNG</th> <!-- Cột mới bổ sung -->
+                        <th style="width: 24%;">HẠNG MỤC</th>
+                        <th style="width: 13%;">TIẾN ĐỘ</th>
+                        <th style="width: 13%;">DEADLINE</th>
+                        <th style="width: 14%;">TRẠNG THÁI</th>
                     </tr>
                 </thead>
                 <tbody id="progress"></tbody>
@@ -227,11 +225,11 @@
 
         <div class="panel-bottom">
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 13px;">THỐNG KÊ NHÂN SỰ</div><div class="panel-badge" id="staff-count">0</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 13px;">TOP NHÂN SỰ</div><div class="panel-badge" id="staff-count">0</div></div>
                 <div class="table-wrap"><table><tbody id="staff-list"></tbody></table></div>
             </div>
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 13px;">THỐNG KÊ KHÁCH HÀNG</div><div class="panel-badge" id="customer-count">0</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 13px;">TOP KHÁCH HÀNG</div><div class="panel-badge" id="customer-count">0</div></div>
                 <div class="table-wrap"><table><tbody id="customer-list"></tbody></table></div>
             </div>
         </div>
@@ -252,7 +250,6 @@
     function updateClock() {
         const now = new Date();
         document.getElementById("clock").innerText = now.toLocaleTimeString("vi-VN", { hour12: false });
-        // Format ngày tháng rõ ràng hơn
         const d = String(now.getDate()).padStart(2, '0');
         const m = String(now.getMonth() + 1).padStart(2, '0');
         const y = now.getFullYear();
@@ -296,6 +293,7 @@
         el.innerHTML = items.map(row => {
             const d = row.c;
             const project = d[1]?.v || "—";
+            const customer = d[4]?.v || "—"; // Lấy nội dung từ cột E (index 4)
             const item = d[2]?.v ? d[2].v.trim() : ""; 
             const deadline = d[7]?.f || "—";
             
@@ -317,9 +315,10 @@
 
             return `<tr>
                 <td><div class="project-name">${project}</div></td>
+                <td><div class="customer-name">${customer}</div></td>
                 <td>${itemDisplay}</td>
                 <td>${progressHtml}</td>
-                <td style="font-family: var(--f-mono); font-size:13px;">${deadline}</td>
+                <td style="font-family: var(--f-mono); font-size:12px;">${deadline}</td>
                 <td>${badgeHtml}</td>
             </tr>`;
         }).join("");
@@ -350,7 +349,7 @@
             const sorted = Object.entries(map).sort((a,b) => b[1] - a[1]).slice(0, 5);
             document.getElementById(badgeId).innerText = Object.keys(map).length;
             document.getElementById(elId).innerHTML = sorted.map(([name, count]) => 
-                `<tr><td style="text-align:left; font-size:13px; padding: 10px 8px;">${name}</td><td style="color:var(--accent); font-weight:bold; padding: 10px 8px;">${count}</td></tr>`
+                `<tr><td style="text-align:left; font-size:12px; padding: 8px 8px;">${name}</td><td style="color:var(--accent); font-weight:bold; padding: 8px 8px;">${count}</td></tr>`
             ).join("");
         };
         fill(staffMap, "staff-list", "staff-count");
