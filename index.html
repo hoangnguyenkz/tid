@@ -170,7 +170,7 @@
             const txtP = await resP.text();
             const txtG = await resG.text();
             
-            // Lấy toàn bộ hàng, lọc bỏ các dòng hoàn toàn trống
+            // SỬA LỖI THỐNG KÊ THIẾU: Quét toàn bộ dòng có dữ liệu (cột B - Index 1) 
             dataP = JSON.parse(txtP.substring(txtP.indexOf("{"), txtP.lastIndexOf("}") + 1)).table.rows.filter(r => r.c && r.c[1]?.v);
             dataG = JSON.parse(txtG.substring(txtG.indexOf("{"), txtG.lastIndexOf("}") + 1)).table.rows.filter(r => r.c && r.c[9]?.v);
 
@@ -237,17 +237,15 @@
 
     function renderStats() {
         const staff = {}, cust = {};
-        // Quét toàn bộ dữ liệu dự án để thống kê chính xác
         dataP.forEach(r => {
             const s = r.c[3]?.v, c = r.c[4]?.v;
-            if(s && s !== "—" && s.trim() !== "") staff[s] = (staff[s] || 0) + 1;
-            if(c && c !== "—" && c.trim() !== "") cust[c] = (cust[c] || 0) + 1;
+            if(s && s !== "—") staff[s] = (staff[s] || 0) + 1;
+            if(c && c !== "—") cust[c] = (cust[c] || 0) + 1;
         });
-        
         const fill = (map, id) => {
-            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0, 6); // Tăng lên top 6 để hiển thị đầy đủ hơn
+            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0, 4);
             document.getElementById(id).innerHTML = sorted.map(([n, v]) => 
-                `<tr><td class="text-left" style="font-size:10px; padding:6px 10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${n}</td><td class="accent-text" style="font-weight:700; width:25px; text-align:right; padding-right:10px;">${v}</td></tr>`
+                `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
             ).join("");
         };
         fill(staff, "s-table");
