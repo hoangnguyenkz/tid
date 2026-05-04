@@ -85,6 +85,21 @@
         }
         .panel-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
         .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
+
+        /* ── HIGHLIGHT BADGE SỐ LƯỢNG HẠNG MỤC ── */
+        .panel-badge-highlight { 
+            font-family: var(--f-mono); 
+            font-size: 13px; 
+            font-weight: 700;
+            padding: 4px 12px; 
+            border: 1px solid var(--gold); 
+            color: var(--bg); 
+            background: var(--gold); /* Đổi sang nền vàng nổi bật */
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(255, 201, 77, 0.3); /* Hiệu ứng phát sáng */
+            letter-spacing: 1px;
+        }
+
         .panel-badge { font-family: var(--f-mono); font-size: 11px; padding: 2px 8px; border: 1px solid var(--border-hi); color: var(--accent); background: rgba(96,200,240,0.1); }
 
         /* ── TABLE ── */
@@ -97,19 +112,7 @@
         tbody tr:nth-child(even) { background: var(--row-b); }
         
         .project-name { font-weight: 700; color: var(--gold); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
-
-        /* HIGHLIGHT HẠNG MỤC */
-        .item-highlight {
-            display: block;
-            background: rgba(96, 200, 240, 0.15); /* Nền xanh mờ */
-            color: var(--accent); /* Chữ màu xanh sáng */
-            padding: 6px 10px;
-            border-left: 3px solid var(--accent); /* Thanh dọc bên trái */
-            border-radius: 2px;
-            font-weight: 600;
-            text-align: left;
-            font-size: 14px;
-        }
+        .item-text { color: var(--text-bright); font-weight: 500; text-align: left; display: block; }
 
         /* ── PROGRESS BAR ── */
         .pct-num { font-family: var(--f-mono); font-size: 13px; color: var(--accent); font-weight: 600; }
@@ -142,9 +145,9 @@
             .sub-panel { min-height: 250px; }
             th, td { font-size: 12px; padding: 10px 4px; }
             .project-name { max-width: 90px; font-size: 12px; }
-            .item-highlight { font-size: 12px; padding: 4px 6px; }
             .header { grid-template-columns: 1fr 1fr; padding: 0 10px; }
             .header-center { display: none; }
+            .panel-badge-highlight { font-size: 11px; padding: 3px 8px; }
         }
 
         @media (min-width: 1024px) {
@@ -168,7 +171,8 @@
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><div class="title-dot"></div> TIẾN ĐỘ DỰ ÁN</div>
-            <div class="panel-badge" id="progress-count">0 HẠNG MỤC</div>
+            <!-- Highlight nhãn số lượng hạng mục tại đây -->
+            <div class="panel-badge-highlight" id="progress-count">0 HẠNG MỤC</div>
         </div>
         <div class="table-wrap">
             <table>
@@ -289,8 +293,8 @@
                 let pct = Math.round((d[9]?.v || 0) * (d[9]?.v <= 1 ? 100 : 1));
                 const isOverdue = d[7]?.v && new Date(parseGSDate(d[7]?.v)) < new Date() && pct < 100;
 
-                // Highlight nội dung hạng mục
-                itemDisplay = `<span class="item-highlight">${item}</span>`;
+                // Quay lại hiển thị chữ hạng mục bình thường
+                itemDisplay = `<span class="item-text">${item}</span>`;
 
                 progressHtml = `<div class="pct-num">${pct}%</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>`;
                 
