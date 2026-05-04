@@ -131,9 +131,11 @@ html, body {
 
 .panel:first-child { 
   border-bottom: 2px solid var(--border-hi);
+  flex-basis: 60%;
 }
 
 .panel.split-panel {
+  flex-basis: 40%;
   flex-direction: column;
   overflow: hidden;
 }
@@ -172,6 +174,7 @@ html, body {
   margin-bottom: 12px;
   padding-bottom: 10px;
   border-bottom: 2px solid var(--border-hi);
+  flex-shrink: 0;
 }
 
 .panel-title {
@@ -209,18 +212,49 @@ html, body {
 
 /* ── TABLE ── */
 .table-wrap { 
-  flex: 1; 
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  display: flex;
+  flex-direction: column;
 }
 
-thead tr { background: var(--bg-thead); }
+thead {
+  flex-shrink: 0;
+}
+
+thead tr { 
+  background: var(--bg-thead);
+  display: table;
+  width: 100%;
+}
+
+tbody {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+tbody tr {
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  transition: background .12s;
+}
+
+tbody tr:nth-child(odd) { background: var(--row-a); }
+tbody tr:nth-child(even) { background: var(--row-b); }
+
+tbody tr:hover { background: rgba(96,200,240,.09) !important; }
 
 th {
   padding: 10px 12px;
@@ -232,18 +266,10 @@ th {
   text-transform: uppercase;
   text-align: center;
   border-bottom: 2px solid var(--border-hi);
+  display: table-cell;
 }
 
 th:first-child { text-align: left; }
-
-tbody tr:nth-child(odd) { background: var(--row-a); }
-tbody tr:nth-child(even) { background: var(--row-b); }
-tbody tr {
-  border-bottom: 1px solid var(--border);
-  transition: background .12s;
-}
-
-tbody tr:hover { background: rgba(96,200,240,.09) !important; }
 
 td {
   padding: 11px 12px;
@@ -252,6 +278,7 @@ td {
   font-weight: 400;
   color: var(--text);
   vertical-align: middle;
+  display: table-cell;
 }
 
 td:first-child { text-align: left; }
@@ -349,7 +376,6 @@ td:first-child { text-align: left; }
   flex-shrink: 0;
 }
 
-/* Solid-fill badges */
 .b-done { color:#061810; background:var(--green); }
 .b-done .badge-dot { background:#061810; }
 .b-late { color:#fff; background:var(--red); animation: flash 1.4s step-end infinite; }
@@ -368,6 +394,7 @@ td:first-child { text-align: left; }
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid var(--border-hi);
+  flex-shrink: 0;
 }
 
 .page-info {
@@ -395,7 +422,7 @@ td:first-child { text-align: left; }
 /* ── STATES ── */
 .empty-state, .loading-state {
   display:flex; align-items:center; justify-content:center;
-  height:80px;
+  height:60px;
   color:var(--text-dim);
   font-family:var(--f-mono);
   font-size:13px;
@@ -424,6 +451,7 @@ td:first-child { text-align: left; }
   position:absolute; bottom:0; left:0;
   height:3px;
   background:linear-gradient(90deg,var(--accent-dim),var(--accent));
+  width: 100%;
 }
 
 .refresh-bar.animating { animation:shrink 30s linear forwards; }
@@ -436,72 +464,24 @@ td:first-child { text-align: left; }
     flex-direction: row;
   }
 
-  .panel {
-    padding: 14px 18px 10px;
-  }
-
   .panel:first-child { 
     border-bottom: none;
     border-right: 2px solid var(--border-hi);
+    flex-basis: auto;
     flex: 1;
   }
 
   .panel.split-panel {
+    flex-basis: auto;
     flex: 1;
-    border-right: none;
-  }
-
-  .panel-top {
-    flex: 0.6;
-    border-bottom: 2px solid var(--border-hi);
-    margin-bottom: 10px;
-    padding-bottom: 10px;
   }
 
   .panel-bottom {
-    flex: 0.4;
     flex-direction: row;
-    gap: 10px;
   }
 
-  .sub-panel {
-    flex: 1;
-  }
-
-  th {
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-
-  td {
-    padding: 11px 12px;
-    font-size: 16px;
-  }
-
-  .panel-title {
-    font-size: 17px;
-  }
-
-  .panel-title.small {
-    font-size: 13px;
-  }
-
-  .pct-num {
-    font-size: 16px;
-  }
-
-  .bar-bg {
-    width: 72px;
-    height: 6px;
-  }
-
-  .count-val {
-    font-size: 16px;
-  }
-
-  .badge {
-    font-size: 13px;
-    padding: 5px 14px;
+  tbody tr {
+    height: 39px;
   }
 }
 
@@ -509,10 +489,6 @@ td:first-child { text-align: left; }
 @media (max-width: 1023px) and (min-width: 768px) {
   .container {
     flex-direction: row;
-  }
-
-  .panel {
-    padding: 12px 14px 8px;
   }
 
   .panel:first-child { 
@@ -523,22 +499,10 @@ td:first-child { text-align: left; }
 
   .panel.split-panel {
     flex: 0.8;
-    border-right: none;
-  }
-
-  .panel-top {
-    flex: 0.55;
   }
 
   .panel-bottom {
-    flex: 0.45;
     flex-direction: row;
-    gap: 8px;
-  }
-
-  th {
-    padding: 8px 10px;
-    font-size: 12px;
   }
 
   td {
@@ -546,39 +510,13 @@ td:first-child { text-align: left; }
     font-size: 14px;
   }
 
-  .panel-header {
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-  }
-
-  .panel-title {
-    font-size: 14px;
-  }
-
-  .panel-title.small {
+  th {
+    padding: 8px 10px;
     font-size: 12px;
   }
 
-  .pct-num {
-    font-size: 14px;
-  }
-
-  .bar-bg {
-    width: 60px;
-    height: 5px;
-  }
-
-  .count-val {
-    font-size: 14px;
-  }
-
-  .badge {
-    font-size: 11px;
-    padding: 4px 10px;
-  }
-
-  .item-val, .customer-val, .person-val {
-    font-size: 13px;
+  tbody tr {
+    height: 36px;
   }
 }
 
@@ -609,16 +547,8 @@ td:first-child { text-align: left; }
     letter-spacing: 1.5px;
   }
 
-  .header-tagline {
-    font-size: 7px;
-  }
-
   .header-clock {
     font-size: 14px;
-  }
-
-  .header-date {
-    font-size: 8px;
   }
 
   .container {
@@ -631,35 +561,30 @@ td:first-child { text-align: left; }
   }
 
   .panel:first-child {
-    flex: 1.2;
+    flex-basis: 55%;
+    flex: 0;
     border-bottom: 2px solid var(--border-hi);
-    border-right: none;
   }
 
   .panel.split-panel {
-    flex: 0.8;
+    flex-basis: 45%;
+    flex: 0;
   }
 
   .panel-top {
-    flex: 0.55;
-    margin-bottom: 8px;
-    padding-bottom: 8px;
+    flex: 0.4;
+    margin-bottom: 6px;
   }
 
   .panel-bottom {
-    flex: 0.45;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .sub-panel {
-    flex: 1;
-    min-height: 80px;
+    flex: 0.6;
+    flex-direction: row;
+    gap: 6px;
   }
 
   .panel-header {
-    margin-bottom: 8px;
-    padding-bottom: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
   }
 
   .panel-title {
@@ -668,7 +593,7 @@ td:first-child { text-align: left; }
   }
 
   .panel-title.small {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .panel-badge {
@@ -677,56 +602,43 @@ td:first-child { text-align: left; }
   }
 
   th {
-    padding: 6px 4px;
-    font-size: 10px;
-    letter-spacing: 0.3px;
-  }
-
-  td {
-    padding: 6px 4px;
-    font-size: 11px;
-  }
-
-  .project-name {
-    font-size: 11px;
-  }
-
-  .item-val, .customer-val, .person-val {
-    font-size: 10px;
-  }
-
-  .pct-wrap {
-    gap: 2px;
-  }
-
-  .pct-num {
-    font-size: 10px;
-  }
-
-  .bar-bg {
-    width: 40px;
-    height: 4px;
-  }
-
-  .date-val {
+    padding: 5px 4px;
     font-size: 9px;
   }
 
-  .type-val {
+  td {
+    padding: 5px 3px;
     font-size: 10px;
   }
 
-  .value-val {
+  tbody tr {
+    height: 30px;
+  }
+
+  .project-name {
     font-size: 10px;
+  }
+
+  .item-val, .customer-val, .person-val {
+    font-size: 9px;
+  }
+
+  .pct-num {
+    font-size: 9px;
+  }
+
+  .bar-bg {
+    width: 35px;
+    height: 3px;
   }
 
   .count-val {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .badge {
     font-size: 8px;
-    padding: 2px 5px;
+    padding: 2px 4px;
   }
 
   .badge-dot {
@@ -738,19 +650,14 @@ td:first-child { text-align: left; }
     font-size: 9px;
   }
 
-  .page-dots {
-    gap: 3px;
-  }
-
   .dot {
     width: 4px;
     height: 4px;
   }
 
   .empty-state, .loading-state {
-    height: 50px;
-    font-size: 10px;
-    gap: 6px;
+    height: 40px;
+    font-size: 9px;
   }
 }
 </style>
@@ -760,9 +667,9 @@ td:first-child { text-align: left; }
   <div>
     <div class="header-logo">
       <div class="logo-box">T</div>
-      TID CO.LTD
+      TID CORP
     </div>
-    <div class="header-sub">Version 2.0</div>
+    <div class="header-sub">MONITORING SYSTEM v2.0</div>
   </div>
   <div class="header-center">
     <div class="header-title">PROJECT DASHBOARD</div>
@@ -877,6 +784,7 @@ const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3g
 const GUARANTEE_URL = "";
 const PAGE_TIME = 10000;
 const REFRESH_TIME = 30000;
+const ROWS_PER_PAGE = 16;
 
 let progressData = [];
 let guaranteeData = [];
@@ -925,21 +833,13 @@ function parseGoogleSheetDate(dateValue) {
 
 function isOverdue(dateValue) {
   const deadline = parseGoogleSheetDate(dateValue);
-  
-  if (!deadline || isNaN(deadline)) {
-    return false;
-  }
+  if (!deadline || isNaN(deadline)) return false;
   
   deadline.setHours(0, 0, 0, 0);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
   return deadline < today;
-}
-
-function rowsPerPage() {
-  const w = document.querySelector(".table-wrap");
-  return w ? Math.max(4, Math.floor((w.clientHeight - 44) / 45)) : 7;
 }
 
 async function fetchSheet(url) {
@@ -954,9 +854,8 @@ function badge(cls,label){
 
 function renderProgress(){
   const el = document.getElementById("progress");
-  const rows = rowsPerPage();
-  const total = Math.ceil(progressData.length / rows) || 1;
-  const page = progressData.slice(progressPage * rows, progressPage * rows + rows);
+  const total = Math.ceil(progressData.length / ROWS_PER_PAGE) || 1;
+  const page = progressData.slice(progressPage * ROWS_PER_PAGE, progressPage * ROWS_PER_PAGE + ROWS_PER_PAGE);
 
   document.getElementById("progress-count").innerText = `${progressData.length} HẠNG MỤC`;
 
@@ -1010,6 +909,14 @@ function renderProgress(){
   }).join("");
 
   document.getElementById("progressPage").innerText = `TRANG ${progressPage+1} / ${total}`;
+  
+  const dotsEl = document.getElementById("progressDots");
+  dotsEl.innerHTML = "";
+  for(let i=0;i<Math.min(total,10);i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i===progressPage?" active":"");
+    dotsEl.appendChild(d);
+  }
   
   renderStaffList();
   renderCustomerList();
@@ -1099,6 +1006,7 @@ function renderGuarantee(){
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
+  progressPage = 0;
   renderProgress();
   renderGuarantee();
   ["refreshBar1","refreshBar2"].forEach(id=>{
@@ -1108,8 +1016,8 @@ async function loadData(){
 }
 
 setInterval(()=>{
-  const rows=rowsPerPage();
-  progressPage =(progressPage +1)%(Math.ceil(progressData.length /rows)||1);
+  const total = Math.ceil(progressData.length / ROWS_PER_PAGE) || 1;
+  progressPage = (progressPage + 1) % total;
   renderProgress();
 }, PAGE_TIME);
 
