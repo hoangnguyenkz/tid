@@ -36,7 +36,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Mặc định trên PC: Không cuộn, khớp khung hình */
         body { overflow: hidden; }
 
         /* ── HEADER ── */
@@ -73,7 +72,6 @@
             min-height: 0;
         }
 
-        /* Panel trái: Tiến độ (Lớn hơn) */
         .panel:first-child { flex: 1.4; } 
 
         .panel-top { flex: 0.6; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-hi); margin-bottom: 10px; padding-bottom: 10px; overflow: hidden; }
@@ -89,18 +87,29 @@
         .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
         .panel-badge { font-family: var(--f-mono); font-size: 11px; padding: 2px 8px; border: 1px solid var(--border-hi); color: var(--accent); background: rgba(96,200,240,0.1); }
 
-        /* ── TABLE: GIÃN RỘNG HÀNG ── */
+        /* ── TABLE ── */
         .table-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; height: 100%; }
         th { background: var(--bg-thead); color: var(--accent); font-size: 12px; padding: 12px 8px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
-        
-        /* Tăng padding để giãn hàng dọc */
         td { padding: 14px 8px; font-size: 14px; border-bottom: 1px solid var(--border); text-align: center; }
         
         tbody tr:nth-child(odd) { background: var(--row-a); }
         tbody tr:nth-child(even) { background: var(--row-b); }
         
-        .project-name { font-weight: 700; color: var(--gold); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+        .project-name { font-weight: 700; color: var(--gold); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+
+        /* HIGHLIGHT HẠNG MỤC */
+        .item-highlight {
+            display: block;
+            background: rgba(96, 200, 240, 0.15); /* Nền xanh mờ */
+            color: var(--accent); /* Chữ màu xanh sáng */
+            padding: 6px 10px;
+            border-left: 3px solid var(--accent); /* Thanh dọc bên trái */
+            border-radius: 2px;
+            font-weight: 600;
+            text-align: left;
+            font-size: 14px;
+        }
 
         /* ── PROGRESS BAR ── */
         .pct-num { font-family: var(--f-mono); font-size: 13px; color: var(--accent); font-weight: 600; }
@@ -132,7 +141,8 @@
             .panel-bottom { flex-direction: column; height: auto; gap: 20px; }
             .sub-panel { min-height: 250px; }
             th, td { font-size: 12px; padding: 10px 4px; }
-            .project-name { max-width: 90px; font-size: 13px; }
+            .project-name { max-width: 90px; font-size: 12px; }
+            .item-highlight { font-size: 12px; padding: 4px 6px; }
             .header { grid-template-columns: 1fr 1fr; padding: 0 10px; }
             .header-center { display: none; }
         }
@@ -164,8 +174,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 25%;">DỰ ÁN</th>
-                        <th style="width: 25%;">HẠNG MỤC</th>
+                        <th style="width: 22%;">DỰ ÁN</th>
+                        <th style="width: 28%;">HẠNG MỤC</th>
                         <th style="width: 15%;">TIẾN ĐỘ</th>
                         <th style="width: 15%;">DEADLINE</th>
                         <th style="width: 20%;">TRẠNG THÁI</th>
@@ -220,8 +230,6 @@
     
     const PAGE_TIME = 5000; 
     const REFRESH_TIME = 30000;
-    
-    // Giảm số dòng mỗi trang một chút để hàng có không gian giãn ra hơn
     const ROWS_PER_PAGE = window.innerWidth < 1024 ? 8 : 12; 
 
     let rawData = [];
@@ -270,16 +278,19 @@
         el.innerHTML = items.map(row => {
             const d = row.c;
             const project = d[1]?.v || "—";
-            const item = d[2]?.v ? d[2].v.trim() : ""; // Nội dung hạng mục
+            const item = d[2]?.v ? d[2].v.trim() : ""; 
             const deadline = d[7]?.f || "—";
             
-            // Logic mới: Nếu item (Hạng mục) trống thì không hiện Tiến độ & Trạng thái
             let progressHtml = "";
             let badgeHtml = "";
+            let itemDisplay = item || "—";
 
             if (item !== "" && item !== "—") {
                 let pct = Math.round((d[9]?.v || 0) * (d[9]?.v <= 1 ? 100 : 1));
                 const isOverdue = d[7]?.v && new Date(parseGSDate(d[7]?.v)) < new Date() && pct < 100;
+
+                // Highlight nội dung hạng mục
+                itemDisplay = `<span class="item-highlight">${item}</span>`;
 
                 progressHtml = `<div class="pct-num">${pct}%</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>`;
                 
@@ -290,7 +301,7 @@
 
             return `<tr>
                 <td><div class="project-name">${project}</div></td>
-                <td style="text-align:left;">${item || "—"}</td>
+                <td>${itemDisplay}</td>
                 <td>${progressHtml}</td>
                 <td style="font-family: var(--f-mono); font-size:13px;">${deadline}</td>
                 <td>${badgeHtml}</td>
