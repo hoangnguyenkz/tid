@@ -164,11 +164,7 @@
 
 <div class="header">
     <div class="header-logo"><div class="logo-box">T</div> TID CO.LTD</div>
-    
-    <div class="header-center">
-        <div class="header-title">PROJECT DASHBOARD</div>
-    </div>
-
+    <div class="header-center"><div class="header-title">PROJECT DASHBOARD</div></div>
     <div class="header-right">
         <div class="header-clock" id="clock">00:00:00</div>
         <div class="header-date" id="date">--/--/----</div>
@@ -186,7 +182,7 @@
                 <thead>
                     <tr>
                         <th style="width: 18%;">DỰ ÁN</th>
-                        <th style="width: 18%;">KHÁCH HÀNG</th> <!-- Cột mới bổ sung -->
+                        <th style="width: 18%;">KHÁCH HÀNG</th>
                         <th style="width: 24%;">HẠNG MỤC</th>
                         <th style="width: 13%;">TIẾN ĐỘ</th>
                         <th style="width: 13%;">DEADLINE</th>
@@ -293,7 +289,7 @@
         el.innerHTML = items.map(row => {
             const d = row.c;
             const project = d[1]?.v || "—";
-            const customer = d[4]?.v || "—"; // Lấy nội dung từ cột E (index 4)
+            const customer = d[4]?.v || "—";
             const item = d[2]?.v ? d[2].v.trim() : ""; 
             const deadline = d[7]?.f || "—";
             
@@ -339,19 +335,36 @@
 
     function renderAnalytics() {
         const staffMap = {}, custMap = {};
+        
+        // Logic lọc dữ liệu chính xác hơn
         rawData.forEach(row => {
-            const s = row.c[3]?.v, c = row.c[4]?.v;
-            if (s && s !== "—") staffMap[s] = (staffMap[s] || 0) + 1;
-            if (c && c !== "—") custMap[c] = (custMap[c] || 0) + 1;
+            const staff = row.c[3]?.v;
+            const customer = row.c[4]?.v;
+            
+            // Xử lý Nhân sự: Bỏ qua giá trị trống hoặc gạch ngang
+            if (staff && staff.toString().trim() !== "" && staff.toString().trim() !== "—") {
+                const sName = staff.toString().trim();
+                staffMap[sName] = (staffMap[sName] || 0) + 1;
+            }
+            
+            // Xử lý Khách hàng: Bỏ qua giá trị trống hoặc gạch ngang
+            if (customer && customer.toString().trim() !== "" && customer.toString().trim() !== "—") {
+                const cName = customer.toString().trim();
+                custMap[cName] = (custMap[cName] || 0) + 1;
+            }
         });
 
         const fill = (map, elId, badgeId) => {
-            const sorted = Object.entries(map).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const sorted = Object.entries(map)
+                .sort((a,b) => b[1] - a[1]) // Sắp xếp giảm dần theo số lượng hạng mục
+                .slice(0, 8); // Tăng lên lấy 8 khách hàng hàng đầu thay vì 5 để đủ thông tin
+            
             document.getElementById(badgeId).innerText = Object.keys(map).length;
             document.getElementById(elId).innerHTML = sorted.map(([name, count]) => 
-                `<tr><td style="text-align:left; font-size:12px; padding: 8px 8px;">${name}</td><td style="color:var(--accent); font-weight:bold; padding: 8px 8px;">${count}</td></tr>`
+                `<tr><td style="text-align:left; font-size:12px; padding: 8px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</td><td style="color:var(--accent); font-weight:bold; padding: 8px 8px; width: 40px; text-align:right;">${count}</td></tr>`
             ).join("");
         };
+
         fill(staffMap, "staff-list", "staff-count");
         fill(custMap, "customer-list", "customer-count");
     }
