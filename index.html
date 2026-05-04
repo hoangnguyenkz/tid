@@ -210,17 +210,47 @@ html, body {
 /* ── TABLE ── */
 .table-wrap { 
   flex: 1; 
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-thead tr { background: var(--bg-thead); }
+thead {
+  flex: 0 0 auto;
+}
+
+thead tr { 
+  background: var(--bg-thead); 
+  display: table;
+  width: 100%;
+}
+
+tbody {
+  flex: 1;
+  overflow: hidden;
+  display: block;
+}
+
+tbody tr {
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  transition: background .12s;
+}
+
+tbody tr:nth-child(odd) { background: var(--row-a); }
+tbody tr:nth-child(even) { background: var(--row-b); }
+
+tbody tr:hover { background: rgba(96,200,240,.09) !important; }
 
 th {
   padding: 10px 12px;
@@ -232,18 +262,10 @@ th {
   text-transform: uppercase;
   text-align: center;
   border-bottom: 2px solid var(--border-hi);
+  display: table-cell;
 }
 
 th:first-child { text-align: left; }
-
-tbody tr:nth-child(odd) { background: var(--row-a); }
-tbody tr:nth-child(even) { background: var(--row-b); }
-tbody tr {
-  border-bottom: 1px solid var(--border);
-  transition: background .12s;
-}
-
-tbody tr:hover { background: rgba(96,200,240,.09) !important; }
 
 td {
   padding: 11px 12px;
@@ -252,6 +274,7 @@ td {
   font-weight: 400;
   color: var(--text);
   vertical-align: middle;
+  display: table-cell;
 }
 
 td:first-child { text-align: left; }
@@ -395,7 +418,7 @@ td:first-child { text-align: left; }
 /* ── STATES ── */
 .empty-state, .loading-state {
   display:flex; align-items:center; justify-content:center;
-  height:80px;
+  height:60px;
   color:var(--text-dim);
   font-family:var(--f-mono);
   font-size:13px;
@@ -476,6 +499,7 @@ td:first-child { text-align: left; }
   td {
     padding: 11px 12px;
     font-size: 16px;
+    height: 39px;
   }
 
   .panel-title {
@@ -544,6 +568,7 @@ td:first-child { text-align: left; }
   td {
     padding: 9px 10px;
     font-size: 14px;
+    height: 35px;
   }
 
   .panel-header {
@@ -631,35 +656,35 @@ td:first-child { text-align: left; }
   }
 
   .panel:first-child {
-    flex: 1.2;
+    flex: 1.5;
     border-bottom: 2px solid var(--border-hi);
     border-right: none;
   }
 
   .panel.split-panel {
-    flex: 0.8;
+    flex: 1;
   }
 
   .panel-top {
-    flex: 0.55;
-    margin-bottom: 8px;
-    padding-bottom: 8px;
+    flex: 0.45;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
   }
 
   .panel-bottom {
-    flex: 0.45;
-    flex-direction: column;
-    gap: 8px;
+    flex: 0.55;
+    flex-direction: row;
+    gap: 6px;
   }
 
   .sub-panel {
     flex: 1;
-    min-height: 80px;
+    min-height: 0;
   }
 
   .panel-header {
-    margin-bottom: 8px;
-    padding-bottom: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
   }
 
   .panel-title {
@@ -668,7 +693,7 @@ td:first-child { text-align: left; }
   }
 
   .panel-title.small {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .panel-badge {
@@ -677,22 +702,23 @@ td:first-child { text-align: left; }
   }
 
   th {
-    padding: 6px 4px;
-    font-size: 10px;
-    letter-spacing: 0.3px;
+    padding: 5px 4px;
+    font-size: 9px;
+    letter-spacing: 0.2px;
   }
 
   td {
-    padding: 6px 4px;
-    font-size: 11px;
+    padding: 5px 3px;
+    font-size: 10px;
+    height: 28px;
   }
 
   .project-name {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .item-val, .customer-val, .person-val {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .pct-wrap {
@@ -700,33 +726,33 @@ td:first-child { text-align: left; }
   }
 
   .pct-num {
-    font-size: 10px;
-  }
-
-  .bar-bg {
-    width: 40px;
-    height: 4px;
-  }
-
-  .date-val {
     font-size: 9px;
   }
 
+  .bar-bg {
+    width: 35px;
+    height: 3px;
+  }
+
+  .date-val {
+    font-size: 8px;
+  }
+
   .type-val {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .value-val {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .count-val {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .badge {
     font-size: 8px;
-    padding: 2px 5px;
+    padding: 2px 4px;
   }
 
   .badge-dot {
@@ -748,9 +774,9 @@ td:first-child { text-align: left; }
   }
 
   .empty-state, .loading-state {
-    height: 50px;
-    font-size: 10px;
-    gap: 6px;
+    height: 40px;
+    font-size: 9px;
+    gap: 5px;
   }
 }
 </style>
@@ -877,6 +903,7 @@ const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3g
 const GUARANTEE_URL = "";
 const PAGE_TIME = 10000;
 const REFRESH_TIME = 30000;
+const ROWS_PER_PAGE = 16; // Desktop: 16 dòng/trang
 
 let progressData = [];
 let guaranteeData = [];
@@ -937,11 +964,6 @@ function isOverdue(dateValue) {
   return deadline < today;
 }
 
-function rowsPerPage() {
-  const w = document.querySelector(".table-wrap");
-  return w ? Math.max(4, Math.floor((w.clientHeight - 44) / 45)) : 7;
-}
-
 async function fetchSheet(url) {
   if(!url) return [];
   const r = await fetch(url), t = await r.text();
@@ -954,9 +976,8 @@ function badge(cls,label){
 
 function renderProgress(){
   const el = document.getElementById("progress");
-  const rows = rowsPerPage();
-  const total = Math.ceil(progressData.length / rows) || 1;
-  const page = progressData.slice(progressPage * rows, progressPage * rows + rows);
+  const total = Math.ceil(progressData.length / ROWS_PER_PAGE) || 1;
+  const page = progressData.slice(progressPage * ROWS_PER_PAGE, progressPage * ROWS_PER_PAGE + ROWS_PER_PAGE);
 
   document.getElementById("progress-count").innerText = `${progressData.length} HẠNG MỤC`;
 
@@ -1010,6 +1031,15 @@ function renderProgress(){
   }).join("");
 
   document.getElementById("progressPage").innerText = `TRANG ${progressPage+1} / ${total}`;
+  
+  // Render pagination dots
+  const dotsEl = document.getElementById("progressDots");
+  dotsEl.innerHTML = "";
+  for(let i=0;i<Math.min(total,10);i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i===progressPage?" active":"");
+    dotsEl.appendChild(d);
+  }
   
   renderStaffList();
   renderCustomerList();
@@ -1099,6 +1129,7 @@ function renderGuarantee(){
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
+  progressPage = 0; // Reset trang khi load dữ liệu mới
   renderProgress();
   renderGuarantee();
   ["refreshBar1","refreshBar2"].forEach(id=>{
@@ -1108,8 +1139,8 @@ async function loadData(){
 }
 
 setInterval(()=>{
-  const rows=rowsPerPage();
-  progressPage =(progressPage +1)%(Math.ceil(progressData.length /rows)||1);
+  const total = Math.ceil(progressData.length / ROWS_PER_PAGE) || 1;
+  progressPage = (progressPage + 1) % total;
   renderProgress();
 }, PAGE_TIME);
 
