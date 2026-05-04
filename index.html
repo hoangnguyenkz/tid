@@ -25,18 +25,22 @@
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--f-sans); overflow: hidden; }
+        html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--f-sans); }
+        
+        /* Desktop ẩn scrollbar nhưng cho phép trên mobile nếu nội dung dài */
+        body { overflow: hidden; }
+        @media (max-width: 768px) { body { overflow-y: auto; height: auto; } }
 
         .header {
             display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
             height: 60px; padding: 0 20px; background: var(--bg-header); border-bottom: 2px solid var(--border-hi);
         }
-        .header-logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: var(--text-bright); }
-        .logo-box { width: 30px; height: 30px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); }
-        .header-title { font-size: 20px; font-weight: 700; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; }
+        .header-logo { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--text-bright); }
+        .logo-box { width: 28px; height: 28px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+        .header-title { font-size: 18px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; text-align: center; }
         .header-right { text-align: right; font-family: var(--f-mono); }
-        .header-clock { font-size: 20px; color: var(--text-bright); font-weight: 600; }
-        .header-date { font-size: 12px; color: var(--accent); }
+        .header-clock { font-size: 18px; color: var(--text-bright); font-weight: 600; }
+        .header-date { font-size: 10px; color: var(--accent); }
 
         .container { display: flex; height: calc(100vh - 60px); padding: 12px; gap: 12px; }
         
@@ -47,16 +51,29 @@
         .panel-bottom-right { flex: 1; display: flex; gap: 12px; min-height: 0; }
         .sub-panel { flex: 1; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 10px; display: flex; flex-direction: column; }
 
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            .header { grid-template-columns: 1fr 1fr; height: auto; padding: 10px; }
+            .header-title { grid-column: span 2; order: 3; margin-top: 5px; font-size: 16px; letter-spacing: 1px; }
+            .container { flex-direction: column; height: auto; overflow: visible; }
+            .col-left, .col-right { flex: 1 0 auto; width: 100%; }
+            .panel-bottom-right { flex-direction: column; }
+            
+            /* Ẩn bớt cột trên mobile để bảng không bị quá hẹp */
+            .hide-mobile { display: none; }
+            th, td { font-size: 11px !important; }
+        }
+
         .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border-hi); padding-bottom: 8px; }
-        .panel-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
+        .panel-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
         .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
-        .badge-count { font-family: var(--f-mono); font-size: 12px; padding: 2px 10px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; }
+        .badge-count { font-family: var(--f-mono); font-size: 11px; padding: 2px 8px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; }
 
         .table-wrap { flex: 1; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: var(--bg-thead); color: var(--accent); font-size: 11px; padding: 10px 4px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
+        th { background: var(--bg-thead); color: var(--accent); font-size: 10px; padding: 8px 4px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
         
-        #p-table td { padding: 14px 6px; font-size: 13px; font-weight: 500; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #p-table td { padding: 12px 4px; font-size: 12px; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         #g-table td { padding: 8px 4px; font-size: 11px; border-bottom: 1px solid var(--border); text-align: center; }
 
         tbody tr:nth-child(odd) { background: var(--row-a); }
@@ -66,16 +83,16 @@
         .gold-bold { color: var(--gold); font-weight: 700; }
         .accent-text { color: var(--accent); }
         
-        .bar-container { display: flex; align-items: center; gap: 5px; justify-content: center; }
-        .bar-bg { width: 45px; height: 8px; background: #1a2a4a; border-radius: 4px; overflow: hidden; }
+        .bar-container { display: flex; align-items: center; gap: 4px; justify-content: center; }
+        .bar-bg { width: 40px; height: 6px; background: #1a2a4a; border-radius: 3px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--accent); }
 
-        .st { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+        .st { font-size: 8px; padding: 2px 5px; border-radius: 3px; font-weight: 700; }
         .st-done { background: var(--green); color: #000; }
         .st-wip { border: 1px solid var(--accent); color: var(--accent); }
         .st-late { background: var(--red); color: #fff; }
 
-        .footer-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--accent); font-family: var(--f-mono); padding-top: 10px; }
+        .footer-info { display: flex; justify-content: space-between; font-size: 10px; color: var(--accent); font-family: var(--f-mono); padding-top: 10px; }
         .refresh-line { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 0; }
         .refresh-line.animating { animation: run 30s linear forwards; }
         @keyframes run { from { width: 100%; } to { width: 0%; } }
@@ -96,19 +113,17 @@
     <div class="col-left">
         <div class="panel-header">
             <div class="panel-title"><div class="title-dot"></div> TIẾN ĐỘ DỰ ÁN</div>
-            <div class="badge-count" id="p-count">0 HẠNG MỤC</div>
+            <div class="badge-count" id="p-count">0 MỤC</div>
         </div>
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 18%;">DỰ ÁN</th>
-                        <th style="width: 16%;">KHÁCH HÀNG</th>
-                        <th style="width: 15%;">NHÂN SỰ</th>
-                        <th style="width: 18%;">HẠNG MỤC</th>
-                        <th style="width: 14%;">TIẾN ĐỘ</th>
-                        <th style="width: 10%;">DEADLINE</th>
-                        <th style="width: 9%;">T.THÁI</th>
+                        <th style="width: 35%;">DỰ ÁN</th>
+                        <th style="width: 30%;" class="hide-mobile">KHÁCH HÀNG</th>
+                        <th style="width: 25%;" class="hide-mobile">HẠNG MỤC</th>
+                        <th style="width: 35%;">TIẾN ĐỘ</th>
+                        <th style="width: 30%;">TRẠNG THÁI</th>
                     </tr>
                 </thead>
                 <tbody id="p-table"></tbody>
@@ -124,18 +139,15 @@
     <div class="col-right">
         <div class="panel-top-right">
             <div class="panel-header">
-                <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
-                <div id="g-total-badge" class="badge-count" style="background:var(--accent); font-size: 13px;">0</div>
+                <div class="panel-title"><div class="title-dot"></div> BẢO LÃNH</div>
+                <div id="g-total-badge" class="badge-count" style="background:var(--accent);">0</div>
             </div>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 32%;">DỰ ÁN</th>
-                            <th style="width: 20%;">KHÁCH HÀNG</th>
-                            <th style="width: 12%;">LOẠI</th>
-                            <th style="width: 18%;">GIÁ TRỊ</th>
-                            <th style="width: 18%;">HẾT HẠN</th>
+                            <th style="width: 50%;">DỰ ÁN</th>
+                            <th style="width: 50%;">GIÁ TRỊ</th>
                         </tr>
                     </thead>
                     <tbody id="g-table"></tbody>
@@ -145,11 +157,11 @@
 
         <div class="panel-bottom-right">
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">THỐNG KÊ NHÂN SỰ (<span id="s-total">0</span>)</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">NHÂN SỰ (<span id="s-total">0</span>)</div></div>
                 <div class="table-wrap"><table><tbody id="s-table"></tbody></table></div>
             </div>
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">THỐNG KÊ KHÁCH HÀNG (<span id="c-total">0</span>)</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">KHÁCH HÀNG (<span id="c-total">0</span>)</div></div>
                 <div class="table-wrap"><table><tbody id="c-table"></tbody></table></div>
             </div>
         </div>
@@ -162,7 +174,8 @@
     const URL_GUARANTEE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Bao%20lanh`;
 
     let dataP = [], dataG = [], currentPage = 0;
-    const ROWS_PER_PAGE = 16; 
+    // Tự động điều chỉnh số dòng hiển thị dựa trên thiết bị
+    const ROWS_PER_PAGE = window.innerWidth < 768 ? 8 : 16; 
 
     async function fetchData() {
         try {
@@ -170,12 +183,12 @@
             const txtP = await resP.text();
             const txtG = await resG.text();
             
-            dataP = JSON.parse(txtP.substring(txtP.indexOf("{"), txtP.lastIndexOf("}") + 1)).table.rows.slice(4);
+            dataP = JSON.parse(txtP.substring(txtP.indexOf("{"), txtP.lastIndexOf("}") + 1)).table.rows.slice(4).filter(r => r.c && r.c[1]?.v);
             dataG = JSON.parse(txtG.substring(txtG.indexOf("{"), txtG.lastIndexOf("}") + 1)).table.rows.filter(r => r.c && r.c[9]?.v);
 
             renderAll();
             startProgressLine();
-            document.getElementById("p-sync").innerText = "Cập nhật: " + new Date().toLocaleTimeString();
+            document.getElementById("p-sync").innerText = "Sync: " + new Date().toLocaleTimeString();
         } catch (e) { console.error(e); }
     }
 
@@ -191,8 +204,8 @@
         const start = currentPage * ROWS_PER_PAGE;
         const items = dataP.slice(start, start + ROWS_PER_PAGE);
 
-        document.getElementById("p-count").innerText = `${dataP.length} HẠNG MỤC`;
-        document.getElementById("p-page").innerText = `PAGE ${currentPage + 1}/${totalPages || 1}`;
+        document.getElementById("p-count").innerText = `${dataP.length} MỤC`;
+        document.getElementById("p-page").innerText = `${currentPage + 1}/${totalPages || 1}`;
 
         el.innerHTML = items.map(row => {
             const d = row.c;
@@ -200,12 +213,10 @@
             const isLate = d[7]?.v && parseDate(d[7].v) < new Date() && pct < 100;
             return `<tr>
                 <td class="text-left gold-bold">${d[1]?.v || "—"}</td>
-                <td class="text-left accent-text">${d[4]?.v || "—"}</td>
-                <td style="color:var(--text-bright)">${d[3]?.v || "—"}</td>
-                <td class="text-left" style="color:var(--text)">${d[2]?.v || "—"}</td>
-                <td><div class="bar-container"><span style="width:32px; font-family:var(--f-mono); font-size:11px;">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
-                <td style="font-family:var(--f-mono); color:var(--accent); font-size:11px;">${d[7]?.f || "—"}</td>
-                <td><span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'OK':(isLate?'TRỄ HẠN':'ĐANG CHẠY')}</span></td>
+                <td class="text-left hide-mobile">${d[4]?.v || "—"}</td>
+                <td class="text-left hide-mobile">${d[2]?.v || "—"}</td>
+                <td><div class="bar-container"><span style="width:28px; font-family:var(--f-mono); font-size:10px;">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
+                <td><span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'OK':(isLate?'TRỄ':'LÀM')}</span></td>
             </tr>`;
         }).join("");
     }
@@ -214,67 +225,34 @@
         const el = document.getElementById("g-table");
         let totalVal = 0;
 
-        el.innerHTML = dataG.slice(0, 16).map(row => {
+        el.innerHTML = dataG.slice(0, 10).map(row => {
             const d = row.c;
-            let valRaw = d[12]?.v;
-            let valNum = 0;
-            if (typeof valRaw === 'number') valNum = valRaw;
-            else if (typeof valRaw === 'string') valNum = parseFloat(valRaw.replace(/[^0-9.-]+/g, "")) || 0;
+            let valNum = typeof d[12]?.v === 'number' ? d[12].v : 0;
             totalVal += valNum;
-
             return `<tr>
                 <td class="text-left" style="color:#fff; font-weight:600;">${d[9]?.v || "—"}</td>
-                <td class="text-left accent-text" style="font-size:10px;">${d[10]?.v || "—"}</td>
-                <td><span class="st st-wip" style="font-size:8px;">${d[13]?.v || "—"}</span></td>
-                <td class="gold-bold">${d[12]?.f || d[12]?.v || "0"}</td>
-                <td style="color:var(--red); font-family:var(--f-mono);">${d[7]?.f || "—"}</td>
+                <td class="gold-bold">${d[12]?.f || "0"}</td>
             </tr>`;
         }).join("");
-
         document.getElementById("g-total-badge").innerText = totalVal.toLocaleString('vi-VN');
     }
 
     function renderStats() {
         const staff = {}, cust = {};
-        
-        // ✅ Duyệt tất cả dataP để thống kê
         dataP.forEach(r => {
-            const c = r.c;
-            
-            // Thống kê NHÂN SỰ từ cột D (index 3)
-            const s = c[3]?.v;
-            if(s && s.trim() && s !== "—") {
-                staff[s] = (staff[s] || 0) + 1;
-            }
-            
-            // Thống kê KHÁCH HÀNG từ cột E (index 4)
-            const customerVal = c[4]?.v;
-            if(customerVal && customerVal.trim() && customerVal !== "—") {
-                cust[customerVal] = (cust[customerVal] || 0) + 1;
-            }
+            const s = r.c[3]?.v, c = r.c[4]?.v;
+            if(s && s.trim() && s !== "—") staff[s] = (staff[s] || 0) + 1;
+            if(c && c.trim() && c !== "—") cust[c] = (cust[c] || 0) + 1;
         });
-
-        console.log("👥 NHÂN SỰ:", staff);
-        console.log("🏢 KHÁCH HÀNG:", cust);
-
-        const fillStaff = (map, id) => {
-            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
-            document.getElementById("s-total").innerText = Object.keys(map).length;
-            document.getElementById(id).innerHTML = sorted.slice(0, 4).map(([n, v]) => 
-                `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
-            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">KHÔNG CÓ</td></tr>`;
+        const fill = (map, id, countId) => {
+            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0, 4);
+            document.getElementById(countId).innerText = Object.keys(map).length;
+            document.getElementById(id).innerHTML = sorted.map(([n, v]) => 
+                `<tr><td class="text-left" style="font-size:10px; padding:6px;">${n}</td><td class="accent-text" style="font-weight:700; width:20px; text-align:right;">${v}</td></tr>`
+            ).join("");
         };
-
-        const fillCustomer = (map, id) => {
-            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
-            document.getElementById("c-total").innerText = Object.keys(map).length;
-            document.getElementById(id).innerHTML = sorted.slice(0, 4).map(([n, v]) => 
-                `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
-            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">KHÔNG CÓ</td></tr>`;
-        };
-
-        fillStaff(staff, "s-table");
-        fillCustomer(cust, "c-table");
+        fill(staff, "s-table", "s-total");
+        fill(cust, "c-table", "c-total");
     }
 
     function parseDate(v) {
