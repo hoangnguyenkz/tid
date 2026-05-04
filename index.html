@@ -459,11 +459,11 @@
             </div>
         </div>
 
-        <!-- THỐNG KÊ NHÂN SỰ + KHÁCH HÀNG -->
+        <!-- THỐNG KÊ  + KHÁCH HÀNG -->
         <div class="panel-bottom-right">
             <div class="sub-panel">
                 <div class="panel-header">
-                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>NHÂN SỰ (<span id="s-total">0</span>)</div>
+                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div> THỐNG KÊ DỰ ÁN/ NHÂN SỰ (<span id="s-total">0</span>)</div>
                 </div>
                 <div class="table-wrap">
                     <table><tbody id="s-table"></tbody></table>
@@ -471,7 +471,7 @@
             </div>
             <div class="sub-panel">
                 <div class="panel-header">
-                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>KHÁCH HÀNG (<span id="c-total">0</span>)</div>
+                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div> THỐNG KÊ DỰ ÁN/ KHÁCH HÀNG (<span id="c-total">0</span>)</div>
                 </div>
                 <div class="table-wrap">
                     <table><tbody id="c-table"></tbody></table>
@@ -562,7 +562,7 @@
                 <td class="text-left" style="color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item}</td>
                 <td>${item ? `<div class="bar-container"><span style="width:28px;font-family:var(--f-mono);font-size:10px;text-align:right">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>` : ""}</td>
                 <td style="font-family:var(--f-mono);color:var(--accent);font-size:11px;">${d[7]?.f || "—"}</td>
-                <td>${item ? `<span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'XONG':(isLate?'TRỄ':'CHẠY')}</span>` : ""}</td>
+                <td>${item ? `<span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'DONE':(isLate?'LATE':'WORKING')}</span>` : ""}</td>
             </tr>`;
         }).join("");
     }
@@ -583,14 +583,23 @@
             else if (typeof valRaw === 'string') totalVal += parseFloat(valRaw.replace(/[^0-9.-]+/g,"")) || 0;
         });
 
+        const today = new Date(); today.setHours(0,0,0,0);
+
         el.innerHTML = items.map(row => {
             const d = row.c;
+            const expDate = parseDate(d[7]?.v);
+            let daysLeft = null;
+            if (expDate) { const e = new Date(expDate); e.setHours(0,0,0,0); daysLeft = Math.ceil((e - today) / 86400000); }
+            const nearExpiry = daysLeft !== null && daysLeft <= 10;
+            const dateStyle = nearExpiry
+                ? "color:#fff;font-family:var(--f-mono);white-space:nowrap;animation:flash 1.4s step-end infinite;"
+                : "color:#fff;font-family:var(--f-mono);white-space:nowrap;";
             return `<tr>
                 <td class="text-left" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[9]?.v || "—"}</td>
                 <td class="text-left accent-text" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[10]?.v || "—"}</td>
                 <td><span class="st st-wip" style="font-size:8px;">${d[13]?.v || "—"}</span></td>
                 <td class="gold-bold" style="white-space:nowrap;">${d[12]?.f || d[12]?.v || "0"}</td>
-                <td style="color:var(--red);font-family:var(--f-mono);white-space:nowrap;">${d[7]?.f || "—"}</td>
+                <td style="${dateStyle}">${d[7]?.f || "—"}</td>
             </tr>`;
         }).join("");
 
