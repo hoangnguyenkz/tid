@@ -54,8 +54,8 @@
         .container { display: flex; flex-direction: column; height: calc(100vh - 70px); }
         .panel { flex: 1; display: flex; flex-direction: column; padding: 15px; position: relative; min-height: 0; }
         .panel:first-child { flex: 1.4; } 
-        .panel-top { flex: 0.6; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-hi); margin-bottom: 10px; padding-bottom: 10px; overflow: hidden; }
-        .panel-bottom { flex: 0.4; display: flex; gap: 15px; min-height: 0; }
+        .panel-top { flex: 0.7; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-hi); margin-bottom: 10px; padding-bottom: 10px; overflow: hidden; }
+        .panel-bottom { flex: 0.3; display: flex; gap: 15px; min-height: 0; }
         .sub-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
         /* ── COMPONENTS ── */
@@ -76,7 +76,7 @@
         .text-left { text-align: left; }
         .val-num { font-family: var(--f-mono); color: var(--gold); font-weight: 600; }
         .date-text { font-family: var(--f-mono); color: var(--text-bright); }
-        .type-badge { font-size: 10px; padding: 2px 5px; background: var(--border-hi); border-radius: 3px; color: var(--accent); }
+        .type-badge { font-size: 10px; padding: 2px 5px; background: var(--border-hi); border-radius: 3px; color: var(--accent); font-weight: 600; }
 
         .refresh-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 0; }
         .refresh-bar.animating { animation: progress-run 30s linear forwards; }
@@ -98,7 +98,6 @@
 </div>
 
 <div class="container">
-    <!-- Panel Tiến độ Dự án (Giữ nguyên) -->
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><div class="title-dot"></div> TIẾN ĐỘ DỰ ÁN</div>
@@ -123,7 +122,7 @@
     </div>
 
     <div class="panel">
-        <!-- Panel Theo dõi Bảo lãnh (Cập nhật) -->
+        <!-- Bảng Theo dõi Bảo lãnh đã cập nhật cột -->
         <div class="panel-top">
             <div class="panel-header">
                 <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
@@ -135,8 +134,8 @@
                         <tr>
                             <th style="width: 25%;">DỰ ÁN</th>
                             <th style="width: 20%;">KHÁCH HÀNG</th>
-                            <th style="width: 15%;">LOẠI BL</th>
-                            <th style="width: 20%;">GIÁ TRỊ</th>
+                            <th style="width: 12%;">LOẠI BL</th>
+                            <th style="width: 23%;">GIÁ TRỊ</th>
                             <th style="width: 20%;">HẾT HẠN</th>
                         </tr>
                     </thead>
@@ -160,28 +159,28 @@
 </div>
 
 <script>
-    // URL cho Sheet Tiến độ và Sheet Bảo lãnh (Cần thay GID tương ứng cho sheet Bao lanh)
     const SHEET_ID = "1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y";
     const PROGRESS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=1280059749`;
+    // Kết nối sheet Bảo lãnh
     const GUARANTEE_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Bao%20lanh`;
 
+    const REFRESH_TIME = 30000;
     let progressData = [];
     let guaranteeData = [];
-    const REFRESH_TIME = 30000;
 
     async function fetchData() {
         try {
-            // Lấy dữ liệu Tiến độ
+            // Fetch Tiến độ
             const resP = await fetch(PROGRESS_URL);
             const textP = await resP.text();
             const jsonP = JSON.parse(textP.substring(textP.indexOf("{"), textP.lastIndexOf("}") + 1));
             progressData = jsonP.table.rows.slice(4);
 
-            // Lấy dữ liệu Bảo lãnh
+            // Fetch Bảo lãnh
             const resG = await fetch(GUARANTEE_URL);
             const textG = await resG.text();
             const jsonG = JSON.parse(textG.substring(textG.indexOf("{"), textG.lastIndexOf("}") + 1));
-            guaranteeData = jsonG.table.rows; // Bắt đầu lấy từ dòng dữ liệu thực tế
+            guaranteeData = jsonG.table.rows;
 
             renderAll();
             resetBars();
@@ -219,26 +218,18 @@
 
     function renderGuarantees() {
         const el = document.getElementById("guarantee-list");
-        // Lọc dữ liệu: Cột J (index 9), K (10), N (13), M (12), H (7)
-        // Lưu ý: data của Google Visual API trả về index theo thứ tự cột A=0, B=1...
-        
-        const validRows = guaranteeData.filter(row => row.c[9]?.v); // Chỉ lấy dòng có tên Dự án
+        // Lọc dữ liệu bảo lãnh: J(9), K(10), N(13), M(12), H(7)
+        const validRows = guaranteeData.filter(row => row.c && row.c[9]?.v); 
         document.getElementById("guarantee-count").innerText = validRows.length;
 
         el.innerHTML = validRows.slice(0, 8).map(row => {
             const d = row.c;
-            const project = d[9]?.v || "—";   // Cột J
-            const customer = d[10]?.v || "—"; // Cột K
-            const type = d[13]?.v || "—";     // Cột N
-            const value = d[12]?.f || d[12]?.v || "—"; // Cột M (Ưu tiên lấy chuỗi định dạng tiền)
-            const expiry = d[7]?.f || d[7]?.v || "—";  // Cột H
-
             return `<tr>
-                <td class="text-left" style="color:var(--text-bright); font-weight:500;">${project}</td>
-                <td class="text-left">${customer}</td>
-                <td><span class="type-badge">${type}</span></td>
-                <td class="val-num">${value}</td>
-                <td class="date-text" style="color:var(--accent);">${expiry}</td>
+                <td class="text-left" style="color:var(--text-bright); font-weight:600;">${d[9]?.v || "—"}</td>
+                <td class="text-left">${d[10]?.v || "—"}</td>
+                <td><span class="type-badge">${d[13]?.v || "—"}</span></td>
+                <td class="val-num">${d[12]?.f || d[12]?.v || "0"}</td>
+                <td class="date-text" style="color:var(--accent);">${d[7]?.f || d[7]?.v || "—"}</td>
             </tr>`;
         }).join("");
     }
@@ -255,7 +246,7 @@
             const sorted = Object.entries(map).sort((a,b) => b[1] - a[1]).slice(0, 5);
             document.getElementById(badgeId).innerText = Object.keys(map).length;
             document.getElementById(elId).innerHTML = sorted.map(([name, count]) => 
-                `<tr><td class="text-left" style="padding:5px 10px;">${name}</td><td style="color:var(--accent); font-weight:700;">${count}</td></tr>`
+                `<tr><td class="text-left" style="padding:6px 10px;">${name}</td><td style="color:var(--accent); font-weight:700; text-align:right; padding-right:10px;">${count}</td></tr>`
             ).join("");
         };
         fill(staffMap, "staff-list", "staff-count");
