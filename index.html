@@ -27,15 +27,7 @@
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        html, body {
-            height: 100%;
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--f-sans);
-            -webkit-font-smoothing: antialiased;
-        }
-
+        html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--f-sans); -webkit-font-smoothing: antialiased; }
         body { overflow: hidden; }
 
         /* ── HEADER ── */
@@ -50,113 +42,50 @@
             border-bottom: 2px solid var(--border-hi);
             z-index: 10;
         }
-
         .header-logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: var(--text-bright); }
         .logo-box { width: 32px; height: 32px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); }
-        
         .header-center { text-align: center; }
         .header-title { font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 2px; }
-
         .header-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
         .header-clock { font-family: var(--f-mono); font-size: 22px; color: var(--text-bright); line-height: 1; font-weight: 500; }
         .header-date { font-family: var(--f-mono); font-size: 13px; color: var(--accent); margin-top: 4px; letter-spacing: 1px; }
 
         /* ── LAYOUT ── */
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 70px);
-        }
-
-        .panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            position: relative;
-            min-height: 0;
-        }
-
+        .container { display: flex; flex-direction: column; height: calc(100vh - 70px); }
+        .panel { flex: 1; display: flex; flex-direction: column; padding: 15px; position: relative; min-height: 0; }
         .panel:first-child { flex: 1.4; } 
-
         .panel-top { flex: 0.6; display: flex; flex-direction: column; border-bottom: 2px solid var(--border-hi); margin-bottom: 10px; padding-bottom: 10px; overflow: hidden; }
         .panel-bottom { flex: 0.4; display: flex; gap: 15px; min-height: 0; }
         .sub-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
         /* ── COMPONENTS ── */
-        .panel-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 10px; border-bottom: 1px solid var(--border-hi); padding-bottom: 5px;
-        }
+        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid var(--border-hi); padding-bottom: 5px; }
         .panel-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
         .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
-
-        .panel-badge-highlight { 
-            font-family: var(--f-mono); 
-            font-size: 13px; 
-            font-weight: 700;
-            padding: 4px 12px; 
-            border: 1px solid var(--gold); 
-            color: var(--bg); 
-            background: var(--gold);
-            border-radius: 4px;
-            box-shadow: 0 0 10px rgba(255, 201, 77, 0.2);
-            letter-spacing: 1px;
-        }
-
+        .panel-badge-highlight { font-family: var(--f-mono); font-size: 13px; font-weight: 700; padding: 4px 12px; border: 1px solid var(--gold); color: var(--bg); background: var(--gold); border-radius: 4px; letter-spacing: 1px; }
         .panel-badge { font-family: var(--f-mono); font-size: 11px; padding: 2px 8px; border: 1px solid var(--border-hi); color: var(--accent); background: rgba(96,200,240,0.1); }
 
         /* ── TABLE ── */
         .table-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; height: 100%; }
-        th { background: var(--bg-thead); color: var(--accent); font-size: 11px; padding: 12px 6px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
-        td { padding: 12px 6px; font-size: 13px; border-bottom: 1px solid var(--border); text-align: center; }
-        
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { background: var(--bg-thead); color: var(--accent); font-size: 11px; padding: 10px 6px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
+        td { padding: 10px 6px; font-size: 12.5px; border-bottom: 1px solid var(--border); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         tbody tr:nth-child(odd) { background: var(--row-a); }
         tbody tr:nth-child(even) { background: var(--row-b); }
         
-        .project-name { font-weight: 700; color: var(--gold); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
-        .customer-name { color: var(--accent); font-weight: 500; text-align: left; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .item-text { color: var(--text-bright); font-weight: 400; text-align: left; display: block; font-size: 13px; }
-
-        /* ── PROGRESS BAR ── */
-        .pct-num { font-family: var(--f-mono); font-size: 12px; color: var(--accent); font-weight: 600; }
-        .bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-top: 5px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--accent); transition: width 0.5s; }
-
-        /* ── BADGES ── */
-        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; font-size: 10px; font-weight: 700; border-radius: 3px; text-transform: uppercase; }
-        .b-done { background: var(--green); color: #000; }
-        .b-wip { border: 1px solid var(--accent); color: var(--accent); }
-        .b-late { background: var(--red); color: #fff; }
-
-        /* ── FOOTER ── */
-        .panel-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; }
-        .page-dots { display: flex; gap: 6px; }
-        .dot { width: 6px; height: 6px; background: var(--border-hi); border-radius: 50%; }
-        .dot.active { background: var(--accent); transform: scale(1.4); }
+        .text-left { text-align: left; }
+        .val-num { font-family: var(--f-mono); color: var(--gold); font-weight: 600; }
+        .date-text { font-family: var(--f-mono); color: var(--text-bright); }
+        .type-badge { font-size: 10px; padding: 2px 5px; background: var(--border-hi); border-radius: 3px; color: var(--accent); }
 
         .refresh-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 0; }
         .refresh-bar.animating { animation: progress-run 30s linear forwards; }
         @keyframes progress-run { from { width: 100%; } to { width: 0%; } }
 
-        /* ── RESPONSIVE ── */
         @media (max-width: 1023px) {
             body { overflow-y: auto; height: auto; }
             .container { height: auto; display: block; }
-            .panel { height: auto; min-height: 500px; border-bottom: 2px solid var(--border-hi); }
-            .panel-top { height: auto; min-height: 350px; flex: none; }
-            .panel-bottom { flex-direction: column; height: auto; gap: 20px; }
-            .sub-panel { min-height: 250px; }
-            th, td { font-size: 11px; padding: 10px 4px; }
-            .project-name, .customer-name { max-width: 70px; font-size: 11px; }
-            .header { grid-template-columns: 1fr 1fr; padding: 0 10px; height: auto; padding: 10px; }
-            .header-center { display: none; }
-        }
-
-        @media (min-width: 1024px) {
-            .container { flex-direction: row; }
-            .panel:first-child { border-right: 2px solid var(--border-hi); }
+            .panel-bottom { flex-direction: column; }
         }
     </style>
 </head>
@@ -165,13 +94,11 @@
 <div class="header">
     <div class="header-logo"><div class="logo-box">T</div> TID CO.LTD</div>
     <div class="header-center"><div class="header-title">PROJECT DASHBOARD</div></div>
-    <div class="header-right">
-        <div class="header-clock" id="clock">00:00:00</div>
-        <div class="header-date" id="date">--/--/----</div>
-    </div>
+    <div class="header-right"><div class="header-clock" id="clock">00:00:00</div><div class="header-date" id="date">--/--/----</div></div>
 </div>
 
 <div class="container">
+    <!-- Panel Tiến độ Dự án (Giữ nguyên) -->
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><div class="title-dot"></div> TIẾN ĐỘ DỰ ÁN</div>
@@ -192,14 +119,11 @@
                 <tbody id="progress"></tbody>
             </table>
         </div>
-        <div class="panel-footer">
-            <div id="progressPage" style="font-size: 11px; font-family: var(--f-mono); color: var(--accent);">PAGE 1/1</div>
-            <div class="page-dots" id="progressDots"></div>
-        </div>
         <div class="refresh-bar" id="refreshBar1"></div>
     </div>
 
     <div class="panel">
+        <!-- Panel Theo dõi Bảo lãnh (Cập nhật) -->
         <div class="panel-top">
             <div class="panel-header">
                 <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
@@ -209,12 +133,14 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 40%;">DỰ ÁN</th>
-                            <th style="width: 30%;">GIÁ TRỊ</th>
-                            <th style="width: 30%;">HẾT HẠN</th>
+                            <th style="width: 25%;">DỰ ÁN</th>
+                            <th style="width: 20%;">KHÁCH HÀNG</th>
+                            <th style="width: 15%;">LOẠI BL</th>
+                            <th style="width: 20%;">GIÁ TRỊ</th>
+                            <th style="width: 20%;">HẾT HẠN</th>
                         </tr>
                     </thead>
-                    <tbody id="guarantee"></tbody>
+                    <tbody id="guarantee-list"></tbody>
                 </table>
             </div>
         </div>
@@ -234,34 +160,106 @@
 </div>
 
 <script>
-    const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y/gviz/tq?tqx=out:json&gid=1280059749";
-    
-    const PAGE_TIME = 5000; 
+    // URL cho Sheet Tiến độ và Sheet Bảo lãnh (Cần thay GID tương ứng cho sheet Bao lanh)
+    const SHEET_ID = "1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y";
+    const PROGRESS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=1280059749`;
+    const GUARANTEE_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Bao%20lanh`;
+
+    let progressData = [];
+    let guaranteeData = [];
     const REFRESH_TIME = 30000;
-    const ROWS_PER_PAGE = window.innerWidth < 1024 ? 8 : 12; 
-
-    let rawData = [];
-    let currentPage = 0;
-
-    function updateClock() {
-        const now = new Date();
-        document.getElementById("clock").innerText = now.toLocaleTimeString("vi-VN", { hour12: false });
-        const d = String(now.getDate()).padStart(2, '0');
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const y = now.getFullYear();
-        document.getElementById("date").innerText = `${d}/${m}/${y}`;
-    }
-    setInterval(updateClock, 1000);
 
     async function fetchData() {
         try {
-            const res = await fetch(PROGRESS_URL);
-            const text = await res.text();
-            const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
-            rawData = json.table.rows.slice(4);
+            // Lấy dữ liệu Tiến độ
+            const resP = await fetch(PROGRESS_URL);
+            const textP = await resP.text();
+            const jsonP = JSON.parse(textP.substring(textP.indexOf("{"), textP.lastIndexOf("}") + 1));
+            progressData = jsonP.table.rows.slice(4);
+
+            // Lấy dữ liệu Bảo lãnh
+            const resG = await fetch(GUARANTEE_URL);
+            const textG = await resG.text();
+            const jsonG = JSON.parse(textG.substring(textG.indexOf("{"), textG.lastIndexOf("}") + 1));
+            guaranteeData = jsonG.table.rows; // Bắt đầu lấy từ dòng dữ liệu thực tế
+
             renderAll();
             resetBars();
-        } catch (e) { console.error("Data error"); }
+        } catch (e) { console.error("Data error", e); }
+    }
+
+    function renderAll() {
+        renderProgress();
+        renderAnalytics();
+        renderGuarantees();
+    }
+
+    function renderProgress() {
+        const el = document.getElementById("progress");
+        const items = progressData.slice(0, 12); 
+        document.getElementById("progress-count").innerText = `${progressData.length} HẠNG MỤC`;
+        
+        el.innerHTML = items.map(row => {
+            const d = row.c;
+            const project = d[1]?.v || "—";
+            const customer = d[4]?.v || "—";
+            const item = d[2]?.v || "—";
+            const pct = Math.round((d[9]?.v || 0) * (d[9]?.v <= 1 ? 100 : 1));
+            const deadline = d[7]?.f || "—";
+            return `<tr>
+                <td class="text-left" style="color:var(--gold); font-weight:700;">${project}</td>
+                <td class="text-left" style="color:var(--accent);">${customer}</td>
+                <td class="text-left">${item}</td>
+                <td><div class="val-num">${pct}%</div></td>
+                <td class="date-text">${deadline}</td>
+                <td><span class="type-badge">${pct >= 100 ? 'DONE' : 'WIP'}</span></td>
+            </tr>`;
+        }).join("");
+    }
+
+    function renderGuarantees() {
+        const el = document.getElementById("guarantee-list");
+        // Lọc dữ liệu: Cột J (index 9), K (10), N (13), M (12), H (7)
+        // Lưu ý: data của Google Visual API trả về index theo thứ tự cột A=0, B=1...
+        
+        const validRows = guaranteeData.filter(row => row.c[9]?.v); // Chỉ lấy dòng có tên Dự án
+        document.getElementById("guarantee-count").innerText = validRows.length;
+
+        el.innerHTML = validRows.slice(0, 8).map(row => {
+            const d = row.c;
+            const project = d[9]?.v || "—";   // Cột J
+            const customer = d[10]?.v || "—"; // Cột K
+            const type = d[13]?.v || "—";     // Cột N
+            const value = d[12]?.f || d[12]?.v || "—"; // Cột M (Ưu tiên lấy chuỗi định dạng tiền)
+            const expiry = d[7]?.f || d[7]?.v || "—";  // Cột H
+
+            return `<tr>
+                <td class="text-left" style="color:var(--text-bright); font-weight:500;">${project}</td>
+                <td class="text-left">${customer}</td>
+                <td><span class="type-badge">${type}</span></td>
+                <td class="val-num">${value}</td>
+                <td class="date-text" style="color:var(--accent);">${expiry}</td>
+            </tr>`;
+        }).join("");
+    }
+
+    function renderAnalytics() {
+        const staffMap = {}, custMap = {};
+        progressData.forEach(row => {
+            const staff = row.c[3]?.v, cust = row.c[4]?.v;
+            if (staff && staff !== "—") staffMap[staff] = (staffMap[staff] || 0) + 1;
+            if (cust && cust !== "—") custMap[cust] = (custMap[cust] || 0) + 1;
+        });
+
+        const fill = (map, elId, badgeId) => {
+            const sorted = Object.entries(map).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            document.getElementById(badgeId).innerText = Object.keys(map).length;
+            document.getElementById(elId).innerHTML = sorted.map(([name, count]) => 
+                `<tr><td class="text-left" style="padding:5px 10px;">${name}</td><td style="color:var(--accent); font-weight:700;">${count}</td></tr>`
+            ).join("");
+        };
+        fill(staffMap, "staff-list", "staff-count");
+        fill(custMap, "customer-list", "customer-count");
     }
 
     function resetBars() {
@@ -273,127 +271,15 @@
         });
     }
 
-    function renderAll() {
-        renderProgress();
-        renderAnalytics();
-        renderGuarantees();
+    function updateClock() {
+        const now = new Date();
+        document.getElementById("clock").innerText = now.toLocaleTimeString("vi-VN", { hour12: false });
+        document.getElementById("date").innerText = now.toLocaleDateString("vi-VN");
     }
 
-    function renderProgress() {
-        const el = document.getElementById("progress");
-        const totalPages = Math.ceil(rawData.length / ROWS_PER_PAGE) || 1;
-        const start = currentPage * ROWS_PER_PAGE;
-        const items = rawData.slice(start, start + ROWS_PER_PAGE);
-
-        document.getElementById("progress-count").innerText = `${rawData.length} HẠNG MỤC`;
-        el.innerHTML = items.map(row => {
-            const d = row.c;
-            const project = d[1]?.v || "—";
-            const customer = d[4]?.v || "—";
-            const item = d[2]?.v ? d[2].v.trim() : ""; 
-            const deadline = d[7]?.f || "—";
-            
-            let progressHtml = "";
-            let badgeHtml = "";
-            let itemDisplay = item || "—";
-
-            if (item !== "" && item !== "—") {
-                let pct = Math.round((d[9]?.v || 0) * (d[9]?.v <= 1 ? 100 : 1));
-                const isOverdue = d[7]?.v && new Date(parseGSDate(d[7]?.v)) < new Date() && pct < 100;
-
-                itemDisplay = `<span class="item-text">${item}</span>`;
-                progressHtml = `<div class="pct-num">${pct}%</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>`;
-                
-                if (pct >= 100) badgeHtml = `<span class="badge b-done">HOÀN TẤT</span>`;
-                else if (isOverdue) badgeHtml = `<span class="badge b-late">QUÁ HẠN</span>`;
-                else badgeHtml = `<span class="badge b-wip">ĐANG CHẠY</span>`;
-            }
-
-            return `<tr>
-                <td><div class="project-name">${project}</div></td>
-                <td><div class="customer-name">${customer}</div></td>
-                <td>${itemDisplay}</td>
-                <td>${progressHtml}</td>
-                <td style="font-family: var(--f-mono); font-size:12px;">${deadline}</td>
-                <td>${badgeHtml}</td>
-            </tr>`;
-        }).join("");
-
-        document.getElementById("progressPage").innerText = `PAGE ${currentPage + 1}/${totalPages}`;
-        updateDots(totalPages);
-    }
-
-    function updateDots(total) {
-        const container = document.getElementById("progressDots");
-        container.innerHTML = "";
-        for (let i = 0; i < Math.min(total, 10); i++) {
-            const dot = document.createElement("div");
-            dot.className = `dot ${i === currentPage ? 'active' : ''}`;
-            container.appendChild(dot);
-        }
-    }
-
-    function renderAnalytics() {
-        const staffMap = {}, custMap = {};
-        
-        // Logic lọc dữ liệu chính xác hơn
-        rawData.forEach(row => {
-            const staff = row.c[3]?.v;
-            const customer = row.c[4]?.v;
-            
-            // Xử lý Nhân sự: Bỏ qua giá trị trống hoặc gạch ngang
-            if (staff && staff.toString().trim() !== "" && staff.toString().trim() !== "—") {
-                const sName = staff.toString().trim();
-                staffMap[sName] = (staffMap[sName] || 0) + 1;
-            }
-            
-            // Xử lý Khách hàng: Bỏ qua giá trị trống hoặc gạch ngang
-            if (customer && customer.toString().trim() !== "" && customer.toString().trim() !== "—") {
-                const cName = customer.toString().trim();
-                custMap[cName] = (custMap[cName] || 0) + 1;
-            }
-        });
-
-        const fill = (map, elId, badgeId) => {
-            const sorted = Object.entries(map)
-                .sort((a,b) => b[1] - a[1]) // Sắp xếp giảm dần theo số lượng hạng mục
-                .slice(0, 8); // Tăng lên lấy 8 khách hàng hàng đầu thay vì 5 để đủ thông tin
-            
-            document.getElementById(badgeId).innerText = Object.keys(map).length;
-            document.getElementById(elId).innerHTML = sorted.map(([name, count]) => 
-                `<tr><td style="text-align:left; font-size:12px; padding: 8px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</td><td style="color:var(--accent); font-weight:bold; padding: 8px 8px; width: 40px; text-align:right;">${count}</td></tr>`
-            ).join("");
-        };
-
-        fill(staffMap, "staff-list", "staff-count");
-        fill(custMap, "customer-list", "customer-count");
-    }
-
-    function renderGuarantees() {
-        const el = document.getElementById("guarantee");
-        el.innerHTML = `<tr><td colspan="3" style="color:var(--text-dim); padding:25px;">CHỜ DỮ LIỆU...</td></tr>`;
-    }
-
-    function parseGSDate(gsDate) {
-        if (!gsDate || typeof gsDate !== 'string') return null;
-        const m = gsDate.match(/Date\((\d+),(\d+),(\d+)\)/);
-        return m ? new Date(m[1], m[2], m[3]) : null;
-    }
-
-    setInterval(() => {
-        const totalPages = Math.ceil(rawData.length / ROWS_PER_PAGE) || 1;
-        if(totalPages > 1) {
-            currentPage = (currentPage + 1) % totalPages;
-            renderProgress();
-        }
-    }, PAGE_TIME);
-
+    setInterval(updateClock, 1000);
     setInterval(fetchData, REFRESH_TIME);
-    window.onload = () => {
-        updateClock();
-        fetchData();
-    };
+    window.onload = fetchData;
 </script>
-
 </body>
 </html>
