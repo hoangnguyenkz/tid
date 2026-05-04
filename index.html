@@ -453,6 +453,10 @@
                     <tbody id="g-table"></tbody>
                 </table>
             </div>
+            <div class="footer-info">
+                <div id="g-page">PAGE 1/1</div>
+                <div id="g-total-val">Tổng: 0</div>
+            </div>
         </div>
 
         <!-- THỐNG KÊ NHÂN SỰ + KHÁCH HÀNG -->
@@ -483,8 +487,9 @@
     const URL_PROGRESS  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=1280059749`;
     const URL_GUARANTEE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Bao%20lanh`;
 
-    let dataP = [], dataG = [], currentPage = 0;
+    let dataP = [], dataG = [], currentPage = 0, currentGPage = 0;
     const ROWS_PER_PAGE = 16;
+    const G_ROWS_PER_PAGE = 8;
 
     /* ── CLOCK ── */
     setInterval(() => {
@@ -565,16 +570,21 @@
     /* ── RENDER GUARANTEE ── */
     function renderGuarantees() {
         const el = document.getElementById("g-table");
-        let totalVal = 0;
+        const totalPages = Math.ceil(dataG.length / G_ROWS_PER_PAGE);
+        const start = currentGPage * G_ROWS_PER_PAGE;
+        const items = dataG.slice(start, start + G_ROWS_PER_PAGE);
 
-        el.innerHTML = dataG.slice(0, 20).map(row => {
+        // tính tổng toàn bộ
+        let totalVal = 0;
+        dataG.forEach(row => {
             const d = row.c;
             let valRaw = d[12]?.v;
-            let valNum = 0;
-            if (typeof valRaw === 'number') valNum = valRaw;
-            else if (typeof valRaw === 'string') valNum = parseFloat(valRaw.replace(/[^0-9.-]+/g,"")) || 0;
-            totalVal += valNum;
+            if (typeof valRaw === 'number') totalVal += valRaw;
+            else if (typeof valRaw === 'string') totalVal += parseFloat(valRaw.replace(/[^0-9.-]+/g,"")) || 0;
+        });
 
+        el.innerHTML = items.map(row => {
+            const d = row.c;
             return `<tr>
                 <td class="text-left" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[9]?.v || "—"}</td>
                 <td class="text-left accent-text" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[10]?.v || "—"}</td>
@@ -585,6 +595,8 @@
         }).join("");
 
         document.getElementById("g-total-badge").innerText = totalVal.toLocaleString('vi-VN');
+        document.getElementById("g-page").innerText = `PAGE ${currentGPage + 1}/${totalPages || 1}`;
+        document.getElementById("g-total-val").innerText = `Tổng: ${totalVal.toLocaleString('vi-VN')} đ`;
     }
 
     /* ── RENDER STATS ── */
@@ -638,6 +650,8 @@
     setInterval(() => {
         const total = Math.ceil(dataP.length / ROWS_PER_PAGE);
         if (total > 1) { currentPage = (currentPage + 1) % total; renderProgress(); }
+        const gTotal = Math.ceil(dataG.length / G_ROWS_PER_PAGE);
+        if (gTotal > 1) { currentGPage = (currentGPage + 1) % gTotal; renderGuarantees(); }
     }, 10000);
 
     /* ── AUTO REFRESH ── */
