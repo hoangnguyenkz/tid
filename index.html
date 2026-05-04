@@ -40,10 +40,7 @@
 
         .container { display: flex; height: calc(100vh - 60px); padding: 12px; gap: 12px; }
         
-        /* CỘT TRÁI - TIẾN ĐỘ */
         .col-left { flex: 0 0 65%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 15px; position: relative; }
-        
-        /* CỘT PHẢI - BẢO LÃNH & TOP */
         .col-right { flex: 0 0 calc(35% - 12px); display: flex; flex-direction: column; gap: 12px; }
 
         .panel-top-right { flex: 0 0 68%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 12px; overflow: hidden; }
@@ -53,12 +50,11 @@
         .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border-hi); padding-bottom: 8px; }
         .panel-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
         .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
-        .badge-count { font-family: var(--f-mono); font-size: 12px; padding: 2px 8px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; }
+        .badge-count { font-family: var(--f-mono); font-size: 12px; padding: 2px 10px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; }
 
-        /* BẢNG DỮ LIỆU */
         .table-wrap { flex: 1; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: var(--bg-thead); color: var(--accent); font-size: 12px; padding: 12px 6px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
+        th { background: var(--bg-thead); color: var(--accent); font-size: 11px; padding: 10px 4px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
         
         #p-table td { padding: 14px 6px; font-size: 14px; font-weight: 500; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         #g-table td { padding: 8px 4px; font-size: 11px; border-bottom: 1px solid var(--border); text-align: center; }
@@ -74,7 +70,7 @@
         .bar-bg { width: 60px; height: 8px; background: #1a2a4a; border-radius: 4px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--accent); }
 
-        .st { font-size: 10px; padding: 3px 8px; border-radius: 3px; font-weight: 700; }
+        .st { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
         .st-done { background: var(--green); color: #000; }
         .st-wip { border: 1px solid var(--accent); color: var(--accent); }
         .st-late { background: var(--red); color: #fff; }
@@ -128,8 +124,8 @@
         <div class="panel-top-right">
             <div class="panel-header">
                 <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
-                <!-- Badge hiển thị tổng GIÁ TRỊ thay vì số lượng -->
-                <div class="badge-count" id="g-total-value" style="background:var(--accent); font-size: 11px;">0</div>
+                <!-- Badge hiển thị tổng giá trị tiền -->
+                <div id="g-total-badge" class="badge-count" style="background:var(--accent); font-size: 13px;">0</div>
             </div>
             <div class="table-wrap">
                 <table>
@@ -175,12 +171,13 @@
             const txtG = await resG.text();
             
             dataP = JSON.parse(txtP.substring(txtP.indexOf("{"), txtP.lastIndexOf("}") + 1)).table.rows.slice(4);
+            // Lấy dữ liệu từ dòng có Project name (cột J index 9)
             dataG = JSON.parse(txtG.substring(txtG.indexOf("{"), txtG.lastIndexOf("}") + 1)).table.rows.filter(r => r.c && r.c[9]?.v);
 
             renderAll();
             startProgressLine();
-            document.getElementById("p-sync").innerText = "Cập nhật lúc: " + new Date().toLocaleTimeString();
-        } catch (e) { document.getElementById("p-sync").innerText = "Lỗi kết nối dữ liệu!"; }
+            document.getElementById("p-sync").innerText = "Cập nhật: " + new Date().toLocaleTimeString();
+        } catch (e) { console.error(e); }
     }
 
     function renderAll() {
@@ -201,7 +198,7 @@
         el.innerHTML = items.map(row => {
             const d = row.c;
             const pct = Math.round((d[9]?.v || 0) * (d[9]?.v <= 1 ? 100 : 1));
-            const isLate = d[7]?.v && new Date(parseDate(d[7].v)) < new Date() && pct < 100;
+            const isLate = d[7]?.v && parseDate(d[7].v) < new Date() && pct < 100;
             return `<tr>
                 <td class="text-left gold-bold">${d[1]?.v || "—"}</td>
                 <td class="text-left accent-text">${d[4]?.v || "—"}</td>
@@ -215,27 +212,34 @@
 
     function renderGuarantees() {
         const el = document.getElementById("g-table");
-        
-        // TÍNH TỔNG GIÁ TRỊ (Cột M - index 12)
         let totalVal = 0;
-        dataG.forEach(row => {
-            const val = row.c[12]?.v || 0;
-            totalVal += typeof val === 'number' ? val : 0;
-        });
-        
-        // Cập nhật badge hiển thị tổng tiền (định dạng phân cách hàng nghìn)
-        document.getElementById("g-total-value").innerText = totalVal.toLocaleString('vi-VN');
-        
+
+        // Tối ưu hàm render và cộng dồn
         el.innerHTML = dataG.slice(0, 16).map(row => {
             const d = row.c;
+            
+            // Xử lý lấy giá trị số từ cột M (index 12)
+            // Loại bỏ dấu phẩy hoặc ký tự không phải số để cộng dồn chính xác
+            let valRaw = d[12]?.v;
+            let valNum = 0;
+            if (typeof valRaw === 'number') {
+                valNum = valRaw;
+            } else if (typeof valRaw === 'string') {
+                valNum = parseFloat(valRaw.replace(/[^0-9.-]+/g, "")) || 0;
+            }
+            totalVal += valNum;
+
             return `<tr>
                 <td class="text-left" style="color:#fff; font-weight:600;">${d[9]?.v || "—"}</td>
-                <td class="text-left accent-text">${d[10]?.v || "—"}</td>
-                <td><span class="st st-wip" style="font-size:9px; padding:2px 4px;">${d[13]?.v || "—"}</span></td>
+                <td class="text-left accent-text" style="font-size:10px;">${d[10]?.v || "—"}</td>
+                <td><span class="st st-wip" style="font-size:8px;">${d[13]?.v || "—"}</span></td>
                 <td class="gold-bold">${d[12]?.f || d[12]?.v || "0"}</td>
                 <td style="color:var(--red); font-family:var(--f-mono);">${d[7]?.f || "—"}</td>
             </tr>`;
         }).join("");
+
+        // Cập nhật Badge với giá trị đã format
+        document.getElementById("g-total-badge").innerText = totalVal.toLocaleString('vi-VN');
     }
 
     function renderStats() {
@@ -256,6 +260,7 @@
     }
 
     function parseDate(v) {
+        if(!v) return null;
         const m = v.match(/Date\((\d+),(\d+),(\d+)\)/);
         return m ? new Date(m[1], m[2], m[3]) : null;
     }
