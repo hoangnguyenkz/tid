@@ -145,11 +145,11 @@
 
         <div class="panel-bottom-right">
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">TOP NHÂN SỰ</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">TOP NHÂN SỰ (<span id="s-total">0</span>)</div></div>
                 <div class="table-wrap"><table><tbody id="s-table"></tbody></table></div>
             </div>
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">TOP KHÁCH HÀNG</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">TOP KHÁCH HÀNG (<span id="c-total">0</span>)</div></div>
                 <div class="table-wrap"><table><tbody id="c-table"></tbody></table></div>
             </div>
         </div>
@@ -201,7 +201,7 @@
             return `<tr>
                 <td class="text-left gold-bold">${d[1]?.v || "—"}</td>
                 <td class="text-left accent-text">${d[4]?.v || "—"}</td>
-                <td style="color:var(--text-bright)">${d[3]?.v || "—"}</td> <!-- NHÂN SỰ từ Cột D (Index 3) -->
+                <td style="color:var(--text-bright)">${d[3]?.v || "—"}</td>
                 <td class="text-left" style="color:var(--text)">${d[2]?.v || "—"}</td>
                 <td><div class="bar-container"><span style="width:32px; font-family:var(--f-mono); font-size:11px;">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
                 <td style="font-family:var(--f-mono); color:var(--accent); font-size:11px;">${d[7]?.f || "—"}</td>
@@ -236,19 +236,45 @@
 
     function renderStats() {
         const staff = {}, cust = {};
+        
+        // ✅ Duyệt tất cả dataP để thống kê
         dataP.forEach(r => {
-            const s = r.c[3]?.v, c = r.c[4]?.v;
-            if(s && s !== "—") staff[s] = (staff[s] || 0) + 1;
-            if(c && c !== "—") cust[c] = (cust[c] || 0) + 1;
+            const c = r.c;
+            
+            // Thống kê NHÂN SỰ từ cột D (index 3)
+            const s = c[3]?.v;
+            if(s && s.trim() && s !== "—") {
+                staff[s] = (staff[s] || 0) + 1;
+            }
+            
+            // Thống kê KHÁCH HÀNG từ cột E (index 4)
+            const customerVal = c[4]?.v;
+            if(customerVal && customerVal.trim() && customerVal !== "—") {
+                cust[customerVal] = (cust[customerVal] || 0) + 1;
+            }
         });
-        const fill = (map, id) => {
-            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0, 4);
-            document.getElementById(id).innerHTML = sorted.map(([n, v]) => 
+
+        console.log("👥 NHÂN SỰ:", staff);
+        console.log("🏢 KHÁCH HÀNG:", cust);
+
+        const fillStaff = (map, id) => {
+            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
+            document.getElementById("s-total").innerText = Object.keys(map).length;
+            document.getElementById(id).innerHTML = sorted.slice(0, 4).map(([n, v]) => 
                 `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
-            ).join("");
+            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">KHÔNG CÓ</td></tr>`;
         };
-        fill(staff, "s-table");
-        fill(cust, "c-table");
+
+        const fillCustomer = (map, id) => {
+            const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
+            document.getElementById("c-total").innerText = Object.keys(map).length;
+            document.getElementById(id).innerHTML = sorted.slice(0, 4).map(([n, v]) => 
+                `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
+            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">KHÔNG CÓ</td></tr>`;
+        };
+
+        fillStaff(staff, "s-table");
+        fillCustomer(cust, "c-table");
     }
 
     function parseDate(v) {
