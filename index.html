@@ -213,6 +213,33 @@
         .refresh-line.animating { animation: run 30s linear forwards; }
         @keyframes run { from { width: 100%; } to { width: 0%; } }
 
+        /* ══ DESKTOP (≥ 1024px) ══ */
+        @media (min-width: 1024px) {
+            .header { height: 70px; padding: 0 28px; }
+            .header-logo { font-size: 22px; gap: 12px; }
+            .logo-box { width: 40px; height: 40px; font-size: 18px; }
+            .header-title { font-size: 28px; letter-spacing: 7px; }
+            .header-clock { font-size: 28px; }
+            .header-date { font-size: 14px; }
+            .container { height: calc(100vh - 70px); padding: 16px; gap: 16px; }
+            .col-left { padding: 20px; }
+            .col-right { gap: 16px; }
+            .panel-top-right { padding: 16px; }
+            .sub-panel { padding: 14px; }
+            .panel-header { margin-bottom: 14px; padding-bottom: 12px; }
+            .panel-title { font-size: 18px; gap: 10px; }
+            .title-dot { width: 9px; height: 9px; }
+            .badge-count { font-size: 15px; padding: 4px 14px; }
+            th { font-size: 14px; padding: 12px 8px; letter-spacing: 0.8px; }
+            #p-table td { padding: 14px 8px; font-size: 16px; }
+            #g-table td { padding: 11px 6px; font-size: 14px; }
+            .bar-bg { width: 64px; height: 9px; }
+            .bar-container { gap: 6px; }
+            .bar-container span { width: 40px !important; font-size: 14px !important; }
+            .st { font-size: 12px; padding: 4px 10px; border-radius: 4px; }
+            .footer-info { font-size: 13px; padding-top: 10px; }
+        }
+
         /* ══ MOBILE TAB SYSTEM ══ */
         .tab-bar { display: none; }
 
@@ -611,7 +638,7 @@
     setInterval(() => {
         const total = Math.ceil(dataP.length / ROWS_PER_PAGE);
         if (total > 1) { currentPage = (currentPage + 1) % total; renderProgress(); }
-    }, 15000);
+    }, 10000);
 
     /* ── AUTO REFRESH ── */
     setInterval(fetchData, 30000);
