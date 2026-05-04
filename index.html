@@ -25,11 +25,12 @@
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--f-sans); overflow: hidden; }
+        html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--f-sans); overflow: hidden; -webkit-user-select: none; user-select: none; }
 
         .header {
             display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
             height: 60px; padding: 0 20px; background: var(--bg-header); border-bottom: 2px solid var(--border-hi);
+            position: relative; z-index: 10;
         }
         .header-logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: var(--text-bright); }
         .logo-box { width: 30px; height: 30px; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); }
@@ -38,26 +39,100 @@
         .header-clock { font-size: 20px; color: var(--text-bright); font-weight: 600; }
         .header-date { font-size: 12px; color: var(--accent); }
 
-        .container { display: flex; height: calc(100vh - 60px); padding: 12px; gap: 12px; }
+        .container { 
+            display: flex; 
+            height: calc(100vh - 60px); 
+            padding: 12px; 
+            gap: 12px; 
+            flex-direction: row;
+        }
         
-        .col-left { flex: 0 0 65%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 15px; position: relative; }
-        .col-right { flex: 0 0 calc(35% - 12px); display: flex; flex-direction: column; gap: 12px; }
+        .col-left { 
+            flex: 0 0 65%; 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid var(--border-hi); 
+            background: rgba(13,20,40,0.5); 
+            border-radius: 4px; 
+            padding: 15px; 
+            position: relative;
+            min-width: 0;
+        }
+        .col-right { 
+            flex: 0 0 calc(35% - 12px); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px;
+            min-width: 0;
+        }
 
-        .panel-top-right { flex: 0 0 68%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 12px; overflow: hidden; }
-        .panel-bottom-right { flex: 1; display: flex; gap: 12px; min-height: 0; }
-        .sub-panel { flex: 1; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 10px; display: flex; flex-direction: column; }
+        .panel-top-right { 
+            flex: 0 0 68%; 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid var(--border-hi); 
+            background: rgba(13,20,40,0.5); 
+            border-radius: 4px; 
+            padding: 12px; 
+            overflow: hidden;
+            min-width: 0;
+        }
+        .panel-bottom-right { 
+            flex: 1; 
+            display: flex; 
+            gap: 12px; 
+            min-height: 0;
+            min-width: 0;
+        }
+        .sub-panel { 
+            flex: 1; 
+            border: 1px solid var(--border-hi); 
+            background: rgba(13,20,40,0.5); 
+            border-radius: 4px; 
+            padding: 10px; 
+            display: flex; 
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+        }
 
-        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border-hi); padding-bottom: 8px; }
-        .panel-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text-bright); text-transform: uppercase; }
-        .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
-        .badge-count { font-family: var(--f-mono); font-size: 12px; padding: 2px 10px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; }
+        .panel-header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 12px; 
+            border-bottom: 1px solid var(--border-hi); 
+            padding-bottom: 8px;
+            flex-shrink: 0;
+            gap: 8px;
+        }
+        .panel-title { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 14px; 
+            font-weight: 700; 
+            color: var(--text-bright); 
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .title-dot { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); flex-shrink: 0; }
+        .badge-count { font-family: var(--f-mono); font-size: 12px; padding: 2px 10px; background: var(--gold); color: #000; border-radius: 2px; font-weight: 700; white-space: nowrap; }
 
-        .table-wrap { flex: 1; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: var(--bg-thead); color: var(--accent); font-size: 11px; padding: 10px 4px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
+        .table-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; display: flex; flex-direction: column; }
+        thead { flex-shrink: 0; }
+        tbody { flex: 1; overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; }
+        th { background: var(--bg-thead); color: var(--accent); font-size: 11px; padding: 10px 4px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); display: table; width: 100%; table-layout: fixed; }
         
-        #p-table td { padding: 14px 6px; font-size: 13px; font-weight: 500; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #g-table td { padding: 8px 4px; font-size: 11px; border-bottom: 1px solid var(--border); text-align: center; }
+        tr { display: table; width: 100%; table-layout: fixed; }
+        #p-table tr, #g-table tr { border-bottom: 1px solid var(--border); }
+        #p-table td { padding: 14px 6px; font-size: 13px; font-weight: 500; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: table-cell; }
+        #g-table td { padding: 8px 4px; font-size: 11px; text-align: center; display: table-cell; }
+        #s-table tr, #c-table tr { border-bottom: 1px solid var(--border); }
+        #s-table td, #c-table td { padding: 10px 8px; font-size: 11px; display: table-cell; }
 
         tbody tr:nth-child(odd) { background: var(--row-a); }
         tbody tr:nth-child(even) { background: var(--row-b); }
@@ -67,18 +142,210 @@
         .accent-text { color: var(--accent); }
         
         .bar-container { display: flex; align-items: center; gap: 5px; justify-content: center; }
-        .bar-bg { width: 45px; height: 8px; background: #1a2a4a; border-radius: 4px; overflow: hidden; }
+        .bar-bg { width: 45px; height: 8px; background: #1a2a4a; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .bar-fill { height: 100%; background: var(--accent); }
 
-        .st { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+        .st { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 700; white-space: nowrap; }
         .st-done { background: var(--green); color: #000; }
         .st-wip { border: 1px solid var(--accent); color: var(--accent); }
         .st-late { background: var(--red); color: #fff; }
 
-        .footer-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--accent); font-family: var(--f-mono); padding-top: 10px; }
+        .footer-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--accent); font-family: var(--f-mono); padding-top: 10px; flex-shrink: 0; gap: 10px; }
         .refresh-line { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 0; }
         .refresh-line.animating { animation: run 30s linear forwards; }
         @keyframes run { from { width: 100%; } to { width: 0%; } }
+
+        /* ── TABLET (768px - 1024px) ── */
+        @media (max-width: 1024px) and (min-width: 768px) {
+            .container { padding: 10px; gap: 10px; }
+            .col-left { flex: 0 0 60%; padding: 12px; }
+            .col-right { flex: 0 0 calc(40% - 10px); }
+            .panel-header { margin-bottom: 10px; padding-bottom: 6px; }
+            .panel-title { font-size: 12px; }
+            .badge-count { font-size: 11px; padding: 2px 8px; }
+            #p-table td { padding: 10px 4px; font-size: 11px; }
+            #g-table td { padding: 6px 3px; font-size: 10px; }
+            #s-table td, #c-table td { padding: 8px 6px; font-size: 10px; }
+        }
+
+        /* ── MOBILE (< 768px) ── */
+        @media (max-width: 767px) {
+            .header { 
+                height: 50px; 
+                padding: 0 12px; 
+            }
+            .header-logo { 
+                font-size: 13px; 
+                gap: 6px; 
+            }
+            .logo-box { 
+                width: 24px; 
+                height: 24px; 
+                font-size: 12px; 
+            }
+            .header-title { 
+                font-size: 14px; 
+                letter-spacing: 2px; 
+            }
+            .header-clock { 
+                font-size: 14px; 
+            }
+            .header-date { 
+                font-size: 10px; 
+            }
+
+            .container { 
+                flex-direction: column; 
+                height: calc(100vh - 50px); 
+                padding: 8px; 
+                gap: 8px; 
+            }
+
+            .col-left { 
+                flex: 0 0 55%; 
+                padding: 10px;
+                border-radius: 3px;
+            }
+            .col-right { 
+                flex: 0 0 calc(45% - 8px); 
+                gap: 8px;
+            }
+
+            .panel-top-right { 
+                flex: 0 0 48%; 
+                padding: 8px;
+                border-radius: 3px;
+            }
+            .panel-bottom-right { 
+                flex: 0 0 52%; 
+                gap: 8px;
+            }
+            .sub-panel { 
+                flex: 1; 
+                padding: 8px;
+                border-radius: 3px;
+            }
+
+            .panel-header { 
+                margin-bottom: 8px; 
+                padding-bottom: 6px;
+                gap: 6px;
+            }
+            .panel-title { 
+                font-size: 11px;
+            }
+            .panel-title.small { 
+                font-size: 10px;
+            }
+            .badge-count { 
+                font-size: 10px; 
+                padding: 2px 6px;
+            }
+
+            th { 
+                font-size: 9px; 
+                padding: 8px 2px;
+            }
+            
+            #p-table td { 
+                padding: 10px 3px; 
+                font-size: 10px;
+            }
+            #g-table td { 
+                padding: 6px 2px; 
+                font-size: 9px;
+            }
+            #s-table td, #c-table td { 
+                padding: 8px 4px; 
+                font-size: 10px;
+            }
+
+            .bar-bg { 
+                width: 35px; 
+                height: 6px;
+            }
+
+            .footer-info { 
+                font-size: 9px; 
+                padding-top: 8px;
+            }
+        }
+
+        /* ── MOBILE NHỎ (< 480px) ── */
+        @media (max-width: 479px) {
+            .header { 
+                height: 45px; 
+                padding: 0 10px;
+            }
+            .header-logo { 
+                font-size: 12px;
+            }
+            .logo-box { 
+                width: 22px; 
+                height: 22px;
+            }
+            .header-title { 
+                font-size: 12px; 
+                letter-spacing: 1px;
+            }
+
+            .container { 
+                padding: 6px; 
+                gap: 6px;
+            }
+
+            .col-left { 
+                padding: 8px;
+            }
+            .col-right { 
+                gap: 6px;
+            }
+            .panel-top-right, .sub-panel { 
+                padding: 6px;
+            }
+            .panel-bottom-right { 
+                gap: 6px;
+            }
+
+            .panel-header { 
+                margin-bottom: 6px; 
+                padding-bottom: 4px;
+            }
+            .panel-title { 
+                font-size: 10px;
+            }
+            .badge-count { 
+                font-size: 9px; 
+                padding: 1px 5px;
+            }
+
+            th { 
+                font-size: 8px; 
+                padding: 6px 1px;
+            }
+            
+            #p-table td { 
+                padding: 8px 2px; 
+                font-size: 9px;
+            }
+            #g-table td { 
+                padding: 5px 1px; 
+                font-size: 8px;
+            }
+            #s-table td, #c-table td { 
+                padding: 6px 3px; 
+                font-size: 9px;
+            }
+
+            .bar-bg { 
+                width: 30px; 
+                height: 5px;
+            }
+
+            .footer-info { 
+                font-size: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -96,19 +363,19 @@
     <div class="col-left">
         <div class="panel-header">
             <div class="panel-title"><div class="title-dot"></div> TIẾN ĐỘ DỰ ÁN</div>
-            <div class="badge-count" id="p-count">0 HẠNG MỤC</div>
+            <div class="badge-count" id="p-count">0 MỤC</div>
         </div>
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
                         <th style="width: 18%;">DỰ ÁN</th>
-                        <th style="width: 16%;">KHÁCH HÀNG</th>
-                        <th style="width: 15%;">NHÂN SỰ</th>
+                        <th style="width: 16%;">KH</th>
+                        <th style="width: 15%;">NS</th>
                         <th style="width: 18%;">HẠNG MỤC</th>
-                        <th style="width: 14%;">TIẾN ĐỘ</th>
+                        <th style="width: 14%;">%</th>
                         <th style="width: 10%;">DEADLINE</th>
-                        <th style="width: 9%;">T.THÁI</th>
+                        <th style="width: 9%;">THÁI</th>
                     </tr>
                 </thead>
                 <tbody id="p-table"></tbody>
@@ -116,7 +383,7 @@
         </div>
         <div class="footer-info">
             <div id="p-page">PAGE 1/1</div>
-            <div id="p-sync">Đang cập nhật...</div>
+            <div id="p-sync">Cập nhật...</div>
         </div>
         <div class="refresh-line" id="line1"></div>
     </div>
@@ -124,15 +391,15 @@
     <div class="col-right">
         <div class="panel-top-right">
             <div class="panel-header">
-                <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
-                <div id="g-total-badge" class="badge-count" style="background:var(--accent); font-size: 13px;">0</div>
+                <div class="panel-title"><div class="title-dot"></div> BẢO LÃNH</div>
+                <div id="g-total-badge" class="badge-count" style="background:var(--accent); font-size: 11px;">0</div>
             </div>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
                             <th style="width: 32%;">DỰ ÁN</th>
-                            <th style="width: 20%;">KHÁCH HÀNG</th>
+                            <th style="width: 20%;">KH</th>
                             <th style="width: 12%;">LOẠI</th>
                             <th style="width: 18%;">GIÁ TRỊ</th>
                             <th style="width: 18%;">HẾT HẠN</th>
@@ -145,11 +412,11 @@
 
         <div class="panel-bottom-right">
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">THỐNG KÊ NHÂN SỰ (<span id="s-total">0</span>)</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">NHÂN SỰ (<span id="s-total">0</span>)</div></div>
                 <div class="table-wrap"><table><tbody id="s-table"></tbody></table></div>
             </div>
             <div class="sub-panel">
-                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">THỐNG KÊ KHÁCH HÀNG (<span id="c-total">0</span>)</div></div>
+                <div class="panel-header"><div class="panel-title" style="font-size: 11px;">KHÁCH HÀNG (<span id="c-total">0</span>)</div></div>
                 <div class="table-wrap"><table><tbody id="c-table"></tbody></table></div>
             </div>
         </div>
@@ -191,7 +458,7 @@
         const start = currentPage * ROWS_PER_PAGE;
         const items = dataP.slice(start, start + ROWS_PER_PAGE);
 
-        document.getElementById("p-count").innerText = `${dataP.length} HẠNG MỤC`;
+        document.getElementById("p-count").innerText = `${dataP.length} MỤC`;
         document.getElementById("p-page").innerText = `PAGE ${currentPage + 1}/${totalPages || 1}`;
 
         el.innerHTML = items.map(row => {
@@ -201,11 +468,11 @@
             return `<tr>
                 <td class="text-left gold-bold">${d[1]?.v || "—"}</td>
                 <td class="text-left accent-text">${d[4]?.v || "—"}</td>
-                <td style="color:var(--text-bright)">${d[3]?.v || "—"}</td>
-                <td class="text-left" style="color:var(--text)">${d[2]?.v || "—"}</td>
-                <td><div class="bar-container"><span style="width:32px; font-family:var(--f-mono); font-size:11px;">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
-                <td style="font-family:var(--f-mono); color:var(--accent); font-size:11px;">${d[7]?.f || "—"}</td>
-                <td><span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'OK':(isLate?'TRỄ HẠN':'ĐANG CHẠY')}</span></td>
+                <td style="color:var(--text-bright); font-size:10px;">${d[3]?.v || "—"}</td>
+                <td class="text-left" style="color:var(--text); font-size:10px;">${d[2]?.v || "—"}</td>
+                <td><div class="bar-container"><span style="width:28px; font-family:var(--f-mono); font-size:10px;">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
+                <td style="font-family:var(--f-mono); color:var(--accent); font-size:9px;">${d[7]?.f || "—"}</td>
+                <td><span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'OK':(isLate?'TRỄ':'CHẠY')}</span></td>
             </tr>`;
         }).join("");
     }
@@ -224,7 +491,7 @@
 
             return `<tr>
                 <td class="text-left" style="color:#fff; font-weight:600;">${d[9]?.v || "—"}</td>
-                <td class="text-left accent-text" style="font-size:10px;">${d[10]?.v || "—"}</td>
+                <td class="text-left accent-text">${d[10]?.v || "—"}</td>
                 <td><span class="st st-wip" style="font-size:8px;">${d[13]?.v || "—"}</span></td>
                 <td class="gold-bold">${d[12]?.f || d[12]?.v || "0"}</td>
                 <td style="color:var(--red); font-family:var(--f-mono);">${d[7]?.f || "—"}</td>
@@ -237,40 +504,32 @@
     function renderStats() {
         const staff = {}, cust = {};
         
-        // ✅ Duyệt tất cả dataP để thống kê
         dataP.forEach(r => {
             const c = r.c;
-            
-            // Thống kê NHÂN SỰ từ cột D (index 3)
             const s = c[3]?.v;
             if(s && s.trim() && s !== "—") {
                 staff[s] = (staff[s] || 0) + 1;
             }
-            
-            // Thống kê KHÁCH HÀNG từ cột E (index 4)
             const customerVal = c[4]?.v;
             if(customerVal && customerVal.trim() && customerVal !== "—") {
                 cust[customerVal] = (cust[customerVal] || 0) + 1;
             }
         });
 
-        console.log("👥 NHÂN SỰ:", staff);
-        console.log("🏢 KHÁCH HÀNG:", cust);
-
         const fillStaff = (map, id) => {
             const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
             document.getElementById("s-total").innerText = Object.keys(map).length;
             document.getElementById(id).innerHTML = sorted.slice(0, 4).map(([n, v]) => 
-                `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
-            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">KHÔNG CÓ</td></tr>`;
+                `<tr><td class="text-left">${n}</td><td class="accent-text" style="font-weight:700; text-align:right;">${v}</td></tr>`
+            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">-</td></tr>`;
         };
 
         const fillCustomer = (map, id) => {
             const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
             document.getElementById("c-total").innerText = Object.keys(map).length;
             document.getElementById(id).innerHTML = sorted.slice(0, 4).map(([n, v]) => 
-                `<tr><td class="text-left" style="font-size:11px; padding:8px 10px;">${n}</td><td class="accent-text" style="font-weight:700; width:30px; text-align:right; padding-right:10px;">${v}</td></tr>`
-            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">KHÔNG CÓ</td></tr>`;
+                `<tr><td class="text-left">${n}</td><td class="accent-text" style="font-weight:700; text-align:right;">${v}</td></tr>`
+            ).join("") || `<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:10px;">-</td></tr>`;
         };
 
         fillStaff(staff, "s-table");
