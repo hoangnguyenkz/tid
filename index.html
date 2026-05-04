@@ -170,8 +170,7 @@
             const txtP = await resP.text();
             const txtG = await resG.text();
             
-            // SỬA LỖI THỐNG KÊ THIẾU: Quét toàn bộ dòng có dữ liệu (cột B - Index 1) 
-            dataP = JSON.parse(txtP.substring(txtP.indexOf("{"), txtP.lastIndexOf("}") + 1)).table.rows.filter(r => r.c && r.c[1]?.v);
+            dataP = JSON.parse(txtP.substring(txtP.indexOf("{"), txtP.lastIndexOf("}") + 1)).table.rows.slice(4);
             dataG = JSON.parse(txtG.substring(txtG.indexOf("{"), txtG.lastIndexOf("}") + 1)).table.rows.filter(r => r.c && r.c[9]?.v);
 
             renderAll();
@@ -202,7 +201,7 @@
             return `<tr>
                 <td class="text-left gold-bold">${d[1]?.v || "—"}</td>
                 <td class="text-left accent-text">${d[4]?.v || "—"}</td>
-                <td style="color:var(--text-bright)">${d[3]?.v || "—"}</td>
+                <td style="color:var(--text-bright)">${d[3]?.v || "—"}</td> <!-- NHÂN SỰ từ Cột D (Index 3) -->
                 <td class="text-left" style="color:var(--text)">${d[2]?.v || "—"}</td>
                 <td><div class="bar-container"><span style="width:32px; font-family:var(--f-mono); font-size:11px;">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div></td>
                 <td style="font-family:var(--f-mono); color:var(--accent); font-size:11px;">${d[7]?.f || "—"}</td>
