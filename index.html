@@ -40,10 +40,10 @@
 
         .container { display: flex; height: calc(100vh - 60px); padding: 12px; gap: 12px; }
         
-        /* CỘT TRÁI - TIẾN ĐỘ (65%) */
+        /* CỘT TRÁI - TIẾN ĐỘ */
         .col-left { flex: 0 0 65%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 15px; position: relative; }
         
-        /* CỘT PHẢI - BẢO LÃNH & TOP (35%) */
+        /* CỘT PHẢI - BẢO LÃNH & TOP */
         .col-right { flex: 0 0 calc(35% - 12px); display: flex; flex-direction: column; gap: 12px; }
 
         .panel-top-right { flex: 0 0 68%; display: flex; flex-direction: column; border: 1px solid var(--border-hi); background: rgba(13,20,40,0.5); border-radius: 4px; padding: 12px; overflow: hidden; }
@@ -60,10 +60,7 @@
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th { background: var(--bg-thead); color: var(--accent); font-size: 12px; padding: 12px 6px; text-transform: uppercase; border-bottom: 1px solid var(--border-hi); }
         
-        /* Tăng kích thước dòng cho bảng bên trái */
         #p-table td { padding: 14px 6px; font-size: 14px; font-weight: 500; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        /* Kích thước dòng bảng bảo lãnh */
         #g-table td { padding: 8px 4px; font-size: 11px; border-bottom: 1px solid var(--border); text-align: center; }
 
         tbody tr:nth-child(odd) { background: var(--row-a); }
@@ -75,7 +72,7 @@
         
         .bar-container { display: flex; align-items: center; gap: 8px; justify-content: center; }
         .bar-bg { width: 60px; height: 8px; background: #1a2a4a; border-radius: 4px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        .bar-fill { height: 100%; background: var(--accent); }
 
         .st { font-size: 10px; padding: 3px 8px; border-radius: 3px; font-weight: 700; }
         .st-done { background: var(--green); color: #000; }
@@ -100,7 +97,6 @@
 </div>
 
 <div class="container">
-    <!-- CỘT TRÁI: TIẾN ĐỘ DỰ ÁN (Hiển thị 16 dòng, chữ lớn) -->
     <div class="col-left">
         <div class="panel-header">
             <div class="panel-title"><div class="title-dot"></div> TIẾN ĐỘ DỰ ÁN</div>
@@ -128,12 +124,12 @@
         <div class="refresh-line" id="line1"></div>
     </div>
 
-    <!-- CỘT PHẢI: BẢO LÃNH & THỐNG KÊ -->
     <div class="col-right">
         <div class="panel-top-right">
             <div class="panel-header">
                 <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
-                <div class="badge-count" id="g-count" style="background:var(--accent)">0</div>
+                <!-- Badge hiển thị tổng GIÁ TRỊ thay vì số lượng -->
+                <div class="badge-count" id="g-total-value" style="background:var(--accent); font-size: 11px;">0</div>
             </div>
             <div class="table-wrap">
                 <table>
@@ -219,9 +215,17 @@
 
     function renderGuarantees() {
         const el = document.getElementById("g-table");
-        document.getElementById("g-count").innerText = dataG.length;
         
-        // Hiển thị tối đa 16 dòng bảo lãnh
+        // TÍNH TỔNG GIÁ TRỊ (Cột M - index 12)
+        let totalVal = 0;
+        dataG.forEach(row => {
+            const val = row.c[12]?.v || 0;
+            totalVal += typeof val === 'number' ? val : 0;
+        });
+        
+        // Cập nhật badge hiển thị tổng tiền (định dạng phân cách hàng nghìn)
+        document.getElementById("g-total-value").innerText = totalVal.toLocaleString('vi-VN');
+        
         el.innerHTML = dataG.slice(0, 16).map(row => {
             const d = row.c;
             return `<tr>
