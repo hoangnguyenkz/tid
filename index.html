@@ -211,33 +211,34 @@ html, body {
 .table-wrap { 
   flex: 1; 
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
-thead {
-  flex: 0 0 auto;
+thead tr { background: var(--bg-thead); }
+
+th {
+  padding: 10px 12px;
+  font-family: var(--f-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  text-transform: uppercase;
+  text-align: center;
+  border-bottom: 2px solid var(--border-hi);
 }
 
-thead tr { 
-  background: var(--bg-thead); 
-  display: table;
-  width: 100%;
-}
+th:first-child { text-align: left; }
 
 tbody {
-  flex: 1;
-  overflow: hidden;
   display: block;
+  overflow-y: auto;
+  height: calc(100% - 44px);
 }
 
 tbody tr {
@@ -252,20 +253,10 @@ tbody tr:nth-child(even) { background: var(--row-b); }
 
 tbody tr:hover { background: rgba(96,200,240,.09) !important; }
 
-th {
-  padding: 10px 12px;
-  font-family: var(--f-sans);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
-  color: var(--accent);
-  text-transform: uppercase;
-  text-align: center;
-  border-bottom: 2px solid var(--border-hi);
-  display: table-cell;
+thead tr {
+  display: table;
+  width: 100%;
 }
-
-th:first-child { text-align: left; }
 
 td {
   padding: 11px 12px;
@@ -491,6 +482,10 @@ td:first-child { text-align: left; }
     flex: 1;
   }
 
+  tbody {
+    height: calc(100% - 44px);
+  }
+
   th {
     padding: 10px 12px;
     font-size: 13px;
@@ -499,33 +494,6 @@ td:first-child { text-align: left; }
   td {
     padding: 11px 12px;
     font-size: 16px;
-    height: 39px;
-  }
-
-  .panel-title {
-    font-size: 17px;
-  }
-
-  .panel-title.small {
-    font-size: 13px;
-  }
-
-  .pct-num {
-    font-size: 16px;
-  }
-
-  .bar-bg {
-    width: 72px;
-    height: 6px;
-  }
-
-  .count-val {
-    font-size: 16px;
-  }
-
-  .badge {
-    font-size: 13px;
-    padding: 5px 14px;
   }
 }
 
@@ -568,7 +536,10 @@ td:first-child { text-align: left; }
   td {
     padding: 9px 10px;
     font-size: 14px;
-    height: 35px;
+  }
+
+  tbody {
+    height: calc(100% - 40px);
   }
 
   .panel-header {
@@ -710,7 +681,10 @@ td:first-child { text-align: left; }
   td {
     padding: 5px 3px;
     font-size: 10px;
-    height: 28px;
+  }
+
+  tbody {
+    height: calc(100% - 34px);
   }
 
   .project-name {
@@ -903,7 +877,7 @@ const PROGRESS_URL = "https://docs.google.com/spreadsheets/d/1Qefkd7Pev_QVd2ud3g
 const GUARANTEE_URL = "";
 const PAGE_TIME = 10000;
 const REFRESH_TIME = 30000;
-const ROWS_PER_PAGE = 16; // Desktop: 16 dòng/trang
+const ROWS_PER_PAGE = 16;
 
 let progressData = [];
 let guaranteeData = [];
@@ -1032,7 +1006,6 @@ function renderProgress(){
 
   document.getElementById("progressPage").innerText = `TRANG ${progressPage+1} / ${total}`;
   
-  // Render pagination dots
   const dotsEl = document.getElementById("progressDots");
   dotsEl.innerHTML = "";
   for(let i=0;i<Math.min(total,10);i++){
@@ -1129,7 +1102,7 @@ function renderGuarantee(){
 async function loadData(){
   progressData = await fetchSheet(PROGRESS_URL).catch(()=>[]);
   guaranteeData = await fetchSheet(GUARANTEE_URL).catch(()=>[]);
-  progressPage = 0; // Reset trang khi load dữ liệu mới
+  progressPage = 0;
   renderProgress();
   renderGuarantee();
   ["refreshBar1","refreshBar2"].forEach(id=>{
