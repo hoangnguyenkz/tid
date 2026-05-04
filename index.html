@@ -661,7 +661,7 @@
         if (total > 1) { currentPage = (currentPage + 1) % total; renderProgress(); }
         const gTotal = Math.ceil(dataG.length / G_ROWS_PER_PAGE);
         if (gTotal > 1) { currentGPage = (currentGPage + 1) % gTotal; renderGuarantees(); }
-    }, 10000);
+    }, 15000);
 
     /* ── AUTO REFRESH ── */
     setInterval(fetchData, 30000);
