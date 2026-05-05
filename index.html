@@ -143,15 +143,16 @@
         .table-wrap { flex: 1; overflow: hidden; min-height: 0; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
+        /* Tất cả th màu trắng */
         th {
             background: var(--bg-thead);
-            color: var(--accent);
+            color: #ffffff;
             font-size: 11px;
             padding: 8px 4px;
             text-transform: uppercase;
             border-bottom: 1px solid var(--border-hi);
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.5px;
             position: sticky;
             top: 0;
@@ -231,7 +232,7 @@
             .panel-title { font-size: 18px; gap: 10px; }
             .title-dot { width: 9px; height: 9px; }
             .badge-count { font-size: 15px; padding: 4px 14px; }
-            th { font-size: 14px; padding: 12px 8px; letter-spacing: 0.8px; }
+            th { font-size: 15px; padding: 12px 8px; letter-spacing: 0.8px; }
             #p-table td { padding: 14px 8px; font-size: 16px; }
             #g-table td { padding: 11px 6px; font-size: 14px; }
             .bar-bg { width: 64px; height: 9px; }
@@ -258,7 +259,6 @@
             .header-clock { font-size: 15px; }
             .header-date { font-size: 10px; }
 
-            /* Tab navigation bar */
             .tab-bar {
                 display: flex;
                 background: var(--bg-header);
@@ -280,31 +280,19 @@
                 transition: all 0.2s;
                 font-family: var(--f-sans);
             }
-            .tab-btn.active {
-                color: var(--accent);
-                border-bottom-color: var(--accent);
-            }
+            .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-            /* Mobile container */
             .container {
                 flex-direction: column;
-                height: calc(100vh - 52px - 34px); /* header + tab */
+                height: calc(100vh - 52px - 34px);
                 padding: 0;
                 gap: 0;
                 overflow: hidden;
             }
 
-            /* All cols hidden by default on mobile */
-            .col-left,
-            .col-right,
-            .panel-top-right,
-            .panel-bottom-right {
-                display: none;
-            }
+            .col-left, .col-right, .panel-top-right, .panel-bottom-right { display: none; }
 
-            /* Active tab shown */
-            .col-left.tab-active,
-            .col-right.tab-active {
+            .col-left.tab-active, .col-right.tab-active {
                 display: flex;
                 flex-direction: column;
                 flex: 1;
@@ -314,53 +302,20 @@
                 min-height: 0;
                 height: 100%;
             }
+            .col-right.tab-active { gap: 10px; overflow-y: auto; }
+            .col-right.tab-active .panel-top-right { display: flex; flex: 0 0 auto; border-radius: 4px; padding: 10px; min-height: 180px; }
+            .col-right.tab-active .panel-bottom-right { display: flex; flex-direction: column; gap: 8px; flex: 0 0 auto; }
+            .col-right.tab-active .sub-panel { min-height: 130px; flex: 0 0 auto; }
 
-            .col-right.tab-active {
-                gap: 10px;
-                overflow-y: auto;
-            }
-
-            /* On mobile col-right tab: show all sub-sections stacked */
-            .col-right.tab-active .panel-top-right {
-                display: flex;
-                flex: 0 0 auto;
-                border-radius: 4px;
-                padding: 10px;
-                min-height: 180px;
-            }
-            .col-right.tab-active .panel-bottom-right {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                flex: 0 0 auto;
-            }
-            .col-right.tab-active .sub-panel {
-                min-height: 130px;
-                flex: 0 0 auto;
-            }
-
-            /* Mobile table sizing */
             th { font-size: 9px; padding: 6px 3px; letter-spacing: 0; }
-
-            #p-table td {
-                padding: 9px 4px;
-                font-size: 11px;
-            }
-            #g-table td {
-                padding: 6px 3px;
-                font-size: 10px;
-            }
-
+            #p-table td { padding: 9px 4px; font-size: 11px; }
+            #g-table td { padding: 6px 3px; font-size: 10px; }
             .panel-title { font-size: 12px; }
             .badge-count { font-size: 10px; padding: 2px 7px; }
-
             .bar-bg { width: 32px; height: 6px; }
             .bar-container { gap: 3px; }
-
             .st { font-size: 8px; padding: 1px 4px; }
-
             .footer-info { font-size: 10px; padding-top: 6px; }
-
             .sub-panel { padding: 8px; }
             .panel-header { margin-bottom: 6px; padding-bottom: 6px; }
         }
@@ -371,11 +326,9 @@
             .col-left { flex: 0 0 60%; padding: 12px; }
             .col-right { flex: 0 0 calc(40% - 8px); }
             .panel-top-right { flex: 0 0 55%; padding: 10px; }
-
             th { font-size: 10px; padding: 7px 3px; }
             #p-table td { padding: 9px 4px; font-size: 12px; }
             #g-table td { padding: 7px 3px; font-size: 10px; }
-
             .panel-title { font-size: 12px; }
             .header-title { font-size: 16px; letter-spacing: 3px; }
             .header-clock { font-size: 16px; }
@@ -387,7 +340,7 @@
 <body>
 
 <div class="header">
-    <div class="header-logo"><div class="logo-box">T</div><span class="hide-xs">TID CO.LTD</span></div>
+    <div class="header-logo"><div class="logo-box">T</div><span>TID CO.LTD</span></div>
     <div class="header-title">PROJECT DASHBOARD</div>
     <div class="header-right">
         <div class="header-clock" id="clock">00:00:00</div>
@@ -395,7 +348,6 @@
     </div>
 </div>
 
-<!-- Tab bar chỉ hiện trên mobile -->
 <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('left')">📋 TIẾN ĐỘ</button>
     <button class="tab-btn" onclick="switchTab('right')">🏦 BẢO LÃNH & THỐNG KÊ</button>
@@ -431,10 +383,8 @@
         <div class="refresh-line" id="line1"></div>
     </div>
 
-    <!-- CỘT PHẢI: BẢO LÃNH + NHÂN SỰ + KHÁCH HÀNG -->
+    <!-- CỘT PHẢI -->
     <div class="col-right" id="tab-right">
-
-        <!-- THEO DÕI BẢO LÃNH -->
         <div class="panel-top-right">
             <div class="panel-header">
                 <div class="panel-title"><div class="title-dot"></div> THEO DÕI BẢO LÃNH</div>
@@ -460,7 +410,6 @@
             </div>
         </div>
 
-        <!-- THỐNG KÊ NHÂN SỰ + KHÁCH HÀNG -->
         <div class="panel-bottom-right">
             <div class="sub-panel">
                 <div class="panel-header">
@@ -472,16 +421,15 @@
             </div>
             <div class="sub-panel">
                 <div class="panel-header">
-                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/ KHÁCH HÀNG (<span id="c-total">0</span>)</div>
+                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/KHÁCH HÀNG (<span id="c-total">0</span>)</div>
                 </div>
                 <div class="table-wrap">
                     <table><tbody id="c-table"></tbody></table>
                 </div>
             </div>
         </div>
-
-    </div><!-- /col-right -->
-</div><!-- /container -->
+    </div>
+</div>
 
 <script>
     const SHEET_ID = "1Qefkd7Pev_QVd2ud3gcSB97JMdCPb5XBEkA-9Cfpg2Y";
@@ -492,60 +440,44 @@
     const ROWS_PER_PAGE = 16;
     const G_ROWS_PER_PAGE = 8;
 
-    /* ── CLOCK ── */
     setInterval(() => {
         const n = new Date();
         document.getElementById("clock").innerText = n.toLocaleTimeString("vi-VN", {hour12: false});
         document.getElementById("date").innerText  = n.toLocaleDateString("vi-VN");
     }, 1000);
 
-    /* ── TAB SWITCH (mobile) ── */
     function switchTab(tab) {
         const left  = document.getElementById("tab-left");
         const right = document.getElementById("tab-right");
         const btns  = document.querySelectorAll(".tab-btn");
-
         if (tab === 'left') {
-            left.classList.add("tab-active");
-            right.classList.remove("tab-active");
-            btns[0].classList.add("active");
-            btns[1].classList.remove("active");
+            left.classList.add("tab-active"); right.classList.remove("tab-active");
+            btns[0].classList.add("active");  btns[1].classList.remove("active");
         } else {
-            right.classList.add("tab-active");
-            left.classList.remove("tab-active");
-            btns[1].classList.add("active");
-            btns[0].classList.remove("active");
+            right.classList.add("tab-active"); left.classList.remove("tab-active");
+            btns[1].classList.add("active");   btns[0].classList.remove("active");
         }
     }
 
-    /* ── FETCH ── */
     async function fetchData() {
         try {
             const [resP, resG] = await Promise.all([fetch(URL_PROGRESS), fetch(URL_GUARANTEE)]);
             const txtP = await resP.text();
             const txtG = await resG.text();
-
             dataP = JSON.parse(txtP.substring(txtP.indexOf("{"), txtP.lastIndexOf("}") + 1)).table.rows.slice(4);
             dataG = JSON.parse(txtG.substring(txtG.indexOf("{"), txtG.lastIndexOf("}") + 1)).table.rows.filter(r => r.c && r.c[9]?.v);
-
             renderAll();
             startProgressLine();
             document.getElementById("p-sync").innerText = "Cập nhật: " + new Date().toLocaleTimeString("vi-VN", {hour12: false});
         } catch(e) { console.error(e); }
     }
 
-    function renderAll() {
-        renderProgress();
-        renderGuarantees();
-        renderStats();
-    }
+    function renderAll() { renderProgress(); renderGuarantees(); renderStats(); }
 
-    /* ── RENDER PROGRESS ── */
     function renderProgress() {
         const el = document.getElementById("p-table");
         const totalPages = Math.ceil(dataP.length / ROWS_PER_PAGE);
-        const start = currentPage * ROWS_PER_PAGE;
-        const items = dataP.slice(start, start + ROWS_PER_PAGE);
+        const items = dataP.slice(currentPage * ROWS_PER_PAGE, currentPage * ROWS_PER_PAGE + ROWS_PER_PAGE);
 
         document.getElementById("p-count").innerText = `${dataP.length} HẠNG MỤC`;
         document.getElementById("p-page").innerText  = `PAGE ${currentPage + 1}/${totalPages || 1}`;
@@ -555,33 +487,28 @@
             const pct = Math.round((d[9]?.v || 0) * (d[9]?.v <= 1 ? 100 : 1));
             const isLate = d[7]?.v && parseDate(d[7].v) < new Date() && pct < 100;
             const item = d[2]?.v || "";
-
             return `<tr>
                 <td class="text-left gold-bold" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[1]?.v || "—"}</td>
-                <td class="text-left accent-text" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[4]?.v || "—"}</td>
-                <td style="color:var(--text-bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[3]?.v || "—"}</td>
-                <td class="text-left" style="color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item}</td>
-                <td>${item ? `<div class="bar-container"><span style="width:28px;font-family:var(--f-mono);font-size:10px;text-align:right">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>` : ""}</td>
-                <td style="font-family:var(--f-mono);color:var(--accent);font-size:11px;">${d[7]?.f || "—"}</td>
+                <td class="text-left" style="color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[4]?.v || "—"}</td>
+                <td style="color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[3]?.v || "—"}</td>
+                <td class="text-left" style="color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item}</td>
+                <td>${item ? `<div class="bar-container"><span style="width:28px;font-family:var(--f-mono);font-size:10px;text-align:right;color:#fff;">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>` : ""}</td>
+                <td style="font-family:var(--f-mono);font-size:14px;font-weight:600;color:#fff;">${d[7]?.f || "—"}</td>
                 <td>${item ? `<span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'DONE':(isLate?'LATE':'WORKING')}</span>` : ""}</td>
             </tr>`;
         }).join("");
     }
 
-    /* ── RENDER GUARANTEE ── */
     function renderGuarantees() {
         const el = document.getElementById("g-table");
         const totalPages = Math.ceil(dataG.length / G_ROWS_PER_PAGE);
-        const start = currentGPage * G_ROWS_PER_PAGE;
-        const items = dataG.slice(start, start + G_ROWS_PER_PAGE);
+        const items = dataG.slice(currentGPage * G_ROWS_PER_PAGE, currentGPage * G_ROWS_PER_PAGE + G_ROWS_PER_PAGE);
 
-        // tính tổng toàn bộ
         let totalVal = 0;
         dataG.forEach(row => {
-            const d = row.c;
-            let valRaw = d[12]?.v;
-            if (typeof valRaw === 'number') totalVal += valRaw;
-            else if (typeof valRaw === 'string') totalVal += parseFloat(valRaw.replace(/[^0-9.-]+/g,"")) || 0;
+            let v = row.c[12]?.v;
+            if (typeof v === 'number') totalVal += v;
+            else if (typeof v === 'string') totalVal += parseFloat(v.replace(/[^0-9.-]+/g,"")) || 0;
         });
 
         const today = new Date(); today.setHours(0,0,0,0);
@@ -593,11 +520,11 @@
             if (expDate) { const e = new Date(expDate); e.setHours(0,0,0,0); daysLeft = Math.ceil((e - today) / 86400000); }
             const nearExpiry = daysLeft !== null && daysLeft <= 10;
             const dateStyle = nearExpiry
-                ? "color:#ff6b6b;font-family:var(--f-mono);white-space:nowrap;animation:flash-red 1.4s step-end infinite;font-weight:700;"
-                : "color:#fff;font-family:var(--f-mono);white-space:nowrap;";
+                ? "color:#ff6b6b;font-family:var(--f-mono);font-size:14px;font-weight:700;white-space:nowrap;animation:flash-red 1.4s step-end infinite;"
+                : "color:#fff;font-family:var(--f-mono);font-size:14px;font-weight:600;white-space:nowrap;";
             return `<tr>
                 <td class="text-left" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[9]?.v || "—"}</td>
-                <td class="text-left accent-text" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[10]?.v || "—"}</td>
+                <td class="text-left" style="color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[10]?.v || "—"}</td>
                 <td><span class="st st-wip" style="font-size:8px;">${d[13]?.v || "—"}</span></td>
                 <td class="gold-bold" style="white-space:nowrap;">${d[12]?.f || d[12]?.v || "0"}</td>
                 <td style="${dateStyle}">${d[7]?.f || "—"}</td>
@@ -609,10 +536,8 @@
         document.getElementById("g-total-val").innerText = `Tổng: ${totalVal.toLocaleString('vi-VN')} đ`;
     }
 
-    /* ── RENDER STATS ── */
     function renderStats() {
         const staff = {}, cust = {};
-
         dataP.forEach(r => {
             const c = r.c;
             const s = c[3]?.v;
@@ -621,11 +546,10 @@
             if (cu && cu.trim() && cu !== "—") cust[cu] = (cust[cu] || 0) + 1;
         });
 
-        const rowTpl = (n, v) =>
-            `<tr>
-                <td class="text-left" style="font-size:11px;padding:7px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</td>
-                <td class="accent-text" style="font-weight:700;width:36px;text-align:right;padding-right:8px;font-family:var(--f-mono);">${v}</td>
-            </tr>`;
+        const rowTpl = (n, v) => `<tr>
+            <td class="text-left" style="font-size:11px;padding:7px 8px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</td>
+            <td style="font-weight:700;width:36px;text-align:right;padding-right:8px;font-family:var(--f-mono);color:var(--accent);">${v}</td>
+        </tr>`;
 
         const sortedStaff = Object.entries(staff).sort((a,b) => b[1]-a[1]);
         const sortedCust  = Object.entries(cust).sort((a,b) => b[1]-a[1]);
@@ -642,7 +566,6 @@
             : `<tr><td colspan="2" style="text-align:center;color:var(--text-dim);padding:12px;font-size:11px;">KHÔNG CÓ DỮ LIỆU</td></tr>`;
     }
 
-    /* ── HELPERS ── */
     function parseDate(v) {
         if (!v) return null;
         const m = v.match(/Date\((\d+),(\d+),(\d+)\)/);
@@ -651,22 +574,17 @@
 
     function startProgressLine() {
         const l = document.getElementById("line1");
-        l.classList.remove("animating");
-        void l.offsetWidth;
-        l.classList.add("animating");
+        l.classList.remove("animating"); void l.offsetWidth; l.classList.add("animating");
     }
 
-    /* ── AUTO PAGE ── */
     setInterval(() => {
-        const total = Math.ceil(dataP.length / ROWS_PER_PAGE);
-        if (total > 1) { currentPage = (currentPage + 1) % total; renderProgress(); }
+        const total  = Math.ceil(dataP.length / ROWS_PER_PAGE);
         const gTotal = Math.ceil(dataG.length / G_ROWS_PER_PAGE);
+        if (total  > 1) { currentPage  = (currentPage  + 1) % total;  renderProgress(); }
         if (gTotal > 1) { currentGPage = (currentGPage + 1) % gTotal; renderGuarantees(); }
     }, 15000);
 
-    /* ── AUTO REFRESH ── */
     setInterval(fetchData, 30000);
-
     window.onload = fetchData;
 </script>
 </body>
