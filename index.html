@@ -582,7 +582,7 @@
         const gTotal = Math.ceil(dataG.length / G_ROWS_PER_PAGE);
         if (total  > 1) { currentPage  = (currentPage  + 1) % total;  renderProgress(); }
         if (gTotal > 1) { currentGPage = (currentGPage + 1) % gTotal; renderGuarantees(); }
-    }, 15000);
+    }, 20000);
 
     setInterval(fetchData, 30000);
     window.onload = fetchData;
