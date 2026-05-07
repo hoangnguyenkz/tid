@@ -77,7 +77,7 @@
         }
 
         .col-left {
-            flex: 0 0 55%;
+            flex: 0 0 60%;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border-hi);
@@ -89,7 +89,7 @@
         }
 
         .col-right {
-            flex: 0 0 calc(45% - 12px);
+            flex: 0 0 calc(40% - 12px);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -323,8 +323,8 @@
         /* ══ TABLET (768px - 1023px) ══ */
         @media (min-width: 768px) and (max-width: 1023px) {
             .container { padding: 8px; gap: 8px; }
-            .col-left { flex: 0 0 55%; padding: 12px; }
-            .col-right { flex: 0 0 calc(45% - 8px); }
+            .col-left { flex: 0 0 60%; padding: 12px; }
+            .col-right { flex: 0 0 calc(40% - 8px); }
             .panel-top-right { flex: 0 0 55%; padding: 10px; }
             th { font-size: 10px; padding: 7px 3px; }
             #p-table td { padding: 9px 4px; font-size: 12px; }
@@ -364,12 +364,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width:17%">DỰ ÁN</th>
-                        <th style="width:15%">KHÁCH HÀNG</th>
+                        <th style="width:22%">DỰ ÁN</th>
+                        <th style="width:13%">KHÁCH HÀNG</th>
                         <th style="width:13%">NHÂN SỰ</th>
                         <th style="width:12%">HẠNG MỤC</th>
                         <th style="width:13%">TIẾN ĐỘ</th>
-                        <th style="width:18%">DEADLINE</th>
+                        <th style="width:15%">DEADLINE</th>
                         <th style="width:12%">T.THÁI</th>
                     </tr>
                 </thead>
@@ -395,12 +395,12 @@
                     <thead>
                         <tr>
                             <!-- Điều chỉnh width để chứa thêm cột HẠN THƯ -->
-                            <th style="width:22%">DỰ ÁN</th>
-                            <th style="width:16%">KHÁCH HÀNG</th>
+                            <th style="width:27%">DỰ ÁN</th>
+                            <th style="width:15%">KHÁCH HÀNG</th>
                             <th style="width:10%">LOẠI</th>
                             <th style="width:16%">GIÁ TRỊ</th>
-                            <th style="width:18%">HẠN THƯ</th>
-                            <th style="width:18%">HẾT HẠN</th>
+                            <th style="width:16%">HẠN TT</th>
+                            <th style="width:16%">HẾT HẠN</th>
                         </tr>
                     </thead>
                     <tbody id="g-table"></tbody>
@@ -439,7 +439,7 @@
     const URL_GUARANTEE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Bao%20lanh`;
 
     let dataP = [], dataG = [], currentPage = 0, currentGPage = 0;
-    const ROWS_PER_PAGE = 16;
+    const ROWS_PER_PAGE = 13;
     const G_ROWS_PER_PAGE = 8;
 
     setInterval(() => {
