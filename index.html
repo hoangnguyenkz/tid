@@ -68,6 +68,7 @@
         .header-date { font-size: 12px; color: var(--accent); }
 
         /* ══ DESKTOP LAYOUT ══ */
+        /* Cột trái: 55% (giảm 10% so với 65%), cột phải: 45% */
         .container {
             display: flex;
             height: calc(100vh - 60px);
@@ -76,7 +77,7 @@
         }
 
         .col-left {
-            flex: 0 0 65%;
+            flex: 0 0 55%;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border-hi);
@@ -88,7 +89,7 @@
         }
 
         .col-right {
-            flex: 0 0 calc(35% - 12px);
+            flex: 0 0 calc(45% - 12px);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -143,7 +144,6 @@
         .table-wrap { flex: 1; overflow: hidden; min-height: 0; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
-        /* Tất cả th màu trắng */
         th {
             background: var(--bg-thead);
             color: #ffffff;
@@ -323,8 +323,8 @@
         /* ══ TABLET (768px - 1023px) ══ */
         @media (min-width: 768px) and (max-width: 1023px) {
             .container { padding: 8px; gap: 8px; }
-            .col-left { flex: 0 0 60%; padding: 12px; }
-            .col-right { flex: 0 0 calc(40% - 8px); }
+            .col-left { flex: 0 0 55%; padding: 12px; }
+            .col-right { flex: 0 0 calc(45% - 8px); }
             .panel-top-right { flex: 0 0 55%; padding: 10px; }
             th { font-size: 10px; padding: 7px 3px; }
             #p-table td { padding: 9px 4px; font-size: 12px; }
@@ -394,10 +394,12 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:30%">DỰ ÁN</th>
-                            <th style="width:20%">KHÁCH HÀNG</th>
-                            <th style="width:12%">LOẠI</th>
-                            <th style="width:20%">GIÁ TRỊ</th>
+                            <!-- Điều chỉnh width để chứa thêm cột HẠN THƯ -->
+                            <th style="width:22%">DỰ ÁN</th>
+                            <th style="width:16%">KHÁCH HÀNG</th>
+                            <th style="width:10%">LOẠI</th>
+                            <th style="width:16%">GIÁ TRỊ</th>
+                            <th style="width:18%">HẠN THƯ</th>
                             <th style="width:18%">HẾT HẠN</th>
                         </tr>
                     </thead>
@@ -515,6 +517,8 @@
 
         el.innerHTML = items.map(row => {
             const d = row.c;
+
+            // Cột HẾT HẠN: d[7]
             const expDate = parseDate(d[7]?.v);
             let daysLeft = null;
             if (expDate) { const e = new Date(expDate); e.setHours(0,0,0,0); daysLeft = Math.ceil((e - today) / 86400000); }
@@ -522,11 +526,22 @@
             const dateStyle = nearExpiry
                 ? "color:#ff6b6b;font-family:var(--f-mono);font-size:14px;font-weight:700;white-space:nowrap;animation:flash-red 1.4s step-end infinite;"
                 : "color:#fff;font-family:var(--f-mono);font-size:14px;font-weight:600;white-space:nowrap;";
+
+            // Cột HẠN THƯ: cột I = index 8, kiểm tra cận hạn tương tự
+            const letterDate = parseDate(d[8]?.v);
+            let letterDaysLeft = null;
+            if (letterDate) { const le = new Date(letterDate); le.setHours(0,0,0,0); letterDaysLeft = Math.ceil((le - today) / 86400000); }
+            const letterNearExpiry = letterDaysLeft !== null && letterDaysLeft <= 10;
+            const letterDateStyle = letterNearExpiry
+                ? "color:#ff6b6b;font-family:var(--f-mono);font-size:14px;font-weight:700;white-space:nowrap;animation:flash-red 1.4s step-end infinite;"
+                : "color:#fff;font-family:var(--f-mono);font-size:14px;font-weight:600;white-space:nowrap;";
+
             return `<tr>
                 <td class="text-left" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[9]?.v || "—"}</td>
                 <td class="text-left" style="color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[10]?.v || "—"}</td>
                 <td><span class="st st-wip" style="font-size:8px;">${d[13]?.v || "—"}</span></td>
                 <td class="gold-bold" style="white-space:nowrap;">${d[12]?.f || d[12]?.v || "0"}</td>
+                <td style="${letterDateStyle}">${d[8]?.f || d[8]?.v || "—"}</td>
                 <td style="${dateStyle}">${d[7]?.f || "—"}</td>
             </tr>`;
         }).join("");
