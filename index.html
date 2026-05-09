@@ -68,7 +68,6 @@
         .header-date { font-size: 12px; color: var(--accent); }
 
         /* ══ DESKTOP LAYOUT ══ */
-        /* Cột trái: 55% (giảm 10% so với 65%), cột phải: 45% */
         .container {
             display: flex;
             height: calc(100vh - 60px);
@@ -182,6 +181,30 @@
             text-overflow: ellipsis;
         }
 
+        /* ══ STATS ROWS — kích thước tăng lên ══ */
+        .stat-row td {
+            font-size: 14px;
+            padding: 8px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .stat-name {
+            color: #fff;
+            font-weight: 500;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .stat-val {
+            width: 42px;
+            text-align: right;
+            padding-right: 8px !important;
+            font-family: var(--f-mono);
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--accent);
+        }
+
         .text-left { text-align: left !important; }
         .gold-bold { color: var(--gold); font-weight: 700; }
         .accent-text { color: var(--accent); }
@@ -240,6 +263,9 @@
             .bar-container span { width: 50px !important; font-size: 18px !important; }
             .st { font-size: 14px; padding: 5px 12px; border-radius: 4px; }
             .footer-info { font-size: 13px; padding-top: 10px; }
+            /* Stats desktop */
+            .stat-row td { font-size: 18px; padding: 11px 10px; }
+            .stat-val { font-size: 19px; width: 52px; }
         }
 
         /* ══ MOBILE TAB SYSTEM ══ */
@@ -318,6 +344,8 @@
             .footer-info { font-size: 10px; padding-top: 6px; }
             .sub-panel { padding: 8px; }
             .panel-header { margin-bottom: 6px; padding-bottom: 6px; }
+            .stat-row td { font-size: 12px; padding: 6px 6px; }
+            .stat-val { font-size: 13px; }
         }
 
         /* ══ TABLET (768px - 1023px) ══ */
@@ -334,6 +362,8 @@
             .header-clock { font-size: 16px; }
             .st { font-size: 8px; padding: 2px 5px; }
             .bar-bg { width: 38px; }
+            .stat-row td { font-size: 13px; padding: 7px 8px; }
+            .stat-val { font-size: 14px; }
         }
     </style>
 </head>
@@ -394,7 +424,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <!-- Điều chỉnh width để chứa thêm cột HẠN THƯ -->
                             <th style="width:27%">DỰ ÁN</th>
                             <th style="width:15%">KHÁCH HÀNG</th>
                             <th style="width:10%">LOẠI</th>
@@ -518,7 +547,6 @@
         el.innerHTML = items.map(row => {
             const d = row.c;
 
-            // Cột HẾT HẠN: d[7]
             const expDate = parseDate(d[7]?.v);
             let daysLeft = null;
             if (expDate) { const e = new Date(expDate); e.setHours(0,0,0,0); daysLeft = Math.ceil((e - today) / 86400000); }
@@ -527,7 +555,6 @@
                 ? "color:#ff6b6b;font-family:var(--f-mono);font-size:14px;font-weight:700;white-space:nowrap;animation:flash-red 1.4s step-end infinite;"
                 : "color:#fff;font-family:var(--f-mono);font-size:14px;font-weight:600;white-space:nowrap;";
 
-            // Cột HẠN THƯ: cột I = index 8, kiểm tra cận hạn tương tự
             const letterDate = parseDate(d[8]?.v);
             let letterDaysLeft = null;
             if (letterDate) { const le = new Date(letterDate); le.setHours(0,0,0,0); letterDaysLeft = Math.ceil((le - today) / 86400000); }
@@ -561,9 +588,9 @@
             if (cu && cu.trim() && cu !== "—") cust[cu] = (cust[cu] || 0) + 1;
         });
 
-        const rowTpl = (n, v) => `<tr>
-            <td class="text-left" style="font-size:11px;padding:7px 8px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</td>
-            <td style="font-weight:700;width:36px;text-align:right;padding-right:8px;font-family:var(--f-mono);color:var(--accent);">${v}</td>
+        const rowTpl = (n, v) => `<tr class="stat-row">
+            <td class="stat-name">${n}</td>
+            <td class="stat-val">${v}</td>
         </tr>`;
 
         const sortedStaff = Object.entries(staff).sort((a,b) => b[1]-a[1]);
@@ -574,11 +601,11 @@
 
         document.getElementById("s-table").innerHTML = sortedStaff.length
             ? sortedStaff.map(([n,v]) => rowTpl(n,v)).join("")
-            : `<tr><td colspan="2" style="text-align:center;color:var(--text-dim);padding:12px;font-size:11px;">KHÔNG CÓ DỮ LIỆU</td></tr>`;
+            : `<tr><td colspan="2" style="text-align:center;color:var(--text-dim);padding:12px;font-size:14px;">KHÔNG CÓ DỮ LIỆU</td></tr>`;
 
         document.getElementById("c-table").innerHTML = sortedCust.length
             ? sortedCust.map(([n,v]) => rowTpl(n,v)).join("")
-            : `<tr><td colspan="2" style="text-align:center;color:var(--text-dim);padding:12px;font-size:11px;">KHÔNG CÓ DỮ LIỆU</td></tr>`;
+            : `<tr><td colspan="2" style="text-align:center;color:var(--text-dim);padding:12px;font-size:14px;">KHÔNG CÓ DỮ LIỆU</td></tr>`;
     }
 
     function parseDate(v) {
