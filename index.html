@@ -444,7 +444,7 @@
         <div class="panel-bottom-right">
             <div class="sub-panel">
                 <div class="panel-header">
-                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/NHÂN SỰ (<span id="s-total">0</span>)</div>
+                    <div class="panel-title" style="font-size:15px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/NHÂN SỰ (<span id="s-total">0</span>)</div>
                 </div>
                 <div class="table-wrap">
                     <table><tbody id="s-table"></tbody></table>
@@ -452,7 +452,7 @@
             </div>
             <div class="sub-panel">
                 <div class="panel-header">
-                    <div class="panel-title" style="font-size:11px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/KHÁCH HÀNG (<span id="c-total">0</span>)</div>
+                    <div class="panel-title" style="font-size:15px"><div class="title-dot"></div>THỐNG KÊ DỰ ÁN/KHÁCH HÀNG (<span id="c-total">0</span>)</div>
                 </div>
                 <div class="table-wrap">
                     <table><tbody id="c-table"></tbody></table>
@@ -567,7 +567,7 @@
             return `<tr>
                 <td class="text-left" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[9]?.v || "—"}</td>
                 <td class="text-left" style="color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[10]?.v || "—"}</td>
-                <td><span class="st st-wip" style="font-size:8px;">${d[13]?.v || "—"}</span></td>
+                <td style="font-weight:700;color:${d[13]?.v==='BLHĐ'?'#3de08a':d[13]?.v==='BLTT'?'#ff6b6b':'#ffffff'};">${d[13]?.v || "—"}</td>
                 <td class="gold-bold" style="white-space:nowrap;">${d[12]?.f || d[12]?.v || "0"}</td>
                 <td style="${letterDateStyle}">${d[8]?.f || d[8]?.v || "—"}</td>
                 <td style="${dateStyle}">${d[7]?.f || "—"}</td>
