@@ -510,7 +510,8 @@
         const totalPages = Math.ceil(dataP.length / ROWS_PER_PAGE);
         const items = dataP.slice(currentPage * ROWS_PER_PAGE, currentPage * ROWS_PER_PAGE + ROWS_PER_PAGE);
 
-        document.getElementById("p-count").innerText = `${dataP.length} HẠNG MỤC`;
+        const countItems = dataP.filter(r => r.c && r.c[2]?.v).length;
+        document.getElementById("p-count").innerText = `${countItems} HẠNG MỤC`;
         document.getElementById("p-page").innerText  = `PAGE ${currentPage + 1}/${totalPages || 1}`;
 
         el.innerHTML = items.map(row => {
