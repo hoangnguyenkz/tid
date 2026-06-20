@@ -213,8 +213,8 @@
         th {
             background: rgba(255,255,255,0.06);
             color: rgba(255,255,255,0.7);
-            font-size: 11px;
-            padding: 8px 4px;
+            font-size: 12px;
+            padding: 9px 4px;
             text-transform: uppercase;
             border-bottom: 1px solid rgba(255,255,255,0.10);
             text-align: center;
@@ -231,8 +231,8 @@
         tbody tr:hover { background: rgba(96,200,240,0.08) !important; transition: background 0.15s; }
 
         #p-table td {
-            padding: 13px 6px;
-            font-size: 16px;
+            padding: 15px 6px;
+            font-size: 19px;
             font-weight: 500;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             text-align: center;
@@ -333,7 +333,7 @@
             .title-dot { width: 9px; height: 9px; }
             .badge-count { font-size: 15px; padding: 5px 14px; }
             th { font-size: 15px; padding: 12px 8px; letter-spacing: 0.8px; }
-            #p-table td { padding: 15px 10px; font-size: 20px; }
+            #p-table td { padding: 17px 10px; font-size: 22px; }
             .bar-bg { width: 80px; height: 10px; }
             .bar-container { gap: 8px; }
             .bar-container span { width: 50px !important; font-size: 18px !important; }
@@ -389,8 +389,8 @@
             }
             .stats-row.tab-active .sub-panel { min-height: 130px; flex: 0 0 auto; border-radius: 12px; }
 
-            th { font-size: 9px; padding: 6px 3px; letter-spacing: 0; }
-            #p-table td { padding: 9px 4px; font-size: 11px; }
+            th { font-size: 10px; padding: 6px 3px; letter-spacing: 0; }
+            #p-table td { padding: 10px 4px; font-size: 13px; }
             .panel-title { font-size: 12px; }
             .badge-count { font-size: 10px; padding: 2px 8px; }
             .bar-bg { width: 32px; height: 6px; }
@@ -410,7 +410,7 @@
             .stats-row { flex: 0 0 170px; gap: 8px; }
             .sub-panel { border-radius: 14px; }
             th { font-size: 10px; padding: 7px 3px; }
-            #p-table td { padding: 9px 4px; font-size: 12px; }
+            #p-table td { padding: 10px 4px; font-size: 14px; }
             .panel-title { font-size: 12px; }
             .header-title { font-size: 16px; letter-spacing: 3px; }
             .header-clock { font-size: 16px; }
@@ -501,7 +501,7 @@
     const URL_GUARANTEE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Bao%20lanh`;
 
     let dataP = [], dataG = [], currentPage = 0;
-    const ROWS_PER_PAGE = 13;
+    const ROWS_PER_PAGE = 10;
 
     setInterval(() => {
         const n = new Date();
@@ -557,7 +557,7 @@
                 <td style="color:rgba(255,255,255,0.85);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d[3]?.v || "—"}</td>
                 <td class="text-left" style="color:rgba(255,255,255,0.80);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item}</td>
                 <td>${item ? `<div class="bar-container"><span style="width:28px;font-family:var(--f-mono);font-size:13px;text-align:right;color:rgba(255,255,255,0.9);">${pct}%</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>` : ""}</td>
-                <td style="font-family:var(--f-mono);font-size:12px;font-weight:600;color:rgba(255,255,255,0.9);">${d[7]?.f || "—"}</td>
+                <td style="font-family:var(--f-mono);font-weight:600;color:rgba(255,255,255,0.9);">${d[7]?.f || "—"}</td>
                 <td>${item ? `<span class="st ${pct>=100?'st-done':(isLate?'st-late':'st-wip')}">${pct>=100?'DONE':(isLate?'LATE':'WORKING')}</span>` : ""}</td>
             </tr>`;
         }).join("");
